@@ -1,0 +1,35 @@
+{
+  "name": "ts-bot-template",
+  "version": "1.0.0",
+  "description": "Template for creating Telegram bots",
+  "main": "index.js",
+  "scripts": {
+	"clean": "rm -rf dist",
+	"build": "npm run clean && tsc --watch false",
+	"run": "npm run build && node dist/index.js",
+	"dev": "nodemon dist/"
+  },
+  "repository": {
+	"type": "git",
+	"url": "git+https://github.com/vilkup/ts-bot-template.git"
+  },
+  "author": "Vilen Kuprienko",
+  "license": "ISC",
+  "bugs": {
+	"url": "https://github.com/vilkup/ts-bot-template/issues"
+  },
+  "homepage": "https://github.com/vilkup/ts-bot-template#readme",
+  "dependencies": {
+	"mongoose": "^5.5.2",
+	"mongoose-unique-validator": "^2.0.3",
+	"simple-node-logger": "^18.12.22",
+	"telegraf": "^3.29.0",
+	"telegraf-session-mongodb": "^1.1.2"
+  },
+  "devDependencies": {
+	"@types/mongodb": "^3.1.24",
+	"@types/mongoose": "^5.3.26",
+	"@types/node": "^11.13.6",
+	"@types/mongoose-unique-validator": "^1.0.1"
+  }
+}

@@ -1,0 +1,8 @@
+.idea/
+.vscode/
+dist/
+config.ts
+logfile.log
+node_modules/
+TODO
+.DS_Store
