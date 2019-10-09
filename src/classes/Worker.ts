@@ -1,6 +1,6 @@
 import Role from './Role';
 
-class Worker extends Role {
+export default class Worker extends Role {
 	// Public
 	public requestGettingInstrument(instruments: Map<number, number>): void {
 		//...

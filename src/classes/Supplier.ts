@@ -1,6 +1,6 @@
 import Role from './Role';
 
-class Supplier extends Role {
+export default class Supplier extends Role {
 	// Public
 	/**
 	 * @param {string} purchase - text with items to

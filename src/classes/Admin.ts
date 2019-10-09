@@ -1,6 +1,6 @@
 import Role from './Role';
 
-class Admin extends Role {
+export default class Admin extends Role {
 	// Public
 	public confirmRemovingInstrument(chatId: number, instruments: Map<number, number>): void {
 		//...

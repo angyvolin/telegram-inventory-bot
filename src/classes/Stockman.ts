@@ -1,6 +1,6 @@
 import Role from './Role';
 
-class Stockman extends Role {
+export default class Stockman extends Role {
 	// Public
 	public confirmGettingInstrument(chatId: number, instruments: Map<number, number>): void {
 		/*
