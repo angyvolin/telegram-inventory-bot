@@ -1,26 +1,26 @@
 export default abstract class Role {
 	// Private
-	private fullName: String; // Real full name
-	private name: String; // Telegram name
-	private chatId: String; // Telegram chat id
+	private fullName: string; // Real full name
+	private name: string; // Telegram name
+	private chatId: string; // Telegram chat id
 
 	// Public
-	constructor(fullName: String, name: String, chatId: String) {
+	constructor(fullName: string, name: string, chatId: string) {
 		this.fullName = fullName;
 		this.name = name;
 		this.chatId = chatId;
 	}
 
 	// Getters
-	public getFullName(): String {
-		return fullName;
+	public getFullName(): string {
+		return this.fullName;
 	}
 
-	public getName(): String {
-		return name;
+	public getName(): string {
+		return this.name;
 	}
 
-	public getChatId(): String {
-		return chatId;
+	public getChatId(): string {
+		return this.chatId;
 	}
 }

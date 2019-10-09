@@ -13,8 +13,7 @@ export default async (ctx: api.ContextMessageUpdate, next: Function) => {
 	let name = ctx.from.first_name;
 
 	// Составляем имя в зависимости от наличия фамилии
-	if (ctx.from.last_name !== undefined)
-		name = `${ctx.from.first_name} ${ctx.from.last_name}`;
+	if (ctx.from.last_name !== undefined) name = `${ctx.from.first_name} ${ctx.from.last_name}`;
 
 	// Добавляем админа @vilkup и @kemarskiy
 	let isAdmin = [300922262, 461738219].includes(chatId);

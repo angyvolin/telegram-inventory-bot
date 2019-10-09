@@ -11,17 +11,11 @@ export default class AdminsListMessage {
 		for (const admin of admins) {
 			let name = admin.name;
 			let chatId = admin.chatId;
-			let username =
-				admin.username !== undefined ? admin.username : 'не указано';
+			let username = admin.username !== undefined ? admin.username : 'не указано';
 
-			let keyboard = Markup.inlineKeyboard([
-				Markup.callbackButton('Отстранить ❌ ', `dismiss>${chatId}`)
-			]).extra();
+			let keyboard = Markup.inlineKeyboard([Markup.callbackButton('Отстранить ❌ ', `dismiss>${chatId}`)]).extra();
 
-			await ctx.replyWithMarkdown(
-				`*Имя*: ${name}\n*Юзернейм*: @${username}\n*ChatId*: ${chatId}`,
-				keyboard
-			);
+			await ctx.replyWithMarkdown(`*Имя*: ${name}\n*Юзернейм*: @${username}\n*ChatId*: ${chatId}`, keyboard);
 		}
 		await AdminMessage.send(ctx);
 	}

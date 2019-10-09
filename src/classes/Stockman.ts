@@ -1,24 +1,24 @@
-import Role from 'Role';
+import Role from './Role';
 
-class Stockman {
+class Stockman extends Role {
 	// Public
-	public confirmRequestInstrument(chatId: number, instruments: Map): void {
+	public confirmGettingInstrument(chatId: number, instruments: Map<number, number>): void {
 		/*
-		 * If confirmed, create request id and 
+		 * If confirmed, create request id and
 		 * write this request to database
 		 */
 	}
 
-	public confirmRequestFurniture(chatId: number, furniture: Map): void {
+	public confirmGettingFurniture(chatId: number, furniture: Map<number, number>): void {
 		/*
-		 * If confirmed, create request id and 
+		 * If confirmed, create request id and
 		 * write this request to database
 		 */
 	}
 
-	public confirmRequestConsumable(chatId: number, consumables: Map): void {
+	public confirmGettingConsumable(chatId: number, consumables: Map<number, number>): void {
 		/*
-		 * If confirmed, create request id and 
+		 * If confirmed, create request id and
 		 * write this request to database
 		 */
 	}
@@ -27,15 +27,15 @@ class Stockman {
 		//...
 	}
 
-	public confirmReturnFurniture(chatId: number, furniture: Map): void {
+	public confirmReturnFurniture(chatId: number, furniture: Map<number, number>): void {
 		//...
 	}
 
-	public confirmRemoveInstrument(chatId: number, instruments: Map): void {
+	public confirmRemovingInstrument(chatId: number, instruments: Map<number, number>): void {
 		//...
 	}
 
-	public confirmReceipt(items: Map): void {
+	public confirmReceipt(items: Map<number, number>): void {
 		//...
 	}
 }

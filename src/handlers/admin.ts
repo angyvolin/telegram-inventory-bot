@@ -36,23 +36,17 @@ export default class Admin {
 		});
 
 		// Обработчик для "Список админов"
-		bot.hears(
-			'Список админов 📃',
-			async (ctx: api.ContextMessageUpdate) => {
-				if (await isAdmin(ctx.from.id)) {
-					await AdminsListMessage.send(ctx);
-				}
+		bot.hears('Список админов 📃', async (ctx: api.ContextMessageUpdate) => {
+			if (await isAdmin(ctx.from.id)) {
+				await AdminsListMessage.send(ctx);
 			}
-		);
+		});
 
 		// Обработчик для "Справка админа"
-		bot.hears(
-			'Справка админа 💡',
-			async (ctx: api.ContextMessageUpdate) => {
-				if (await isAdmin(ctx.from.id)) {
-					await AdminsHelpMessage.send(ctx);
-				}
+		bot.hears('Справка админа 💡', async (ctx: api.ContextMessageUpdate) => {
+			if (await isAdmin(ctx.from.id)) {
+				await AdminsHelpMessage.send(ctx);
 			}
-		);
+		});
 	}
 }

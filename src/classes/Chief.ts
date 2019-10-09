@@ -1,6 +1,6 @@
-import Role from 'Role';
+import Role from './Role';
 
-class Chief {
+class Chief extends Role {
 	// Public
 
 	/**
@@ -22,10 +22,10 @@ class Chief {
 	// ??????????????????????????????????????
 
 	/**
-	 * @param {Map} items - items to supply
-	 * @desc Supply request which is sent to admin for confirmation
+	 * @param {Map<number, number>} items - items to supply
+	 * @desc Supply request, it's sent to admin for confirmation
 	 */
-	public requestSupply(items: Map): void {
+	public requestSupply(supply: string): void {
 		//...
 	}
 }

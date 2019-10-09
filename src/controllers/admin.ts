@@ -3,11 +3,7 @@ import * as api from 'telegraf';
 const Markup = require('telegraf/markup');
 
 export default class AdminMessage {
-	public static keyboard = Markup.keyboard([
-		['Рассылка 📡', 'Статистика 📊'],
-		['Добавить админа 👔'],
-		['Список админов 📃', 'Справка админа 💡']
-	])
+	public static keyboard = Markup.keyboard([['Рассылка 📡', 'Статистика 📊'], ['Добавить админа 👔'], ['Список админов 📃', 'Справка админа 💡']])
 		.oneTime()
 		.resize()
 		.extra();

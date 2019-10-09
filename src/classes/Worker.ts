@@ -1,16 +1,16 @@
-import Role from 'Role';
+import Role from './Role';
 
-class Worker {
+class Worker extends Role {
 	// Public
-	public requestGetInstrument(instruments: Map): void {
+	public requestGettingInstrument(instruments: Map<number, number>): void {
 		//...
 	}
 
-	public requestGetFurniture(furniture: Map): void {
+	public requestGettingFurniture(furniture: Map<number, number>): void {
 		//...
 	}
 
-	public requestGetConsumable(consumables: Map): void {
+	public requestGettingConsumable(consumables: Map<number, number>): void {
 		//...
 	}
 
@@ -22,11 +22,11 @@ class Worker {
 		//...
 	}
 
-	public requestReturnFurniture(furniture: Map): void {
+	public requestReturnFurniture(furniture: Map<number, number>): void {
 		//...
 	}
 
-	public requestRemoveInstrument(items: Map): void {
+	public requestRemovingInstrument(items: Map<number, number>): void {
 		//...
 	}
 }

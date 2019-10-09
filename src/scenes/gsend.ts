@@ -18,31 +18,18 @@ gsend.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 gsend.enter(async (ctx: any) => {
-	let keyboard = Markup.inlineKeyboard([
-		Markup.callbackButton('Назад', 'back')
-	]).extra();
+	let keyboard = Markup.inlineKeyboard([Markup.callbackButton('Назад', 'back')]).extra();
 
-	await ctx.replyWithMarkdown(
-		'Введите сообщение для рассылки\n\nПри форматировании используйте *два знака разметки* вместо одного',
-		keyboard
-	);
+	await ctx.replyWithMarkdown('Введите сообщение для рассылки\n\nПри форматировании используйте *два знака разметки* вместо одного', keyboard);
 });
 
 gsend.on('text', async (ctx: any) => {
 	try {
 		await sendGlobal(ctx);
-		await ctx.reply(
-			'Рассылка успешно проведена! 🎉',
-			AdminMessage.keyboard
-		);
-		Logger.notify(
-			`Рассылка успешно проведена! 🎉 Админ: @${ctx.from.username}; Сообщение: "${ctx.message.text}"`
-		);
+		await ctx.reply('Рассылка успешно проведена! 🎉', AdminMessage.keyboard);
+		Logger.notify(`Рассылка успешно проведена! 🎉 Админ: @${ctx.from.username}; Сообщение: "${ctx.message.text}"`);
 	} catch (err) {
-		await ctx.reply(
-			'Не удалось выполнить рассылку, приносим извинения',
-			AdminMessage.keyboard
-		);
+		await ctx.reply('Не удалось выполнить рассылку, приносим извинения', AdminMessage.keyboard);
 		Logger.error(err.message);
 	}
 	await ctx.scene.leave();

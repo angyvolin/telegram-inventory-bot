@@ -6,3 +6,4 @@ logfile.log
 node_modules/
 TODO
 .DS_Store
+npm-debug.log
