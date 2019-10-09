@@ -1,4 +1,4 @@
-import User from '../models/user'
+import User from '../models/user';
 
 /**
  * Возвращает количество пользователей
@@ -7,6 +7,6 @@ import User from '../models/user'
  * @returns { Promise<number> }
  */
 export async function getAllUsersCount(): Promise<number> {
-  let users = await User.find({})
-  return users.length
+	let users = await User.find({});
+	return users.length;
 }
