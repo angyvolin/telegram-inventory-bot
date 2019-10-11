@@ -1,5 +1,3 @@
 import Item from './Item';
 
-export default class Furniture extends Item {
-
-}
+export default class Furniture extends Item {}

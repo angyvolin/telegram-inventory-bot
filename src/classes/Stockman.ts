@@ -2,27 +2,29 @@ import Role from './Role';
 
 export default class Stockman extends Role {
 	// Public
+	/**
+	 * Confirm getting
+	 * @desc (Для каждой из трех функций ниже)
+	 * После подтверждения отправляем уведомление Worker о
+	 * возможности получения с кнопкой, с помощью которой он
+	 * сможет подтвердить получение. По нажатию на эту кнопку
+	 * боту будет отправляться JSON с информацией о получении
+	 */
 	public confirmGettingInstrument(chatId: number, instruments: Map<number, number>): void {
-		/*
-		 * If confirmed, create request id and
-		 * write this request to database
-		 */
+		//...
 	}
 
 	public confirmGettingFurniture(chatId: number, furniture: Map<number, number>): void {
-		/*
-		 * If confirmed, create request id and
-		 * write this request to database
-		 */
+		//...
 	}
 
 	public confirmGettingConsumable(chatId: number, consumables: Map<number, number>): void {
-		/*
-		 * If confirmed, create request id and
-		 * write this request to database
-		 */
+		//...
 	}
 
+	/*
+	 * Confirm return
+	 */
 	public confirmReturnInstrument(requestId: number): void {
 		//...
 	}
@@ -31,10 +33,16 @@ export default class Stockman extends Role {
 		//...
 	}
 
+	/*
+	 * Confirm removing
+	 */
 	public confirmRemovingInstrument(chatId: number, instruments: Map<number, number>): void {
 		//...
 	}
 
+	/*
+	 * Confirm receipt
+	 */
 	public confirmReceipt(items: Map<number, number>): void {
 		//...
 	}
