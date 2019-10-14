@@ -1,5 +1,6 @@
 export default abstract class Item {
 	// Private
+	private id: number;
 	private photo: string;
 	private name: string;
 	private amount: number;
@@ -12,6 +13,10 @@ export default abstract class Item {
 	}
 
 	// Getters
+	public getId(): number {
+		return this.id;
+	}
+
 	public getPhoto(): string {
 		return this.photo;
 	}
