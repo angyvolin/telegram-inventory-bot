@@ -22,8 +22,12 @@ export default class Stockman extends Role {
 		//...
 	}
 
-	/*
+	/**
 	 * Confirm return
+	 * @desc 
+	 * Смс Worker с подтверждением о возможности вернуть
+	 * инструменты, а также кнопкой для подтверждения
+	 * возврата
 	 */
 	public confirmReturnInstrument(requestId: number): void {
 		//...
@@ -33,8 +37,10 @@ export default class Stockman extends Role {
 		//...
 	}
 
-	/*
+	/**
 	 * Confirm removing
+	 * @desc Запрос на списание инструмента.
+	 * Пересылается Admin на согласование
 	 */
 	public confirmRemovingInstrument(chatId: number, instruments: Map<number, number>): void {
 		//...
