@@ -1,7 +1,12 @@
-import Role from './Role';
+import Person from './Person';
+import { PersonType } from './Person';
 
-export default class Worker extends Role {
+export default class Worker extends Person {
 	// Public
+	constructor(fullName: string, name: string, chatId: string) {
+		super(fullName, name, chatId, PersonType.WORKER);
+	}
+
 	/*
 	 * Request getting
 	 */

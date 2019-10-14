@@ -1,7 +1,12 @@
-import Role from './Role';
+import Person from './Person';
+import { PersonType } from './Person';
 
-export default class Supplier extends Role {
+export default class Supplier extends Person {
 	// Public
+	constructor(fullName: string, name: string, chatId: string) {
+		super(fullName, name, chatId, PersonType.SUPPLIER);
+	}
+
 	/**
 	 * @param {string} purchase - text with items to
 	 * buy (with their prices and amount)

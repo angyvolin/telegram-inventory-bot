@@ -1,7 +1,11 @@
-import Role from './Role';
+import Person from './Person';
+import { PersonType } from './Person';
 
-export default class Chief extends Role {
+export default class Chief extends Person {
 	// Public
+	constructor(fullName: string, name: string, chatId: string) {
+		super(fullName, name, chatId, PersonType.CHIEF);
+	}
 
 	/**
 	 * @desc Get all items in the stock

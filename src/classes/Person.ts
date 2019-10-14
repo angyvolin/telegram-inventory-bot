@@ -1,20 +1,20 @@
-export enum RoleType {
-	WORKER,
-	STOCKMAN,
-	SUPPLIER,
-	CHIEF,
-	ADMIN
+export enum PersonType {
+	WORKER, // 0
+	STOCKMAN, // 1
+	SUPPLIER, // 2
+	CHIEF, // 3
+	ADMIN // 4
 }
 
-export default abstract class Role {
+export default abstract class Person {
 	// Private
 	private fullName: string; // Real full name
 	private name: string; // Telegram name
 	private chatId: string; // Telegram chat id
-	private type: RoleType; // Role type
+	private type: PersonType; // Person type
 
 	// Public
-	constructor(fullName: string, name: string, chatId: string, type: RoleType) {
+	constructor(fullName: string, name: string, chatId: string, type: PersonType) {
 		this.fullName = fullName;
 		this.name = name;
 		this.chatId = chatId;
@@ -34,7 +34,7 @@ export default abstract class Role {
 		return this.chatId;
 	}
 
-	public getType(): RoleType {
+	public getType(): PersonType {
 		return this.type;
 	}
 }

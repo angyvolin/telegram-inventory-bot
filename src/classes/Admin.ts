@@ -1,7 +1,12 @@
-import Role from './Role';
+import Person from './Person';
+import { PersonType } from './Person';
 
-export default class Admin extends Role {
+export default class Admin extends Person {
 	// Public
+	constructor(fullName: string, name: string, chatId: string) {
+		super(fullName, name, chatId, PersonType.ADMIN);
+	}
+
 	public confirmRemovingInstrument(chatId: number, instruments: Map<number, number>): void {
 		//...
 	}

@@ -1,7 +1,12 @@
-import Role from './Role';
+import Person from './Person';
+import { PersonType } from './Person';
 
-export default class Stockman extends Role {
+export default class Stockman extends Person {
 	// Public
+	constructor(fullName: string, name: string, chatId: string) {
+		super(fullName, name, chatId, PersonType.STOCKMAN);
+	}
+
 	/**
 	 * Confirm getting
 	 * @desc (Для каждой из трех функций ниже)
@@ -24,7 +29,7 @@ export default class Stockman extends Role {
 
 	/**
 	 * Confirm return
-	 * @desc 
+	 * @desc
 	 * Смс Worker с подтверждением о возможности вернуть
 	 * инструменты, а также кнопкой для подтверждения
 	 * возврата
