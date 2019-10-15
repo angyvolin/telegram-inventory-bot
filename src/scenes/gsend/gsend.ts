@@ -1,6 +1,6 @@
-import AdminMessage from '../controllers/admin';
-import { sendGlobal } from '../helpers/functions';
-import Logger from '../init/logger';
+import AdminMessage from '../../controllers/admin';
+import Logger from '../../init/logger';
+import { sendGlobal } from '../../helpers/functions';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');

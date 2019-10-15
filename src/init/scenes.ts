@@ -2,9 +2,8 @@ import * as api from 'telegraf';
 import Logger from './logger';
 
 // Scenes
-import gsend from '../scenes/gsend';
-import addAdmin1 from '../scenes/addAdmin/addAdmin1';
-import addAdmin2 from '../scenes/addAdmin/addAdmin2';
+import gsend from '../scenes/gsend/gsend';
+import addAdmins from '../scenes/addAdmins/addAdmins';
 import addPerson1 from '../scenes/addPerson/addPerson1';
 import addPerson2 from '../scenes/addPerson/addPerson2';
 import addPerson3 from '../scenes/addPerson/addPerson3';
@@ -17,8 +16,7 @@ export default class Scenes {
 			const stage = new Stage(); // создаём менеджер сцен
 
 			stage.register(gsend); // регистрируем сцену рассылки
-			stage.register(addAdmin1); // регистрируем сцену добавления админа
-			stage.register(addAdmin2); // регистрируем сцену добавления админа
+			stage.register(addAdmins); // регистрируем сцену добавления админа
 			stage.register(addPerson1); // регистрируем сцену добавления сотрудника
 			stage.register(addPerson2); // регистрируем сцену добавления сотрудника
 			stage.register(addPerson3); // регистрируем сцену добавления сотрудника

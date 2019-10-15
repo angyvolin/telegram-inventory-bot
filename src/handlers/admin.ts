@@ -38,7 +38,7 @@ export default class Admin {
 		// Обработчик для "Добавить админа"
 		bot.hears('Добавить админа 👔', async (ctx: any) => {
 			if (await isAdmin(ctx.from.id)) {
-				await ctx.scene.enter('addAdmin1');
+				await ctx.scene.enter('addAdmins');
 			}
 		});
 

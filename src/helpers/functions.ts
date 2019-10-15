@@ -62,15 +62,18 @@ export async function sendGlobal(ctx: api.ContextMessageUpdate): Promise<void> {
  * @param chatId
  * @returns { Promise<void> }
  */
-export async function addAdmin(chatId: number): Promise<void> {
+export async function addAdmin(chatId: number, username: string, name: string): Promise<void> {
 	try {
-		let user = await User.findOne({ chatId: chatId });
+		const insertDoc: any = {
+			chatId,
+			name,
+			isAdmin: true
+		};
+		if (username) insertDoc.username = username;
 
-		await user.set('isAdmin', true); // делаем юзера админом
-
-		// Сохраняем его
-		await user.save((err) => {
-			if (!err) Logger.notify('Добавлен новый админ!');
+		await User.findOneAndUpdate({ chatId }, insertDoc, {
+			upsert: true,
+			new: true
 		});
 	} catch (err) {
 		throw new Error(`Ошибка при добавлении админа: ${err.message}`);
