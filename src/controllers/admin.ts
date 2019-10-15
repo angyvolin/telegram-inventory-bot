@@ -9,6 +9,6 @@ export default class AdminMessage {
 		.extra();
 
 	public static async send(ctx: api.ContextMessageUpdate): Promise<void> {
-		await ctx.reply('Heyyyyy, admin', this.keyboard);
+		await ctx.reply('Опции администратора', this.keyboard);
 	}
 }

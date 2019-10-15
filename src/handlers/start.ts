@@ -1,13 +1,25 @@
 import * as api from 'telegraf';
+import AdminMessage from '../controllers/admin';
+import KeyboardMessage from '../controllers/keyboards';
 import { PersonType } from '../classes/Person';
 import { getPersonType } from '../helpers/persons';
+import { isAdmin } from '../helpers/functions';
 
 export default class Start {
 	public static init(bot: api.Telegraf<api.ContextMessageUpdate>) {
 		bot.start(async (ctx: api.ContextMessageUpdate) => {
+			if (await isAdmin(ctx.from.id)) {
+				// Админ
+				await AdminMessage.send(ctx);
+				return;
+			}
 			const type = await getPersonType(ctx.from.username);
-			const message = type ? PersonType[type] : 'Вам не назначено роли. ' + 'Пожалуйста, обратитесь к администратору';
-			await ctx.reply(message);
+			if (!type) {
+				// Нету типа сотрудника
+				await ctx.reply('Вам не назначено роли. Пожалуйста, обратитесь к администратору');
+				return;
+			}
+			await KeyboardMessage.send(ctx, type);
 		});
 	}
 }
