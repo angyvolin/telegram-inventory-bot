@@ -10,14 +10,14 @@ export default abstract class Person {
 	// Private
 	private fullName: string; // Real full name
 	private name: string; // Telegram name
-	private chatId: number; // Telegram chat id
+	private username: string; // Telegram username
 	private type: PersonType; // Person type
 
 	// Public
-	constructor(fullName: string, name: string, chatId: number, type: PersonType) {
+	constructor(fullName: string, name: string, username: string, type: PersonType) {
 		this.fullName = fullName;
 		this.name = name;
-		this.chatId = chatId;
+		this.username = username;
 		this.type = type;
 	}
 
@@ -30,8 +30,8 @@ export default abstract class Person {
 		return this.name;
 	}
 
-	public getChatId(): number {
-		return this.chatId;
+	public getUsername(): string {
+		return this.username;
 	}
 
 	public getType(): PersonType {

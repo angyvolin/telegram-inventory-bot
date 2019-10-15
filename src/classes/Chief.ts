@@ -3,8 +3,8 @@ import { PersonType } from './Person';
 
 export default class Chief extends Person {
 	// Public
-	constructor(fullName: string, name: string, chatId: number) {
-		super(fullName, name, chatId, PersonType.CHIEF);
+	constructor(fullName: string, name: string, username: string) {
+		super(fullName, name, username, PersonType.CHIEF);
 	}
 
 	/**
@@ -19,7 +19,7 @@ export default class Chief extends Person {
 	 * @desc Send request to Stockman for getting some items to
 	 * a specified Worker
 	 */
-	public requestGetting(chatId: number, items: Map<number, number>): void {
+	public requestGetting(username: string, items: Map<number, number>): void {
 		//...
 	}
 

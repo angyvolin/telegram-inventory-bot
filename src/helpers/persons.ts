@@ -11,15 +11,28 @@ import Consumable, { IConsumable } from '../models/consumables';
  * определенную роль)
  * @returns { Promise<IPerson> }
  */
-export async function getPerson(chatId: number): Promise<IPerson> {
-	return await Person.findOne({ chatId });
+export async function getPerson(username: string): Promise<IPerson> {
+	return await Person.findOne({ username });
 }
 
 /**
  * Возвращает роль персоны
  * @returns { Promise<PersonType> }
  */
-export async function getPersonType(chatId: number): Promise<PersonType> {
-	const person = await Person.findOne({ chatId });
+export async function getPersonType(username: string): Promise<PersonType> {
+	const person = await Person.findOne({ username });
 	return person ? person.type : null;
+}
+
+export async function addPerson(role: PersonType, username: string, fullName: string): Promise<void> {
+	const insertDoc: any = {
+		role,
+		username,
+		fullName
+	};
+
+	await Person.findOneAndUpdate({ username }, insertDoc, {
+		upsert: true,
+		new: true
+	});
 }

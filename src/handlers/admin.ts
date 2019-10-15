@@ -31,14 +31,14 @@ export default class Admin {
 		// Обработчик для "Добавить роль"
 		bot.hears('Добавить роль 🤵', async (ctx: any) => {
 			if (await isAdmin(ctx.from.id)) {
-				await ctx.scene.enter('addPerson');
+				await ctx.scene.enter('addPerson1');
 			}
 		});
 
 		// Обработчик для "Добавить админа"
 		bot.hears('Добавить админа 👔', async (ctx: any) => {
 			if (await isAdmin(ctx.from.id)) {
-				await ctx.scene.enter('addAdmins');
+				await ctx.scene.enter('addAdmin1');
 			}
 		});
 

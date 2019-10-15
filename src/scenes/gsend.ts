@@ -44,4 +44,5 @@ gsend.on('callback_query', async (ctx: any) => {
 		default:
 	}
 });
+
 export default gsend;

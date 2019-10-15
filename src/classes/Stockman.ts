@@ -3,8 +3,8 @@ import { PersonType } from './Person';
 
 export default class Stockman extends Person {
 	// Public
-	constructor(fullName: string, name: string, chatId: number) {
-		super(fullName, name, chatId, PersonType.STOCKMAN);
+	constructor(fullName: string, name: string, username: string) {
+		super(fullName, name, username, PersonType.STOCKMAN);
 	}
 
 	/**
@@ -15,15 +15,15 @@ export default class Stockman extends Person {
 	 * сможет подтвердить получение. По нажатию на эту кнопку
 	 * боту будет отправляться JSON с информацией о получении
 	 */
-	public confirmGettingInstrument(chatId: number, instruments: Map<number, number>): void {
+	public confirmGettingInstrument(username: string, instruments: Map<number, number>): void {
 		//...
 	}
 
-	public confirmGettingFurniture(chatId: number, furniture: Map<number, number>): void {
+	public confirmGettingFurniture(username: string, furniture: Map<number, number>): void {
 		//...
 	}
 
-	public confirmGettingConsumable(chatId: number, consumables: Map<number, number>): void {
+	public confirmGettingConsumable(username: string, consumables: Map<number, number>): void {
 		//...
 	}
 
@@ -38,7 +38,7 @@ export default class Stockman extends Person {
 		//...
 	}
 
-	public confirmReturnFurniture(chatId: number, furniture: Map<number, number>): void {
+	public confirmReturnFurniture(username: string, furniture: Map<number, number>): void {
 		//...
 	}
 
@@ -47,7 +47,7 @@ export default class Stockman extends Person {
 	 * @desc Запрос на списание инструмента.
 	 * Пересылается Admin на согласование
 	 */
-	public confirmRemovingInstrument(chatId: number, instruments: Map<number, number>): void {
+	public confirmRemovingInstrument(username: string, instruments: Map<number, number>): void {
 		//...
 	}
 

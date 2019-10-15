@@ -1,5 +1,7 @@
 import * as api from 'telegraf';
 import User from '../models/user';
+import { addPerson } from '../helpers/persons';
+import { PersonType } from '../classes/Person';
 
 /**
  * Прослойка для добавления новых пользователей

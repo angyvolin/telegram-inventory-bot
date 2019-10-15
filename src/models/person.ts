@@ -1,9 +1,9 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IPerson extends Document {
-	fullName: string;
-	name: string;
-	chatId: number;
+	fullName: string; // Real full name
+	name: string; // Telegram name
+	username: string; // Telegram username
 	type: number;
 }
 
@@ -12,7 +12,7 @@ export const PersonSchema: Schema = new Schema(
 	{
 		fullName: { type: String, required: true },
 		name: { type: String, required: true },
-		chatId: { type: Number, required: true, unique: true },
+		username: { type: String, required: true, unique: true },
 		type: { type: Number, required: true }
 	},
 	{ collection: 'persons' }
