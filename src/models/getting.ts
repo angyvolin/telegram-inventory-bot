@@ -1,10 +1,10 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IGetting extends Document {
-	type: number,
-	items: Map<string, number>,
-	created: Date,
-	expires?: Date
+	type: number;
+	items: Map<string, number>;
+	created: Date;
+	expires?: Date;
 }
 
 // Схема получения
@@ -15,4 +15,4 @@ export const GettingSchema: Schema = new Schema({
 	expires: { type: Date }
 }, { collection: 'gettings' });
 
-export default mongoose.model<IPerson>('Getting', GettingSchema);
+export default mongoose.model<IGetting>('Getting', GettingSchema);

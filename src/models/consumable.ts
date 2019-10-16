@@ -2,7 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IConsumable extends Document {
 	id: number;
-	photo?: Buffer;
+	photo?: string;
 	name: string;
 	amount: number;
 }
@@ -11,7 +11,7 @@ export interface IConsumable extends Document {
 export const ConsumableSchema: Schema = new Schema(
 	{
 		id: { type: Number, required: true, unique: true },
-		photo: { type: Buffer },
+		photo: {type: String},
 		name: { type: String, required: true },
 		amount: { type: Number, required: true }
 	},
