@@ -1,26 +1,18 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IGetting extends Document {
-	//...
+	type: number,
+	items: Map<string, number>,
+	created: Date,
+	expires?: Date
 }
 
-/*import mongoose, { Document, Schema } from 'mongoose';
+// Схема получения
+export const GettingSchema: Schema = new Schema({
+	type: { type: Number, required: true },
+	items: { type: Map, required: true },
+	created: { type: Date, required: true, default: Date.now },
+	expires: { type: Date }
+}, { collection: 'gettings' });
 
-export interface IPerson extends Document {
-	fullName: string; // Real full name // Telegram name
-	username: string; // Telegram username
-	type: number;
-}
-
-// Схема персоны (имеющей определенную роль)
-export const PersonSchema: Schema = new Schema(
-	{
-		fullName: { type: String, required: true },
-		username: { type: String, required: true, unique: true },
-		type: { type: Number, required: true, unique: false }
-	},
-	{ collection: 'persons' }
-);
-
-export default mongoose.model<IPerson>('Person', PersonSchema);
-*/
+export default mongoose.model<IPerson>('Getting', GettingSchema);
