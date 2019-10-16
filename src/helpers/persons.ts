@@ -24,9 +24,9 @@ export async function getPersonType(username: string): Promise<PersonType> {
 	return person ? person.type : null;
 }
 
-export async function addPerson(role: PersonType, username: string, fullName: string): Promise<void> {
+export async function addPerson(type: PersonType, username: string, fullName: string): Promise<void> {
 	const insertDoc: any = {
-		role,
+		type,
 		username,
 		fullName
 	};

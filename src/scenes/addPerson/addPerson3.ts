@@ -24,7 +24,7 @@ addPerson3.enter(async (ctx: any) => {
 addPerson3.on('text', async (ctx: any) => {
 	ctx.session.username = ctx.message.text;
 	await ctx.scene.leave();
-	await addPerson(ctx.session.role, ctx.session.fullName, ctx.session.username);
+	await addPerson(ctx.session.role, ctx.session.username, ctx.session.fullName);
 	await ctx.reply('Сотрудник был успешно добавлен!');
 });
 

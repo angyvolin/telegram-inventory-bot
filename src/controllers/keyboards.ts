@@ -4,7 +4,7 @@ import { PersonType } from '../classes/Person';
 const Markup = require('telegraf/markup');
 
 const buttons: any = {
-	worker: [],
+	worker: ['Запросить получение', 'Запросить возврат', 'Запросить списание инструмента'],
 	supplier: [],
 	chief: []
 };

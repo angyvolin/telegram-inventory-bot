@@ -14,7 +14,7 @@ export default class Start {
 				return;
 			}
 			const type = await getPersonType(ctx.from.username);
-			if (!type) {
+			if (type == null) {
 				// Нету типа сотрудника
 				await ctx.reply('Вам не назначено роли. Пожалуйста, обратитесь к администратору');
 				return;
