@@ -1,10 +1,10 @@
 import FurnitureModel from '../models/furniture';
 
 export default class Furniture {
-	public static async add(name: string, photo?: Buffer) {
+	public static async add(name: string, photoId?: string) {
 		const insertDoc = {
 			name,
-			photo: photo ? photo : null
+			photo: photoId ? photoId : null
 		};
 
 		await FurnitureModel.findOneAndUpdate({ name }, insertDoc, {

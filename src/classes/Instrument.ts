@@ -1,10 +1,10 @@
 import InstrumentModel from '../models/instrument';
 
 export default class Instrument {
-	public static async add(name: string, photo?: Buffer) {
+	public static async add(name: string, photoId?: string) {
 		const insertDoc = {
 			name,
-			photo: photo ? photo : null
+			photo: photoId ? photoId : null
 		};
 
 		await InstrumentModel.findOneAndUpdate({ name }, insertDoc, {

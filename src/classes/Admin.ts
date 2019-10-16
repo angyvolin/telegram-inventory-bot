@@ -2,7 +2,6 @@ import Instrument from './Instrument';
 import Furniture from './Furniture';
 import Consumable from './Consumable';
 import Person from './Person';
-import PersonType from '../enums/PersonType';
 
 export default class Admin extends Person {
 	// Public
@@ -87,21 +86,21 @@ export default class Admin extends Person {
 	/**
 	 * @desc Add new instrument to the database
 	 */
-	public static addInstrument(name: string, photo?: Buffer): void {
-		Instrument.add(name, photo);
+	public static addInstrument(name: string, photoId?: string): void {
+		Instrument.add(name, photoId);
 	}
 
 	/**
 	 * @desc Add new furniture to the database
 	 */
-	public static addFurniture(name: string, photo?: Buffer): void {
-		Furniture.add(name, photo);
+	public static addFurniture(name: string, photoId?: string): void {
+		Furniture.add(name, photoId);
 	}
 
 	/**
 	 * @desc Add new consumable to the database
 	 */
-	public static addConsumable(name: string, photo?: Buffer): void {
-		Consumable.add(name, photo);
+	public static addConsumable(name: string, photoId?: string): void {
+		Consumable.add(name, photoId);
 	}
 }

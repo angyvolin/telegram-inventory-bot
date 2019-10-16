@@ -22,7 +22,7 @@ getItemName.enter(async (ctx: any) => {
 });
 
 getItemName.on('text', async (ctx: any) => {
-	ctx.session.addItem.name = ctx.message.text;
+	ctx.session.addItem.itemName = ctx.message.text;
 	await ctx.scene.leave();
 	await ctx.scene.enter('addItem/getItemPhoto');
 });

@@ -1,10 +1,10 @@
 import ConsumableModel from '../models/consumable';
 
 export default class Consumable {
-	public static async add(name: string, photo?: Buffer) {
+	public static async add(name: string, photoId?: string) {
 		const insertDoc = {
 			name,
-			photo: photo ? photo : null
+			photo: photoId ? photoId : null
 		};
 
 		await ConsumableModel.findOneAndUpdate({ name }, insertDoc, {

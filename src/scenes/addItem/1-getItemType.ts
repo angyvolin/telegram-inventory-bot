@@ -1,4 +1,5 @@
 import AdminMessage from '../../controllers/admin';
+import ItemType from '../../enums/ItemType';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -24,17 +25,17 @@ getItemType.enter(async (ctx: any) => {
 });
 
 getItemType.action('instrument', async (ctx: any) => {
-	ctx.session.addItem.ItemType = 'instrument';
+	ctx.session.addItem.itemType = ItemType.INSTRUMENT;
 	await nextStep(ctx);
 });
 
 getItemType.action('furniture', async (ctx: any) => {
-	ctx.session.addItem.ItemType = 'furniture';
+	ctx.session.addItem.itemType = ItemType.FURNITURE;
 	await nextStep(ctx);
 });
 
 getItemType.action('consumables', async (ctx: any) => {
-	ctx.session.addItem.ItemType = 'consumables';
+	ctx.session.addItem.itemType = ItemType.CONSUMABLE;
 	await nextStep(ctx);
 });
 
