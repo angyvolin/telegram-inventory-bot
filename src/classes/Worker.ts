@@ -10,15 +10,15 @@ export default class Worker extends Person {
 	/*
 	 * Request getting
 	 */
-	public requestGettingInstrument(instruments: Map<number, number>): void {
+	public static requestGettingInstrument(instruments: Map<number, number>): void {
 		//...
 	}
 
-	public requestGettingFurniture(furniture: Map<number, number>): void {
+	public static requestGettingFurniture(furniture: Map<number, number>): void {
 		//...
 	}
 
-	public requestGettingConsumable(consumables: Map<number, number>): void {
+	public static requestGettingConsumable(consumables: Map<number, number>): void {
 		//...
 	}
 
@@ -34,7 +34,7 @@ export default class Worker extends Person {
 	 * с его requestId. В зависимости от данных в gettingInfo
 	 * заполняем информацию о Request в БД
 	 */
-	public confirmReceipt(gettingInfo: string): void {
+	public static confirmReceipt(gettingInfo: string): void {
 		//...
 	}
 
@@ -43,7 +43,7 @@ export default class Worker extends Person {
 	 * в БД отмечаем Request как завершенный (инструменты были
 	 * возвращены)
 	 */
-	public confirmReturnInstrument(requestId: number): void {
+	public static confirmReturnInstrument(requestId: number): void {
 		//...
 	}
 
@@ -57,7 +57,7 @@ export default class Worker extends Person {
 	 *		про инструменты инфа хранится в первичных Request
 	 *		на получение)
 	 */
-	public confirmReturnFurniture(requestId: number): void {
+	public static confirmReturnFurniture(requestId: number): void {
 		//...
 	}
 
@@ -71,7 +71,7 @@ export default class Worker extends Person {
 	 * на получения относятся инструменты и отметить этот запрос
 	 * как завершенный (инструменты были возвращены)
 	 */
-	public requestReturnInstrument(requestId: number): void {
+	public static requestReturnInstrument(requestId: number): void {
 		//...
 	}
 
@@ -80,7 +80,7 @@ export default class Worker extends Person {
 	 * не обязательна для возврата, то и requestId не передается.
 	 * Передаем лишь саму фурнитуру для возврата
 	 */
-	public requestReturnFurniture(furniture: Map<number, number>): void {
+	public static requestReturnFurniture(furniture: Map<number, number>): void {
 		//...
 	}
 
@@ -95,7 +95,7 @@ export default class Worker extends Person {
 	 * возвращения в будущем). Вторым аргументом передаем пары с
 	 * инструментами и количеством
 	 */
-	public requestRemovingInstrument(requestId: number, items: Map<number, number>): void {
+	public static requestRemovingInstrument(requestId: number, items: Map<number, number>): void {
 		//...
 	}
 }

@@ -15,15 +15,15 @@ export default class Stockman extends Person {
 	 * сможет подтвердить получение. По нажатию на эту кнопку
 	 * боту будет отправляться JSON с информацией о получении
 	 */
-	public confirmGettingInstrument(username: string, instruments: Map<number, number>): void {
+	public static confirmGettingInstrument(username: string, instruments: Map<number, number>): void {
 		//...
 	}
 
-	public confirmGettingFurniture(username: string, furniture: Map<number, number>): void {
+	public static confirmGettingFurniture(username: string, furniture: Map<number, number>): void {
 		//...
 	}
 
-	public confirmGettingConsumable(username: string, consumables: Map<number, number>): void {
+	public static confirmGettingConsumable(username: string, consumables: Map<number, number>): void {
 		//...
 	}
 
@@ -34,11 +34,11 @@ export default class Stockman extends Person {
 	 * инструменты, а также кнопкой для подтверждения
 	 * возврата
 	 */
-	public confirmReturnInstrument(requestId: number): void {
+	public static confirmReturnInstrument(requestId: number): void {
 		//...
 	}
 
-	public confirmReturnFurniture(username: string, furniture: Map<number, number>): void {
+	public static confirmReturnFurniture(username: string, furniture: Map<number, number>): void {
 		//...
 	}
 
@@ -47,14 +47,14 @@ export default class Stockman extends Person {
 	 * @desc Запрос на списание инструмента.
 	 * Пересылается Admin на согласование
 	 */
-	public confirmRemovingInstrument(username: string, instruments: Map<number, number>): void {
+	public static confirmRemovingInstrument(username: string, instruments: Map<number, number>): void {
 		//...
 	}
 
 	/*
 	 * Confirm receipt
 	 */
-	public confirmReceipt(items: Map<number, number>): void {
+	public static confirmReceipt(items: Map<number, number>): void {
 		//...
 	}
 }

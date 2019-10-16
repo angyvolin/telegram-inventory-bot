@@ -1,3 +1,6 @@
+import Instrument from './Instrument';
+import Furniture from './Furniture';
+import Consumable from './Consumable';
 import Person from './Person';
 import { PersonType } from './Person';
 
@@ -7,56 +10,56 @@ export default class Admin extends Person {
 		super(fullName, username, PersonType.ADMIN);
 	}
 
-	public confirmRemovingInstrument(username: string, instruments: Map<number, number>): void {
+	public static confirmRemovingInstrument(username: string, instruments: Map<number, number>): void {
 		//...
 	}
 
-	public confirmSupply(supply: string): void {
+	public static confirmSupply(supply: string): void {
 		//...
 	}
 
-	public confirmPurchase(purchase: string): void {
+	public static confirmPurchase(purchase: string): void {
 		//...
 	}
 
-	public getAbsentInstruments(): void {
+	public static getAbsentInstruments(): void {
 		//...
 	}
 
-	public getDebtors(): void {
+	public static getDebtors(): void {
 		//...
 	}
 
-	public getCellContent(cell: string): void {
+	public static getCellContent(cell: string): void {
 		//...
 	}
 
 	// Worker methods
-	public requestGettingInstrument(instruments: Map<number, number>): void {
+	public static requestGettingInstrument(instruments: Map<number, number>): void {
 		//...
 	}
 
-	public requestGettingFurniture(furniture: Map<number, number>): void {
+	public static requestGettingFurniture(furniture: Map<number, number>): void {
 		//...
 	}
 
-	public requestGettingConsumable(consumables: Map<number, number>): void {
+	public static requestGettingConsumable(consumables: Map<number, number>): void {
 		//...
 	}
 
-	public requestReceipt(requestId: number): void {
+	public static requestReceipt(requestId: number): void {
 		//...
 	}
 
-	public requestReturnInstrument(requestId: number): void {
+	public static requestReturnInstrument(requestId: number): void {
 		//...
 	}
 
-	public requestReturnFurniture(furniture: Map<number, number>): void {
+	public static requestReturnFurniture(furniture: Map<number, number>): void {
 		//...
 	}
 
-	public requestRemovingInstrument(items: Map<number, number>): void {
+	public static requestRemovingInstrument(items: Map<number, number>): void {
 		//...
 	}
 
@@ -64,7 +67,7 @@ export default class Admin extends Person {
 	/**
 	 * @desc Get all items in the stock
 	 */
-	public getAllItems(): void {
+	public static getAllItems(): void {
 		//...
 	}
 
@@ -73,7 +76,7 @@ export default class Admin extends Person {
 	 * @desc Send request to Stockman for getting some items to
 	 * a specified Worker
 	 */
-	public requestGetting(username: string, items: Map<number, number>): void {
+	public static requestGetting(username: string, items: Map<number, number>): void {
 		//...
 	}
 
@@ -81,28 +84,28 @@ export default class Admin extends Person {
 	 * @param {string} supply - text with items to supply
 	 * @desc Supply request, it's sent to admin for confirmation
 	 */
-	public requestSupply(supply: string): void {
+	public static requestSupply(supply: string): void {
 		//...
 	}
 
 	/**
 	 * @desc Add new instrument to the database
 	 */
-	public addInstrument(id: number, photo: string, name: string): void {
-		//..
+	public static addInstrument(name: string, photo?: Buffer): void {
+		Instrument.add(name, photo);
 	}
 
 	/**
 	 * @desc Add new furniture to the database
 	 */
-	public addFurniture(id: number, photo: string, name: string): void {
-		//..
+	public static addFurniture(name: string, photo?: Buffer): void {
+		Furniture.add(name, photo);
 	}
 
 	/**
 	 * @desc Add new consumable to the database
 	 */
-	public addConsumable(id: number, photo: string, name: string): void {
-		//..
+	public static addConsumable(name: string, photo?: Buffer): void {
+		Consumable.add(name, photo);
 	}
 }

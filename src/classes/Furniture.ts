@@ -1,6 +1,18 @@
 import FurnitureModel from '../models/furniture';
 
 export default class Furniture {
+	public static async add(name: string, photo?: Buffer) {
+		const insertDoc = {
+			name,
+			photo: photo ? photo : null
+		};
+
+		await FurnitureModel.findOneAndUpdate({ name }, insertDoc, {
+			upsert: true,
+			new: true
+		});
+	}
+
 	// Getters
 	public static async getId(name: string): Promise<number> {
 		const furniture = await FurnitureModel.findOne({ name });

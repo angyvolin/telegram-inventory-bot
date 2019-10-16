@@ -1,6 +1,17 @@
 import ConsumableModel from '../models/consumable';
 
 export default class Consumable {
+	public static async add(name: string, photo?: Buffer) {
+		const insertDoc = {
+			name,
+			photo: photo ? photo : null
+		};
+
+		await ConsumableModel.findOneAndUpdate({ name }, insertDoc, {
+			upsert: true,
+			new: true
+		});
+	}
 	// Getters
 	public static async getId(name: string): Promise<number> {
 		const consumable = await ConsumableModel.findOne({ name });

@@ -10,7 +10,7 @@ export default class Chief extends Person {
 	/**
 	 * @desc Get all items in the stock
 	 */
-	public getAllItems(): void {
+	public static getAllItems(): void {
 		//...
 	}
 
@@ -19,7 +19,7 @@ export default class Chief extends Person {
 	 * @desc Send request to Stockman for getting some items to
 	 * a specified Worker
 	 */
-	public requestGetting(username: string, items: Map<number, number>): void {
+	public static requestGetting(username: string, items: Map<number, number>): void {
 		//...
 	}
 
@@ -27,7 +27,7 @@ export default class Chief extends Person {
 	 * @param {string} supply - text with items to supply
 	 * @desc Supply request, it's sent to admin for confirmation
 	 */
-	public requestSupply(supply: string): void {
+	public static requestSupply(supply: string): void {
 		//...
 	}
 }
