@@ -8,11 +8,14 @@ export interface IGetting extends Document {
 }
 
 // Схема получения
-export const GettingSchema: Schema = new Schema({
-	type: { type: Number, required: true },
-	items: { type: Map, required: true },
-	created: { type: Date, required: true, default: Date.now },
-	expires: { type: Date }
-}, { collection: 'gettings' });
+export const GettingSchema: Schema = new Schema(
+	{
+		type: { type: Number, required: true },
+		items: { type: Map, required: true },
+		created: { type: Date, required: true, default: Date.now },
+		expires: { type: Date }
+	},
+	{ collection: 'gettings' }
+);
 
-export default mongoose.model<IPerson>('Getting', GettingSchema);
+export default mongoose.model<IGetting>('Getting', GettingSchema);

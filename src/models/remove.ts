@@ -6,9 +6,12 @@ export interface IRemove extends Document {
 }
 
 // Схема получения
-export const RemoveSchema: Schema = new Schema({
-	items: { type: Map, required: true },
-	created: { type: Date, required: true, default: Date.now }
-}, { collection: 'removings' });
+export const RemoveSchema: Schema = new Schema(
+	{
+		items: { type: Map, required: true },
+		created: { type: Date, required: true, default: Date.now }
+	},
+	{ collection: 'removings' }
+);
 
-export default mongoose.model<IPerson>('Remove', RemoveSchema);
+export default mongoose.model<IRemove>('Remove', RemoveSchema);

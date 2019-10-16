@@ -5,8 +5,11 @@ export interface IConfirmation extends Document {
 }
 
 // Схема получения
-export const ConfirmationSchema: Schema = new Schema({
-	messageIds: { type: [String], required: true }
-}, { collection: 'confirmations' });
+export const ConfirmationSchema: Schema = new Schema(
+	{
+		messageIds: { type: [String], required: true }
+	},
+	{ collection: 'confirmations' }
+);
 
-export default mongoose.model<IPerson>('Confirmation', ConfirmationSchema);
+export default mongoose.model<IConfirmation>('Confirmation', ConfirmationSchema);
