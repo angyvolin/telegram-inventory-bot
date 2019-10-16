@@ -3,8 +3,8 @@ import { PersonType } from './Person';
 
 export default class Chief extends Person {
 	// Public
-	constructor(fullName: string, name: string, username: string) {
-		super(fullName, name, username, PersonType.CHIEF);
+	constructor(fullName: string, username: string) {
+		super(fullName, username, PersonType.CHIEF);
 	}
 
 	/**

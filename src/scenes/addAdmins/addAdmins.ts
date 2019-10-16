@@ -1,6 +1,6 @@
-import { addAdmin } from '../../helpers/functions';
 import Logger from '../../init/logger';
 import AdminMessage from '../../controllers/admin';
+import { addAdmin } from '../../helpers/functions';
 import { PersonType } from '../../classes/Person';
 
 const Scene = require('telegraf/scenes/base');

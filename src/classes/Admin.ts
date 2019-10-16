@@ -3,8 +3,8 @@ import { PersonType } from './Person';
 
 export default class Admin extends Person {
 	// Public
-	constructor(fullName: string, name: string, username: string) {
-		super(fullName, name, username, PersonType.ADMIN);
+	constructor(fullName: string, username: string) {
+		super(fullName, username, PersonType.ADMIN);
 	}
 
 	public confirmRemovingInstrument(username: string, instruments: Map<number, number>): void {

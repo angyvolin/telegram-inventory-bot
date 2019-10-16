@@ -9,12 +9,15 @@ export interface IUser extends Document {
 }
 
 // Схема пользователя
-export const UserSchema: Schema = new Schema({
-	chatId: { type: Number, required: true, unique: true },
-	username: { type: String },
-	name: { type: String },
-	phoneNumber: { type: String },
-	isAdmin: { type: Boolean }
-});
+export const UserSchema: Schema = new Schema(
+	{
+		chatId: { type: Number, required: true, unique: true },
+		username: { type: String },
+		name: { type: String },
+		phoneNumber: { type: String },
+		isAdmin: { type: Boolean }
+	},
+	{ collection: 'users' }
+);
 
 export default mongoose.model<IUser>('User', UserSchema);

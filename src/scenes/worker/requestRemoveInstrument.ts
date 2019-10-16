@@ -7,21 +7,21 @@ const Markup = require('telegraf/markup');
 /**
  * Сцена запроса получения
  */
-const requestGettingFurniture = new Scene('requestGettingFurniture');
+const requestRemoveInstrument = new Scene('requestRemoveInstrument');
 
-requestGettingFurniture.command('start', async (ctx: any) => {
+requestRemoveInstrument.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
 	await KeyboardMessage.send(ctx, PersonType.WORKER);
 	ctx.session = {};
 });
 
 // Точка входа в сцену
-requestGettingFurniture.enter(async (ctx: any) => {
+requestRemoveInstrument.enter(async (ctx: any) => {
 	/*const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Работник', 'worker'), Markup.callbackButton('Кладовщик', 'stockman')], [Markup.callbackButton('Начальник цеха', 'chief'), Markup.callbackButton('Снабженец', 'supplier')], [Markup.callbackButton('Назад', 'back')]]).extra();
 	await ctx.replyWithMarkdown('Выберите роль сотрудника, которого вы хотите добавить', keyboard);*/
 });
 
-requestGettingFurniture.on('callback_query', async (ctx: any) => {
+requestRemoveInstrument.on('callback_query', async (ctx: any) => {
 	switch (ctx.callbackQuery.data) {
 		case 'back': {
 			await ctx.scene.leave();
@@ -31,4 +31,4 @@ requestGettingFurniture.on('callback_query', async (ctx: any) => {
 	}
 });
 
-export default requestGettingFurniture;
+export default requestRemoveInstrument;

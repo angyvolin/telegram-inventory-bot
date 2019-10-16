@@ -1,15 +1,23 @@
 import * as api from 'telegraf';
-import Admin from '../handlers/admin';
 import CallbackQuery from '../handlers/callbackQuery';
 import Start from '../handlers/start';
 import Logger from './logger';
+import AdminHandlers from '../handlers/admin';
+import WorkerHandlers from '../handlers/worker';
+import StockmanHandlers from '../handlers/stockman';
+import SupplierHandlers from '../handlers/supplier';
+import ChiefHandlers from '../handlers/chief';
 
 export default class Handlers {
 	public static init(bot: api.Telegraf<api.ContextMessageUpdate>): void {
 		try {
 			Start.init(bot); // Обработчик для /start
-			Admin.init(bot); // Обработчик для /admin
 			CallbackQuery.init(bot); // Обработчик для callback запросов
+			AdminHandlers.init(bot); // Обработчик для админа
+			WorkerHandlers.init(bot); // Обработчик для рабочего
+			StockmanHandlers.init(bot); // Обработчик для кладовщика
+			SupplierHandlers.init(bot); // Обработчик для снабженца
+			ChiefHandlers.init(bot); // Обработчик для начальника цеха
 
 			Logger.trace('>>> Обработчики инициализированы');
 		} catch {

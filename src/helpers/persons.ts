@@ -31,8 +31,44 @@ export async function addPerson(type: PersonType, username: string, fullName: st
 		fullName
 	};
 
-	await Person.findOneAndUpdate({ username }, insertDoc, {
-		upsert: true,
-		new: true
-	});
+	try {
+		await Person.findOneAndUpdate({ username }, insertDoc, {
+			upsert: true,
+			new: true
+		});
+	} catch (err) {
+		Logger.error(err);
+	}
+}
+
+export async function isWorker(username: string): Promise<boolean> {
+	const type = await getPersonType(username);
+	if (type === PersonType.WORKER) {
+		return true;
+	}
+	return false;
+}
+
+export async function isStockman(username: string): Promise<boolean> {
+	const type = await getPersonType(username);
+	if (type === PersonType.STOCKMAN) {
+		return true;
+	}
+	return false;
+}
+
+export async function isSupplier(username: string): Promise<boolean> {
+	const type = await getPersonType(username);
+	if (type === PersonType.SUPPLIER) {
+		return true;
+	}
+	return false;
+}
+
+export async function isChief(username: string): Promise<boolean> {
+	const type = await getPersonType(username);
+	if (type === PersonType.CHIEF) {
+		return true;
+	}
+	return false;
 }

@@ -3,8 +3,8 @@ import { PersonType } from './Person';
 
 export default class Stockman extends Person {
 	// Public
-	constructor(fullName: string, name: string, username: string) {
-		super(fullName, name, username, PersonType.STOCKMAN);
+	constructor(fullName: string, username: string) {
+		super(fullName, username, PersonType.STOCKMAN);
 	}
 
 	/**

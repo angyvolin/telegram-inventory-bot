@@ -8,15 +8,13 @@ export enum PersonType {
 
 export default abstract class Person {
 	// Private
-	private fullName: string; // Real full name
-	private name: string; // Telegram name
+	private fullName: string; // Real full name // Telegram name
 	private username: string; // Telegram username
 	private type: PersonType; // Person type
 
 	// Public
-	constructor(fullName: string, name: string, username: string, type: PersonType) {
+	constructor(fullName: string, username: string, type: PersonType) {
 		this.fullName = fullName;
-		this.name = name;
 		this.username = username;
 		this.type = type;
 	}
@@ -24,10 +22,6 @@ export default abstract class Person {
 	// Getters
 	public getFullName(): string {
 		return this.fullName;
-	}
-
-	public getName(): string {
-		return this.name;
 	}
 
 	public getUsername(): string {

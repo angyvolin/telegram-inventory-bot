@@ -5,7 +5,7 @@ import AdminsListMessage from '../controllers/adminsList';
 import StatsMessage from '../controllers/stats';
 import { isAdmin } from '../helpers/functions';
 
-export default class Admin {
+export default class AdminHandlers {
 	public static init(bot: api.Telegraf<api.ContextMessageUpdate>) {
 		// Обрадотчик для "/admin"
 		bot.command('admin', async (ctx: api.ContextMessageUpdate) => {

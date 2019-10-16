@@ -1,55 +1,35 @@
 import * as api from 'telegraf';
+import KeyboardMessage from '../controllers/keyboards';
 import { PersonType } from '../classes/Person';
+import { isWorker } from '../helpers/persons';
 
-export default class Admin {
+export default class WorkerHandlers {
 	public static init(bot: api.Telegraf<api.ContextMessageUpdate>) {
-		/*// Обрадотчик для "/admin"
-		bot.command('admin', async (ctx: api.ContextMessageUpdate) => {
-			if (await isAdmin(ctx.from.id)) {
-				await AdminMessage.send(ctx);
+		bot.command('keyboard', async (ctx: api.ContextMessageUpdate) => {
+			if (await isWorker(ctx.from.username)) {
+				await KeyboardMessage.send(ctx, PersonType.WORKER);
 			}
 		});
 
-		// Обработчик для "Рассылка"
-		bot.hears('Рассылка 📡', async (ctx: any) => {
-			if (await isAdmin(ctx.from.id)) {
-				await ctx.scene.enter('gsend');
+		// Обработчик для "Запросить получение"
+		bot.hears('Запросить получение', async (ctx: any) => {
+			if (await isWorker(ctx.from.id)) {
+				await ctx.scene.enter('requestGetting');
 			}
 		});
 
-		// Обработчик для "Статистика"
-		bot.hears('Статистика 📊', async (ctx: api.ContextMessageUpdate) => {
-			if (await isAdmin(ctx.from.id)) {
-				await StatsMessage.send(ctx);
+		// Обработчик для "Запросить возврат"
+		bot.hears('Запросить возврат', async (ctx: any) => {
+			if (await isWorker(ctx.from.id)) {
+				await ctx.scene.enter('requestReturn');
 			}
 		});
 
-		// Обработчик для "Добавить роль"
-		bot.hears('Добавить роль 🤵', async (ctx: any) => {
-			if (await isAdmin(ctx.from.id)) {
-				await ctx.scene.enter('addPerson1');
+		// Обработчик для "Запросить списание инструмента"
+		bot.hears('Запросить списание инструмента', async (ctx: any) => {
+			if (await isWorker(ctx.from.id)) {
+				await ctx.scene.enter('requestRemoveInstrument');
 			}
 		});
-
-		// Обработчик для "Добавить админа"
-		bot.hears('Добавить админа 👔', async (ctx: any) => {
-			if (await isAdmin(ctx.from.id)) {
-				await ctx.scene.enter('addAdmins');
-			}
-		});
-
-		// Обработчик для "Список админов"
-		bot.hears('Список админов 📃', async (ctx: api.ContextMessageUpdate) => {
-			if (await isAdmin(ctx.from.id)) {
-				await AdminsListMessage.send(ctx);
-			}
-		});
-
-		// Обработчик для "Справка админа"
-		bot.hears('Справка админа 💡', async (ctx: api.ContextMessageUpdate) => {
-			if (await isAdmin(ctx.from.id)) {
-				await AdminsHelpMessage.send(ctx);
-			}
-		});*/
 	}
 }
