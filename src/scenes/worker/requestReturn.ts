@@ -17,16 +17,25 @@ requestReturn.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestReturn.enter(async (ctx: any) => {
-	/*const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Работник', 'worker'), Markup.callbackButton('Кладовщик', 'stockman')], [Markup.callbackButton('Начальник цеха', 'chief'), Markup.callbackButton('Снабженец', 'supplier')], [Markup.callbackButton('Назад', 'back')]]).extra();
-	await ctx.replyWithMarkdown('Выберите роль сотрудника, которого вы хотите добавить', keyboard);*/
+	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Инструменты', 'instrument'), Markup.callbackButton('Фурнитура', 'furniture')], [Markup.callbackButton('Назад', 'back')]]).extra();
+	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите вернуть', keyboard);
 });
 
 requestReturn.on('callback_query', async (ctx: any) => {
 	switch (ctx.callbackQuery.data) {
+		case 'instrument': {
+			await ctx.scene.leave();
+			await ctx.scene.enter('requestReturnInstrument');
+			break;
+		}
+		case 'furniture': {
+			await ctx.scene.leave();
+			await ctx.scene.enter('requestReturnFurniture');
+			break;
+		}
 		case 'back': {
 			await ctx.scene.leave();
-			await KeyboardMessage.send(ctx, PersonType.WORKER);
-			break;
+			return KeyboardMessage.send(ctx, PersonType.WORKER);
 		}
 	}
 });

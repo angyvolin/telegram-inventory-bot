@@ -37,11 +37,11 @@ gsend.on('text', async (ctx: any) => {
 
 gsend.on('callback_query', async (ctx: any) => {
 	switch (ctx.callbackQuery.data) {
-		case 'back':
+		case 'back': {
 			await ctx.scene.leave();
 			await AdminMessage.send(ctx);
 			break;
-		default:
+		}
 	}
 });
 

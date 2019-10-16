@@ -13,21 +13,21 @@ export default class WorkerHandlers {
 
 		// Обработчик для "Запросить получение"
 		bot.hears('Запросить получение', async (ctx: any) => {
-			if (await isWorker(ctx.from.id)) {
+			if (await isWorker(ctx.from.username)) {
 				await ctx.scene.enter('requestGetting');
 			}
 		});
 
 		// Обработчик для "Запросить возврат"
 		bot.hears('Запросить возврат', async (ctx: any) => {
-			if (await isWorker(ctx.from.id)) {
+			if (await isWorker(ctx.from.username)) {
 				await ctx.scene.enter('requestReturn');
 			}
 		});
 
 		// Обработчик для "Запросить списание инструмента"
 		bot.hears('Запросить списание инструмента', async (ctx: any) => {
-			if (await isWorker(ctx.from.id)) {
+			if (await isWorker(ctx.from.username)) {
 				await ctx.scene.enter('requestRemoveInstrument');
 			}
 		});

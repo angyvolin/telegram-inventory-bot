@@ -17,16 +17,16 @@ requestGettingInstrument.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestGettingInstrument.enter(async (ctx: any) => {
-	/*const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Работник', 'worker'), Markup.callbackButton('Кладовщик', 'stockman')], [Markup.callbackButton('Начальник цеха', 'chief'), Markup.callbackButton('Снабженец', 'supplier')], [Markup.callbackButton('Назад', 'back')]]).extra();
-	await ctx.replyWithMarkdown('Выберите роль сотрудника, которого вы хотите добавить', keyboard);*/
+	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('Назад', 'back')]);
+	await ctx.reply('Вы хотите запросить инструменты!');
+	await ctx.scene.leave();
 });
 
 requestGettingInstrument.on('callback_query', async (ctx: any) => {
 	switch (ctx.callbackQuery.data) {
 		case 'back': {
 			await ctx.scene.leave();
-			await KeyboardMessage.send(ctx, PersonType.WORKER);
-			break;
+			return KeyboardMessage.send(ctx, PersonType.WORKER);
 		}
 	}
 });

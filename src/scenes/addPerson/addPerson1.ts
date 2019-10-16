@@ -25,30 +25,33 @@ addPerson1.on('callback_query', async (ctx: any) => {
 	switch (ctx.callbackQuery.data) {
 		case 'worker': {
 			ctx.session.role = PersonType.WORKER;
+			await ctx.scene.leave();
+			await ctx.scene.enter('addPerson2');
 			break;
 		}
 		case 'stockman': {
 			ctx.session.role = PersonType.STOCKMAN;
+			await ctx.scene.leave();
+			await ctx.scene.enter('addPerson2');
 			break;
 		}
 		case 'chief': {
 			ctx.session.role = PersonType.CHIEF;
+			await ctx.scene.leave();
+			await ctx.scene.enter('addPerson2');
 			break;
 		}
 		case 'supplier': {
 			ctx.session.role = PersonType.SUPPLIER;
+			await ctx.scene.leave();
+			await ctx.scene.enter('addPerson2');
 			break;
 		}
 		case 'back': {
 			await ctx.scene.leave();
-			return await AdminMessage.send(ctx);
-		}
-		default: {
-			return await ctx.scene.leave();
+			return AdminMessage.send(ctx);
 		}
 	}
-	await ctx.scene.leave();
-	await ctx.scene.enter('addPerson2');
 });
 
 export default addPerson1;
