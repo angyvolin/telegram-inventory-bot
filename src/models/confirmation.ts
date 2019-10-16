@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IConfirmation extends Document {
-	messageIds: [string];
+	messageIds: string[];
 }
 
 // Схема получения
