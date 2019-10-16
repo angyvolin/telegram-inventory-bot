@@ -1,5 +1,5 @@
 import * as api from 'telegraf';
-import { PersonType } from '../classes/Person';
+import PersonType from '../enums/PersonType';
 
 const Markup = require('telegraf/markup');
 

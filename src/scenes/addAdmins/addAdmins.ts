@@ -1,7 +1,7 @@
 import Logger from '../../init/logger';
 import AdminMessage from '../../controllers/admin';
+import PersonType from '../../enums/PersonType';
 import { addAdmin } from '../../helpers/functions';
-import { PersonType } from '../../classes/Person';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');

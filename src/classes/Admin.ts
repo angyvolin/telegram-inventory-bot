@@ -2,14 +2,10 @@ import Instrument from './Instrument';
 import Furniture from './Furniture';
 import Consumable from './Consumable';
 import Person from './Person';
-import { PersonType } from './Person';
+import PersonType from '../enums/PersonType';
 
 export default class Admin extends Person {
 	// Public
-	constructor(fullName: string, username: string) {
-		super(fullName, username, PersonType.ADMIN);
-	}
-
 	public static confirmRemovingInstrument(username: string, instruments: Map<number, number>): void {
 		//...
 	}

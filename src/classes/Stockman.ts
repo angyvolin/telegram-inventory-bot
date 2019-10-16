@@ -1,12 +1,7 @@
 import Person from './Person';
-import { PersonType } from './Person';
+import PersonType from '../enums/PersonType';
 
 export default class Stockman extends Person {
-	// Public
-	constructor(fullName: string, username: string) {
-		super(fullName, username, PersonType.STOCKMAN);
-	}
-
 	/**
 	 * Confirm getting
 	 * @desc (Для каждой из трех функций ниже)

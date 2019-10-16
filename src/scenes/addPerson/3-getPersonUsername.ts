@@ -1,5 +1,5 @@
 import AdminMessage from '../../controllers/admin';
-import {addPerson} from '../../helpers/persons';
+import { addPerson } from '../../helpers/persons';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');

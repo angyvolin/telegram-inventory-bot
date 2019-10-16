@@ -1,12 +1,8 @@
 import Person from './Person';
-import { PersonType } from './Person';
+import PersonType from '../enums/PersonType';
 
 export default class Chief extends Person {
 	// Public
-	constructor(fullName: string, username: string) {
-		super(fullName, username, PersonType.CHIEF);
-	}
-
 	/**
 	 * @desc Get all items in the stock
 	 */

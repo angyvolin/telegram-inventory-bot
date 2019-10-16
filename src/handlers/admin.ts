@@ -3,7 +3,7 @@ import AdminMessage from '../controllers/admin';
 import AdminsHelpMessage from '../controllers/adminHelp';
 import AdminsListMessage from '../controllers/adminsList';
 import StatsMessage from '../controllers/stats';
-import {isAdmin} from '../helpers/functions';
+import { isAdmin } from '../helpers/functions';
 
 export default class AdminHandlers {
 	public static init(bot: api.Telegraf<api.ContextMessageUpdate>) {

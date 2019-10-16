@@ -1,12 +1,7 @@
 import Person from './Person';
-import { PersonType } from './Person';
+import PersonType from '../enums/PersonType';
 
 export default class Supplier extends Person {
-	// Public
-	constructor(fullName: string, username: string) {
-		super(fullName, username, PersonType.SUPPLIER);
-	}
-
 	/**
 	 * @param {string} purchase - text with items to
 	 * buy (with their prices and amount)

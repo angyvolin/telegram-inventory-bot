@@ -16,15 +16,13 @@ getItemPhoto.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 getItemPhoto.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([
-		Markup.callbackButton('⏪ Назад', 'back')
-	]).extra();
+	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
 
 	await ctx.replyWithMarkdown('Отправьте фотографию', keyboard);
 });
 
 getItemPhoto.on('message', async (ctx: any) => {
-	const {photo} = ctx.message;
+	const { photo } = ctx.message;
 	const fileId = (await photo[photo.length - 1]).file_id;
 
 	ctx.session.addItem.photoId = fileId;

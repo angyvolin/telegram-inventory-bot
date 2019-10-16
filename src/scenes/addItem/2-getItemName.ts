@@ -16,9 +16,7 @@ getItemName.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 getItemName.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([
-		Markup.callbackButton('⏪ Назад', 'back')
-	]).extra();
+	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
 
 	await ctx.replyWithMarkdown('Введите название', keyboard);
 });

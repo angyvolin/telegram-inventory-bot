@@ -1,4 +1,4 @@
-import {PersonType} from '../../classes/Person';
+import PersonType from '../../enums/PersonType';
 import AdminMessage from '../../controllers/admin';
 
 const Scene = require('telegraf/scenes/base');

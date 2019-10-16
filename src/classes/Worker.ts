@@ -1,12 +1,7 @@
 import Person from './Person';
-import { PersonType } from './Person';
+import PersonType from '../enums/PersonType';
 
 export default class Worker extends Person {
-	// Public
-	constructor(fullName: string, username: string) {
-		super(fullName, username, PersonType.WORKER);
-	}
-
 	/*
 	 * Request getting
 	 */

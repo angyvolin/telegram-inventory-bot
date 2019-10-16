@@ -1,7 +1,7 @@
 import * as api from 'telegraf';
 import AdminMessage from '../controllers/admin';
 import KeyboardMessage from '../controllers/keyboards';
-import { PersonType } from '../classes/Person';
+import PersonType from '../enums/PersonType';
 import { getPersonType } from '../helpers/persons';
 import { isAdmin } from '../helpers/functions';
 

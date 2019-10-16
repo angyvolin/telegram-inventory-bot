@@ -1,6 +1,6 @@
 import * as api from 'telegraf';
 import Logger from '../init/logger';
-import { PersonType } from '../classes/Person';
+import PersonType from '../enums/PersonType';
 import Person, { IPerson } from '../models/person';
 import Instrument, { IInstrument } from '../models/instrument';
 import Furniture, { IFurniture } from '../models/furniture';
