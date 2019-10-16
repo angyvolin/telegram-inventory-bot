@@ -12,7 +12,7 @@ import Consumable, { IConsumable } from '../models/consumables';
  * @returns { Promise<IPerson> }
  */
 export async function getPerson(username: string): Promise<IPerson> {
-	return await Person.findOne({ username });
+	return Person.findOne({username});
 }
 
 /**
