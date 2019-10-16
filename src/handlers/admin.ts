@@ -3,7 +3,7 @@ import AdminMessage from '../controllers/admin';
 import AdminsHelpMessage from '../controllers/adminHelp';
 import AdminsListMessage from '../controllers/adminsList';
 import StatsMessage from '../controllers/stats';
-import { isAdmin } from '../helpers/functions';
+import {isAdmin} from '../helpers/functions';
 
 export default class AdminHandlers {
 	public static init(bot: api.Telegraf<api.ContextMessageUpdate>) {
@@ -28,10 +28,17 @@ export default class AdminHandlers {
 			}
 		});
 
+		// Обработчик для "Добавить объект"
+		bot.hears('Добавить объект ➕', async (ctx: any) => {
+			if (await isAdmin(ctx.from.id)) {
+				await ctx.scene.enter('addItem/getItemType');
+			}
+		});
+
 		// Обработчик для "Добавить роль"
 		bot.hears('Добавить роль 🤵', async (ctx: any) => {
 			if (await isAdmin(ctx.from.id)) {
-				await ctx.scene.enter('addPerson1');
+				await ctx.scene.enter('addPerson/getPersonRole');
 			}
 		});
 

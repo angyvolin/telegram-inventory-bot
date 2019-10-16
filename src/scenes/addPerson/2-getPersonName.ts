@@ -6,33 +6,33 @@ const Markup = require('telegraf/markup');
 /**
  * Сцена добавления сотрудника
  */
-const addPerson2 = new Scene('addPerson2');
+const getPersonName = new Scene('addPerson/getPersonName');
 
-addPerson2.command('start', async (ctx: any) => {
+getPersonName.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
 	await AdminMessage.send(ctx);
 	ctx.session = {};
 });
 
 // Точка входа в сцену
-addPerson2.enter(async (ctx: any) => {
+getPersonName.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('Назад', 'back')]).extra();
 	await ctx.replyWithMarkdown('Введите ФИО сотрудника', keyboard);
 });
 
-addPerson2.on('text', async (ctx: any) => {
-	ctx.session.fullName = ctx.message.text;
+getPersonName.on('text', async (ctx: any) => {
+	ctx.session.addPerson.fullName = ctx.message.text;
 	await ctx.scene.leave();
-	await ctx.scene.enter('addPerson3');
+	await ctx.scene.enter('addPerson/getPersonUsername');
 });
 
-addPerson2.on('callback_query', async (ctx: any) => {
+getPersonName.on('callback_query', async (ctx: any) => {
 	switch (ctx.callbackQuery.data) {
 		case 'back': {
 			await ctx.scene.leave();
-			return await AdminMessage.send(ctx);
+			await ctx.scene.enter('addPerson/getPersonRole');
 		}
 	}
 });
 
-export default addPerson2;
+export default getPersonName;
