@@ -28,7 +28,7 @@ getItemPhoto.on('message', async (ctx: any) => {
 	const fileId = (await photo[photo.length - 1]).file_id;
 	ctx.session.addItem.itemPhotoId = fileId;
 
-	const {itemType, itemName, itemPhotoId} = ctx.session.addItem;
+	const { itemType, itemName, itemPhotoId } = ctx.session.addItem;
 
 	switch (itemType) {
 		case ItemType.INSTRUMENT:

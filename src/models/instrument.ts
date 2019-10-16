@@ -11,7 +11,7 @@ export interface IInstrument extends Document {
 export const InstrumentSchema: Schema = new Schema(
 	{
 		id: { type: Number, required: true, unique: true },
-		photo: {type: String},
+		photo: { type: String },
 		name: { type: String, required: true },
 		amount: { type: Number, required: true }
 	},

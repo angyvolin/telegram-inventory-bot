@@ -18,7 +18,7 @@ export default class Consumable {
 		return consumable ? consumable.id : null;
 	}
 
-	public static async getPhoto(id: number): Promise<Buffer> {
+	public static async getPhoto(id: number): Promise<string> {
 		const consumable = await ConsumableModel.findOne({ id });
 		return consumable ? consumable.photo : null;
 	}

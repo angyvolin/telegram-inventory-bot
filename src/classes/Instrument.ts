@@ -19,7 +19,7 @@ export default class Instrument {
 		return instrument ? instrument.id : null;
 	}
 
-	public static async getPhoto(id: number): Promise<Buffer> {
+	public static async getPhoto(id: number): Promise<string> {
 		const instrument = await InstrumentModel.findOne({ id });
 		return instrument ? instrument.photo : null;
 	}

@@ -19,7 +19,7 @@ export default class Furniture {
 		return furniture ? furniture.id : null;
 	}
 
-	public static async getPhoto(id: number): Promise<Buffer> {
+	public static async getPhoto(id: number): Promise<string> {
 		const furniture = await FurnitureModel.findOne({ id });
 		return furniture ? furniture.photo : null;
 	}
