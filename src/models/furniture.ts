@@ -2,16 +2,16 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IFurniture extends Document {
 	id: number;
-	photo?: string;
+	photo?: Buffer;
 	name: string;
-	amount: string;
+	amount: number;
 }
 
 // Схема инструмента
 export const FurnitureSchema: Schema = new Schema(
 	{
 		id: { type: Number, required: true, unique: true },
-		photo: { type: String },
+		photo: { type: Buffer },
 		name: { type: String, required: true },
 		amount: { type: Number, required: true }
 	},

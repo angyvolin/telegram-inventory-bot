@@ -2,9 +2,9 @@ import * as api from 'telegraf';
 import Logger from '../init/logger';
 import { PersonType } from '../classes/Person';
 import Person, { IPerson } from '../models/person';
-import Instrument, { IInstrument } from '../models/instruments';
+import Instrument, { IInstrument } from '../models/instrument';
 import Furniture, { IFurniture } from '../models/furniture';
-import Consumable, { IConsumable } from '../models/consumables';
+import Consumable, { IConsumable } from '../models/consumable';
 
 /**
  * Возвращает персону (имеющею
@@ -12,7 +12,7 @@ import Consumable, { IConsumable } from '../models/consumables';
  * @returns { Promise<IPerson> }
  */
 export async function getPerson(username: string): Promise<IPerson> {
-	return Person.findOne({username});
+	return Person.findOne({ username });
 }
 
 /**
