@@ -1,4 +1,4 @@
-import ConsumableModel from '../models/consumable';
+import ConsumableModel, { IConsumable } from '../models/consumable';
 
 export default class Consumable {
 	public static async add(name: string, photoId?: string) {
@@ -10,7 +10,17 @@ export default class Consumable {
 
 		await consumable.save();
 	}
+
 	// Getters
+	public static async getAllItems(filter = {}): Promise<IConsumable[]> {
+		return ConsumableModel.find(filter);
+	}
+
+	public static async getItem(name: string): Promise<IConsumable> {
+		const consumable = await ConsumableModel.findOne({name});
+		return consumable ? consumable : null;
+	}
+
 	public static async getId(name: string): Promise<number> {
 		const consumable = await ConsumableModel.findOne({ name });
 		return consumable ? consumable.id : null;

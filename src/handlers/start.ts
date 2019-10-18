@@ -1,11 +1,10 @@
 import * as api from 'telegraf';
 import AdminMessage from '../controllers/admin';
 import KeyboardMessage from '../controllers/keyboards';
-import PersonType from '../enums/PersonType';
 import { getPersonType } from '../helpers/persons';
 import { isAdmin } from '../helpers/functions';
 
-export default class Start {
+export default class StartHandlers {
 	public static init(bot: api.Telegraf<api.ContextMessageUpdate>) {
 		bot.start(async (ctx: api.ContextMessageUpdate) => {
 			if (await isAdmin(ctx.from.id)) {

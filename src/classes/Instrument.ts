@@ -1,4 +1,4 @@
-import InstrumentModel from '../models/instrument';
+import InstrumentModel, { IInstrument } from '../models/instrument';
 
 export default class Instrument {
 	public static async add(name: string, photoId?: string) {
@@ -12,6 +12,15 @@ export default class Instrument {
 	}
 
 	// Getters
+	public static async getAllItems(filter = {}): Promise<IInstrument[]> {
+		return InstrumentModel.find(filter);
+	}
+
+	public static async getItem(name: string): Promise<IInstrument> {
+		const instrument = await InstrumentModel.findOne({name});
+		return instrument ? instrument : null;
+	}
+
 	public static async getId(name: string): Promise<number> {
 		const instrument = await InstrumentModel.findOne({ name });
 		return instrument ? instrument.id : null;

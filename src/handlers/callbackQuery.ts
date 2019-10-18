@@ -3,7 +3,7 @@ import AdminMessage from '../controllers/admin';
 import { dismissAdmin, isAdmin } from '../helpers/functions';
 import Logger from '../init/logger';
 
-export default class CallbackQuery {
+export default class CallbackQueryHandlers {
 	public static init(bot: any) {
 		// Обработчик callback запроса на устранение админа
 		bot.action(/^dismiss>[0-9]+$/, async (ctx: api.ContextMessageUpdate) => {
