@@ -16,14 +16,14 @@ export default class Consumable {
 		return ConsumableModel.find(filter);
 	}
 
-	public static async getItem(name: string): Promise<IConsumable> {
-		const consumable = await ConsumableModel.findOne({name});
-		return consumable ? consumable : null;
-	}
-
 	public static async getId(name: string): Promise<number> {
 		const consumable = await ConsumableModel.findOne({ name });
 		return consumable ? consumable.id : null;
+	}
+
+	public static async getItem(id: string): Promise<IConsumable> {
+		const consumable = await ConsumableModel.findById(id);
+		return consumable ? consumable : null;
 	}
 
 	public static async getPhoto(id: number): Promise<string> {

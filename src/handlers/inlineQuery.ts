@@ -1,26 +1,53 @@
 import Instrument from '../classes/Instrument';
 import Furniture from '../classes/Furniture';
 import Consumable from '../classes/Consumable';
+import ItemType from '../enums/ItemType';
+import { getItem } from '../helpers/items';
 
 export default class InlineQueryHandlers {
 	public static init(bot: any) {
-		bot.inlineQuery('i', async ctx => {
+		bot.inlineQuery('i', async (ctx) => {
 			const items = await Instrument.getAllItems();
 			await sendResults(ctx, items);
 		});
 
-		bot.inlineQuery('f', async ctx => {
+		bot.inlineQuery('f', async (ctx) => {
 			const items = await Furniture.getAllItems();
 			await sendResults(ctx, items);
 		});
 
-		bot.inlineQuery('c', async ctx => {
+		bot.inlineQuery('c', async (ctx) => {
 			const items = await Consumable.getAllItems();
 			await sendResults(ctx, items);
 		});
 
-		bot.on('chosen_inline_result', async ctx => {
-			await ctx.telegram.sendMessage(ctx.from.id, 'Yeaaahhhhh');
+		bot.on('chosen_inline_result', async (ctx) => {
+			/*
+			 * ctx.update.chosen_inline_result - { from, query, result_id }
+			 * query = i / f / c -> тип выбранной позиции
+			 * result_id -> id выбранной позиции
+			 */
+			let type;
+			switch (ctx.update.chosen_inline_result.query) {
+				case 'i': {
+					type = ItemType.INSTRUMENT;
+					break;
+				}
+				case 'f': {
+					type = ItemType.FURNITURE;
+					break;
+				}
+				case 'c': {
+					type = ItemType.CONSUMABLE;
+					break;
+				}
+			}
+			const id = ctx.update.chosen_inline_result.result_id;
+			const item = await getItem(type, id);
+
+			// Ответ на запрос
+			const message = item ? item.name : 'Не найдено!';
+			await ctx.telegram.sendMessage(ctx.from.id, message);
 		});
 
 		const sendResults = async (ctx, items) => {

@@ -16,14 +16,14 @@ export default class Furniture {
 		return FurnitureModel.find(filter);
 	}
 
-	public static async getItem(name: string): Promise<IFurniture> {
-		const furniture = await FurnitureModel.findOne({name});
-		return furniture ? furniture : null;
-	}
-
 	public static async getId(name: string): Promise<number> {
 		const furniture = await FurnitureModel.findOne({ name });
 		return furniture ? furniture.id : null;
+	}
+
+	public static async getItem(id: string): Promise<IFurniture> {
+		const furniture = await FurnitureModel.findById(id);
+		return furniture ? furniture : null;
 	}
 
 	public static async getPhoto(id: number): Promise<string> {

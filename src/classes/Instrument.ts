@@ -16,14 +16,14 @@ export default class Instrument {
 		return InstrumentModel.find(filter);
 	}
 
-	public static async getItem(name: string): Promise<IInstrument> {
-		const instrument = await InstrumentModel.findOne({name});
-		return instrument ? instrument : null;
-	}
-
 	public static async getId(name: string): Promise<number> {
 		const instrument = await InstrumentModel.findOne({ name });
 		return instrument ? instrument.id : null;
+	}
+
+	public static async getItem(id: string): Promise<IInstrument> {
+		const instrument = await InstrumentModel.findById(id);
+		return instrument ? instrument : null;
 	}
 
 	public static async getPhoto(id: number): Promise<string> {

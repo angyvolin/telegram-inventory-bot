@@ -1,8 +1,9 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IGetting extends Document {
-	type: number;
-	items: Map<string, number>;
+	instruments: Map<string, number>;
+	furniture: Map<string, number>;
+	consumables: Map<string, number>;
 	created: Date;
 	expires?: Date;
 }
@@ -10,8 +11,9 @@ export interface IGetting extends Document {
 // Схема получения
 export const GettingSchema: Schema = new Schema(
 	{
-		type: { type: Number, required: true },
-		items: { type: Map, required: true },
+		instruments: { type: Map, required: true },
+		furniture: { type: Map, required: true },
+		consumables: { type: Map, required: true },
 		created: { type: Date, required: true, default: Date.now },
 		expires: { type: Date }
 	},
