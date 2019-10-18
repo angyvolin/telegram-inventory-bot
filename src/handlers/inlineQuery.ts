@@ -4,6 +4,8 @@ import Consumable from '../classes/Consumable';
 import ItemType from '../enums/ItemType';
 import { getItem } from '../helpers/items';
 
+const Markup = require('telegraf/markup');
+
 export default class InlineQueryHandlers {
 	public static init(bot: any) {
 		bot.inlineQuery('i', async (ctx) => {
@@ -46,8 +48,43 @@ export default class InlineQueryHandlers {
 			const item = await getItem(type, id);
 
 			// Ответ на запрос
-			const message = item ? item.name : 'Не найдено!';
-			await ctx.telegram.sendMessage(ctx.from.id, message);
+			if (!item) {
+				return ctx.telegram.sendMessage(ctx.from.id, 'Ошибка на сервере! Позиция не была найдена');
+			}
+			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('-', 'reduce'), Markup.callbackButton('+', 'increase')], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', 'accept')]]).extra();
+			const message = `Название: *${item.name}*\nВ наличии: *${item.amount}*\nКоличество: *0*`;
+			const options = {
+				parse_mode: 'Markdown',
+				reply_markup: {
+					inline_keyboard: [
+						[
+							{
+								text: '-',
+								callback_data: 'reduce'
+							},
+							{
+								text: '+',
+								callback_data: 'increase'
+							}
+						],
+						[
+							{
+								text: '⏪ Назад',
+								callback_data: 'back'
+							},
+							{
+								text: '✅ Подтвердить',
+								callback_data: 'accept'
+							}
+						]
+					]
+				},
+				caption: message
+			};
+			if (item.photo) {
+				return ctx.telegram.sendPhoto(ctx.from.id, item.photo, options);
+			}
+			await ctx.telegram.sendMessage(ctx.from.id, message, options);
 		});
 
 		const sendResults = async (ctx, items) => {
