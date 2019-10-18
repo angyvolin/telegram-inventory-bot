@@ -18,12 +18,18 @@ getItemPhoto.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 getItemPhoto.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
+	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('Пропустить', 'skip')]).extra();
 
 	await ctx.replyWithMarkdown('Отправьте фотографию', keyboard);
 });
 
-getItemPhoto.on('message', async (ctx: any) => {
+getItemPhoto.on('document', async (ctx: any) => {
+	await ctx.reply('Пожалуйста, отправьте вложение фотографией (вы отправили файлом)');
+});
+
+getItemPhoto.on('photo', async (ctx: any) => {
+	await ctx.scene.leave();
+
 	const { photo } = ctx.message;
 	const fileId = (await photo[photo.length - 1]).file_id;
 	ctx.session.addItem.itemPhotoId = fileId;
@@ -44,13 +50,32 @@ getItemPhoto.on('message', async (ctx: any) => {
 			await ctx.reply('Расходники успешно добавлены');
 			break;
 	}
-
-	await ctx.scene.leave();
 });
 
 getItemPhoto.action('back', async (ctx: any) => {
 	await ctx.scene.leave();
 	await ctx.scene.enter('addItem/getItemName');
+});
+
+getItemPhoto.action('skip', async (ctx: any) => {
+	await ctx.scene.leave();
+
+	const { itemType, itemName } = ctx.session.addItem;
+
+	switch (itemType) {
+		case ItemType.INSTRUMENT:
+			await Admin.addInstrument(itemName);
+			await ctx.reply('Инструмент успешно добавлен');
+			break;
+		case ItemType.FURNITURE:
+			await Admin.addFurniture(itemName);
+			await ctx.reply('Фурнитура успешно добавлена');
+			break;
+		case ItemType.CONSUMABLE:
+			await Admin.addConsumable(itemName);
+			await ctx.reply('Расходники успешно добавлены');
+			break;
+	}
 });
 
 export default getItemPhoto;

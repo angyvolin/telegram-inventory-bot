@@ -2,15 +2,13 @@ import FurnitureModel from '../models/furniture';
 
 export default class Furniture {
 	public static async add(name: string, photoId?: string) {
-		const insertDoc = {
+		const furniture = new FurnitureModel({
 			name,
+			amount: 0,
 			photo: photoId ? photoId : null
-		};
-
-		await FurnitureModel.findOneAndUpdate({ name }, insertDoc, {
-			upsert: true,
-			new: true
 		});
+
+		await furniture.save();
 	}
 
 	// Getters

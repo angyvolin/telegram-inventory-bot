@@ -2,15 +2,13 @@ import InstrumentModel from '../models/instrument';
 
 export default class Instrument {
 	public static async add(name: string, photoId?: string) {
-		const insertDoc = {
+		const instrument = new InstrumentModel({
 			name,
+			amount: 0,
 			photo: photoId ? photoId : null
-		};
-
-		await InstrumentModel.findOneAndUpdate({ name }, insertDoc, {
-			upsert: true,
-			new: true
 		});
+
+		await instrument.save();
 	}
 
 	// Getters
