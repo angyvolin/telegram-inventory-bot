@@ -17,16 +17,7 @@ requestGetting.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestGetting.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([
-		[
-			Markup.switchToCurrentChatButton('Инструменты', 'i'),
-			Markup.switchToCurrentChatButton('Фурнитура', 'f')
-		],
-		[
-			Markup.switchToCurrentChatButton('Расходники', 'c'),
-			Markup.callbackButton('Назад', 'back')
-		]
-	]).extra();
+	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')], [Markup.switchToCurrentChatButton('Расходники', 'c'), Markup.callbackButton('Назад', 'back')]]).extra();
 	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите получить', keyboard);
 });
 
@@ -39,7 +30,7 @@ requestGetting.action(/^accept>/, async (ctx: any) => {
 	const type = +ctx.callbackQuery.data.split('>')[1];
 	const id = ctx.callbackQuery.data.split('>')[2];
 	const amount = ctx.callbackQuery.data.split('>')[3];
-	
+
 	console.log(type, id, amount);
 
 	await ctx.scene.leave();

@@ -4,9 +4,6 @@ import Logger from './logger';
 import gsend from '../scenes/gsend/gsend';
 import addAdmins from '../scenes/addAdmins/addAdmins';
 import requestGetting from '../scenes/worker/requestGetting';
-import requestGettingInstrument from '../scenes/worker/requestGettingInstrument';
-import requestGettingFurniture from '../scenes/worker/requestGettingFurniture';
-import requestGettingConsumable from '../scenes/worker/requestGettingConsumable';
 import requestRemoveInstrument from '../scenes/worker/requestRemoveInstrument';
 import requestReturn from '../scenes/worker/requestReturn';
 import requestReturnInstrument from '../scenes/worker/requestReturnInstrument';
@@ -39,9 +36,6 @@ export default class Scenes {
 			stage.register(getPersonUsername);
 
 			stage.register(requestGetting); // Сцена запроса на получение
-			stage.register(requestGettingInstrument); // Сцена запроса на получение инструментов
-			stage.register(requestGettingFurniture); // Сцена запроса на получение фурнитуры
-			stage.register(requestGettingConsumable); // Сцена запроса на получение расходников
 			stage.register(requestRemoveInstrument); // Сцена запроса на списание инструментов
 			stage.register(requestReturn); // Сцена запроса на возврат
 			stage.register(requestReturnInstrument); // Сцена запроса на возврат инструментов
