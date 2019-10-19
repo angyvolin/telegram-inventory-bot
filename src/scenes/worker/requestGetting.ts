@@ -17,7 +17,7 @@ requestGetting.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestGetting.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')], [Markup.switchToCurrentChatButton('Расходники', 'c'), Markup.callbackButton('Назад', 'back')]]).extra();
+	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')], [Markup.callbackButton('⏪ Назад', 'back'), Markup.switchToCurrentChatButton('Расходники', 'c')]]).extra();
 	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите получить', keyboard);
 });
 
