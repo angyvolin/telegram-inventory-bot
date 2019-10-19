@@ -23,6 +23,7 @@ getPersonRole.enter(async (ctx: any) => {
 });
 
 getPersonRole.on('callback_query', async (ctx: any) => {
+	await ctx.answerCbQuery();
 	switch (ctx.callbackQuery.data) {
 		case 'worker': {
 			ctx.session.addPerson.role = PersonType.WORKER;

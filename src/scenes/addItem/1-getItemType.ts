@@ -25,21 +25,25 @@ getItemType.enter(async (ctx: any) => {
 });
 
 getItemType.action('instrument', async (ctx: any) => {
+	await ctx.answerCbQuery();
 	ctx.session.addItem.itemType = ItemType.INSTRUMENT;
 	await nextStep(ctx);
 });
 
 getItemType.action('furniture', async (ctx: any) => {
+	await ctx.answerCbQuery();
 	ctx.session.addItem.itemType = ItemType.FURNITURE;
 	await nextStep(ctx);
 });
 
 getItemType.action('consumables', async (ctx: any) => {
+	await ctx.answerCbQuery();
 	ctx.session.addItem.itemType = ItemType.CONSUMABLE;
 	await nextStep(ctx);
 });
 
 getItemType.action('back', async (ctx: any) => {
+	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	return AdminMessage.send(ctx);
 });

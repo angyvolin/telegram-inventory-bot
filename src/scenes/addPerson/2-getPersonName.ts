@@ -27,6 +27,7 @@ getPersonName.on('text', async (ctx: any) => {
 });
 
 getPersonName.on('callback_query', async (ctx: any) => {
+	await ctx.answerCbQuery();
 	switch (ctx.callbackQuery.data) {
 		case 'back': {
 			await ctx.scene.leave();

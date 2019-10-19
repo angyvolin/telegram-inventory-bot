@@ -23,6 +23,7 @@ requestReturnFurniture.enter(async (ctx: any) => {
 });
 
 requestReturnFurniture.on('callback_query', async (ctx: any) => {
+	await ctx.answerCbQuery();
 	switch (ctx.callbackQuery.data) {
 		case 'back': {
 			await ctx.scene.leave();

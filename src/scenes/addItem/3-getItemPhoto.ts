@@ -53,11 +53,13 @@ getItemPhoto.on('photo', async (ctx: any) => {
 });
 
 getItemPhoto.action('back', async (ctx: any) => {
+	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	await ctx.scene.enter('addItem/getItemName');
 });
 
 getItemPhoto.action('skip', async (ctx: any) => {
+	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 
 	const { itemType, itemName } = ctx.session.addItem;

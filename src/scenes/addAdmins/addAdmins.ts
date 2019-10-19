@@ -1,6 +1,5 @@
 import Logger from '../../init/logger';
 import AdminMessage from '../../controllers/admin';
-import PersonType from '../../enums/PersonType';
 import { addAdmin } from '../../helpers/functions';
 
 const Scene = require('telegraf/scenes/base');
@@ -48,6 +47,7 @@ addAdmins.on('message', async (ctx: any) => {
 addAdmins.on('callback_query', async (ctx: any) => {
 	switch (ctx.callbackQuery.data) {
 		case 'back': {
+			await ctx.answerCbQuery();
 			await ctx.scene.leave();
 			await AdminMessage.send(ctx);
 			break;

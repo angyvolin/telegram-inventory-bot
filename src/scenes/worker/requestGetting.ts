@@ -22,6 +22,7 @@ requestGetting.enter(async (ctx: any) => {
 });
 
 requestGetting.on('callback_query', async (ctx: any) => {
+	await ctx.answerCbQuery();
 	switch (ctx.callbackQuery.data) {
 		case 'instrument': {
 			await ctx.scene.leave();
