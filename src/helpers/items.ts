@@ -9,13 +9,10 @@ import { IConsumable } from '../models/consumable';
 export async function getItem(type: ItemType, id: string): Promise<IInstrument | IFurniture | IConsumable> {
 	switch (type) {
 		case ItemType.INSTRUMENT:
-		case 0:
 			return Instrument.getItem(id);
 		case ItemType.FURNITURE:
-		case 1:
 			return Furniture.getItem(id);
 		case ItemType.CONSUMABLE:
-		case 2:
 			return Consumable.getItem(id);
 	}
 }
