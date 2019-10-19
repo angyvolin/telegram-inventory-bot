@@ -36,7 +36,7 @@ export default class CallbackQueryHandlers {
 				await ctx.editMessageReplyMarkup(keyboard);
 				await ctx.answerCbQuery();
 			} else {
-				// await ctx.answerCbQuery(`На складе всего ${item.amount} позиций`, true);
+				await ctx.answerCbQuery(`На складе всего ${item.amount} позиций`, false);
 			}
 		});
 
@@ -52,7 +52,7 @@ export default class CallbackQueryHandlers {
 				await ctx.editMessageReplyMarkup(keyboard);
 				await ctx.answerCbQuery();
 			} else {
-				// await ctx.answerCbQuery(`Значение должно быть больше нуля`, true);
+				await ctx.answerCbQuery(`Значение должно быть больше нуля`, false);
 			}
 		});
 

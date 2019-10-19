@@ -3,33 +3,40 @@ import PersonType from '../enums/PersonType';
 import { getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
 
+const Markup = require('telegraf/markup');
+
 type ItemRequested = { type: PersonType; id: string; amount: number };
 
 export default class Worker extends Person {
-	// Private
-	private static getGettingMessage(username: string, items: ItemRequested[]): string {
-		let message = 'Пользователь @${username} хочет получить следующие инструменты:\n';
-		items.forEach((item) => {
-			const { id, amount } = item;
-			message += `${id} -> ${amount} шт.\n`;
-		});
-		return message;
-	}
-
-	// Public
 	/*
 	 * Request getting
 	 */
 	public static async requestGetting(ctx: any, chatId: number, username: string, items: ItemRequested[]): Promise<void> {
 		const stockmans = await getStockmans();
 		const message = Worker.getGettingMessage(username, items);
-		stockmans.forEach(async (stockman) => {
+		for (let stockman of stockmans) {
 			const id = await getChatId(stockman.username);
-			if (!id) {
-				return;
-			}
-			await ctx.telegram.sendMessage(id, message);
+			if (!id) continue;
+
+			const keyboard = Markup.inlineKeyboard([
+				Markup.callbackButton('❌ Отклонить', 'declineRequest'),
+				Markup.callbackButton('✅ Подтвердить', 'approveRequest')
+			]).extra();
+
+			await ctx.telegram.sendMessage(id, message, keyboard);
+		}
+	}
+
+	// Public
+
+	// Private
+	private static getGettingMessage(username: string, items: ItemRequested[]): string {
+		let message = `Пользователь @${username} хочет получить следующие инструменты:\n`;
+		items.forEach((item) => {
+			const {id, amount} = item;
+			message += `${id} -> ${amount} шт.\n`;
 		});
+		return message;
 	}
 
 	/*
