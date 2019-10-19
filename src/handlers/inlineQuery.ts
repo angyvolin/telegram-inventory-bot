@@ -51,34 +51,21 @@ export default class InlineQueryHandlers {
 			if (!item) {
 				return ctx.telegram.sendMessage(ctx.from.id, 'Ошибка на сервере! Позиция не была найдена');
 			}
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('-', 'reduce'), Markup.callbackButton('+', 'increase')], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', 'accept')]]).extra();
-			const message = `Название: *${item.name}*\nВ наличии: *${item.amount}*\nКоличество: *0*`;
+			const keyboard = Markup.inlineKeyboard([
+				[
+					Markup.callbackButton('➖', `reduce>${type}>${id}`),
+					Markup.callbackButton('0', 'itemAmount'),
+					Markup.callbackButton('➕', `increase>${type}>${id}`)
+				],
+				[
+					Markup.callbackButton('⏪ Назад', 'back'),
+					Markup.callbackButton('✅ Подтвердить', 'accept')
+				]
+			]);
+			const message = `Название: *${item.name}*\nВ наличии: *${item.amount}*`;
 			const options = {
 				parse_mode: 'Markdown',
-				reply_markup: {
-					inline_keyboard: [
-						[
-							{
-								text: '-',
-								callback_data: 'reduce'
-							},
-							{
-								text: '+',
-								callback_data: 'increase'
-							}
-						],
-						[
-							{
-								text: '⏪ Назад',
-								callback_data: 'back'
-							},
-							{
-								text: '✅ Подтвердить',
-								callback_data: 'accept'
-							}
-						]
-					]
-				},
+				reply_markup: keyboard,
 				caption: message
 			};
 			if (item.photo) {
