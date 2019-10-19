@@ -21,16 +21,20 @@ requestGetting.enter(async (ctx: any) => {
 	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите получить', keyboard);
 });
 
-requestGetting.on('callback_query', async (ctx: any) => {
-	await ctx.answerCbQuery();
-	switch (ctx.callbackQuery.data) {
-		/*
-		 *
-		 */
-		case 'back': {
-			return KeyboardMessage.send(ctx, PersonType.WORKER);
-		}
-	}
+requestGetting.action('back', async (ctx: any) => {
+	await ctx.scene.leave();
+	return KeyboardMessage.send(ctx, PersonType.WORKER);
+});
+
+requestGetting.action(/^accept>/, async (ctx: any) => {
+	const type = +ctx.callbackQuery.data.split('>')[1];
+	const id = ctx.callbackQuery.data.split('>')[2];
+	const amount = ctx.callbackQuery.data.split('>')[3];
+	
+	console.log(type, id, amount);
+
+	await ctx.scene.leave();
+	return KeyboardMessage.send(ctx, PersonType.WORKER);
 });
 
 export default requestGetting;
