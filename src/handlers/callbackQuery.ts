@@ -23,31 +23,20 @@ export default class CallbackQueryHandlers {
 			}
 		});
 
-		bot.action(/^increase>/, async ctx => {
+		bot.action(/^increase>/, async (ctx) => {
 			const type = +ctx.callbackQuery.data.split('>')[1];
 			const id = ctx.callbackQuery.data.split('>')[2];
 
+			const counter = parseInt(ctx.update.callback_query.message.reply_markup.inline_keyboard[0][1].text);
 			const item = await getItem(type, id);
 
-			if (item.amount > ctx.session.inlineResult.counter) {
-				ctx.session.inlineResult.counter++;
-
-				const keyboard = Markup.inlineKeyboard([
-					[
-						Markup.callbackButton('➖', `reduce>${type}>${id}`),
-						Markup.callbackButton(ctx.session.inlineResult.counter, 'itemAmount'),
-						Markup.callbackButton('➕', `increase>${type}>${id}`)
-					],
-					[
-						Markup.callbackButton('⏪ Назад', 'back'),
-						Markup.callbackButton('✅ Подтвердить', 'accept')
-					]
-				]);
+			if (item.amount > counter) {
+				const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}`), Markup.callbackButton(counter + 1, 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter + 1}`)]]);
 
 				await ctx.editMessageReplyMarkup(keyboard);
 				await ctx.answerCbQuery();
 			} else {
-				await ctx.answerCbQuery(`На складе всего ${item.amount} позиций`, true);
+				// await ctx.answerCbQuery(`На складе всего ${item.amount} позиций`, true);
 			}
 		});
 
@@ -55,29 +44,19 @@ export default class CallbackQueryHandlers {
 			const type = +ctx.callbackQuery.data.split('>')[1];
 			const id = ctx.callbackQuery.data.split('>')[2];
 
-			if (ctx.session.inlineResult.counter > 0) {
-				ctx.session.inlineResult.counter--;
+			const counter = parseInt(ctx.update.callback_query.message.reply_markup.inline_keyboard[0][1].text);
 
-				const keyboard = Markup.inlineKeyboard([
-					[
-						Markup.callbackButton('➖', `reduce>${type}>${id}`),
-						Markup.callbackButton(ctx.session.inlineResult.counter, 'itemAmount'),
-						Markup.callbackButton('➕', `increase>${type}>${id}`)
-					],
-					[
-						Markup.callbackButton('⏪ Назад', 'back'),
-						Markup.callbackButton('✅ Подтвердить', 'accept')
-					]
-				]);
+			if (counter > 1) {
+				const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}`), Markup.callbackButton(counter - 1, 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter - 1}`)]]);
 
 				await ctx.editMessageReplyMarkup(keyboard);
 				await ctx.answerCbQuery();
 			} else {
-				await ctx.answerCbQuery(`Значение должно быть больше нуля`, true);
+				// await ctx.answerCbQuery(`Значение должно быть больше нуля`, true);
 			}
 		});
 
-		bot.action('itemAmount', async ctx => {
+		bot.action('itemAmount', async (ctx) => {
 			await ctx.answerCbQuery();
 		});
 	}
