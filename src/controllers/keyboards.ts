@@ -25,15 +25,15 @@ export default class KeyboardMessage {
 	public static async send(ctx: api.ContextMessageUpdate, type: PersonType): Promise<void> {
 		switch (type) {
 			case PersonType.WORKER: {
-				await ctx.reply('Опции работника', this.worker);
+				await ctx.reply('Добро пожаловать, работник!', this.worker);
 				break;
 			}
 			case PersonType.SUPPLIER: {
-				await ctx.reply('Опции работника', this.supplier);
+				await ctx.reply('Добро пожаловать, поставщик!', this.supplier);
 				break;
 			}
 			case PersonType.CHIEF: {
-				await ctx.reply('Опции работника', this.chief);
+				await ctx.reply('Добро пожаловать, начальник!', this.chief);
 				break;
 			}
 		}

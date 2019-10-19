@@ -1,3 +1,4 @@
+import Worker from '../../classes/Worker';
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
 
@@ -17,6 +18,7 @@ requestGetting.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestGetting.enter(async (ctx: any) => {
+	ctx.session.items = [];
 	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')], [Markup.switchToCurrentChatButton('Расходники', 'c'), Markup.callbackButton('Назад', 'back')]]).extra();
 	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите получить', keyboard);
 });
@@ -29,9 +31,25 @@ requestGetting.action('back', async (ctx: any) => {
 requestGetting.action(/^accept>/, async (ctx: any) => {
 	const type = +ctx.callbackQuery.data.split('>')[1];
 	const id = ctx.callbackQuery.data.split('>')[2];
-	const amount = ctx.callbackQuery.data.split('>')[3];
+	const amount = +ctx.callbackQuery.data.split('>')[3];
+	const item = {
+		type,
+		id,
+		amount
+	};
+	ctx.session.items.push(item);
 
-	console.log(type, id, amount);
+	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Добавить еще', 'more'), Markup.callbackButton('Отправить запрос', 'finish')], [Markup.callbackButton('Назад', 'back')]]).extra();
+	await ctx.replyWithMarkdown('Желаете добавить еще позиции в запрос?', keyboard);
+});
+
+requestGetting.action('more', async (ctx: any) => {
+	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')], [Markup.switchToCurrentChatButton('Расходники', 'c'), Markup.callbackButton('Назад', 'back')]]).extra();
+	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите получить', keyboard);
+});
+
+requestGetting.action('finish', async (ctx: any) => {
+	await Worker.requestGetting(ctx, ctx.from.id, ctx.from.username, ctx.session.items);
 
 	await ctx.scene.leave();
 	return KeyboardMessage.send(ctx, PersonType.WORKER);

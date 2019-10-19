@@ -12,6 +12,22 @@ export async function getPerson(username: string): Promise<IPerson> {
 	return Person.findOne({ username });
 }
 
+export async function getWorkers(): Promise<IPerson[]> {
+	return Person.find({ type: PersonType.WORKER });
+}
+
+export async function getStockmans(): Promise<IPerson[]> {
+	return Person.find({ type: PersonType.STOCKMAN });
+}
+
+export async function getSuppliers(): Promise<IPerson[]> {
+	return Person.find({ type: PersonType.SUPPLIER });
+}
+
+export async function getChiefs(): Promise<IPerson[]> {
+	return Person.find({ type: PersonType.CHIEF });
+}
+
 /**
  * Возвращает роль персоны
  * @returns { Promise<PersonType> }

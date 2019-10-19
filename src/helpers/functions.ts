@@ -9,7 +9,7 @@ import User, { IUser } from '../models/user';
  * @returns { Promise<IUser[]> }
  */
 export async function getUsers(): Promise<IUser[]> {
-	return await User.find({});
+	return User.find({});
 }
 
 /**
@@ -19,7 +19,12 @@ export async function getUsers(): Promise<IUser[]> {
  * @returns { Promise<IUser[]> }
  */
 export async function getAdmins(): Promise<IUser[]> {
-	return await User.find({ isAdmin: true });
+	return User.find({ isAdmin: true });
+}
+
+export async function getChatId(username: string): Promise<number> {
+	const user = await User.findOne({ username });
+	return user ? user.chatId : null;
 }
 
 /**
