@@ -7,7 +7,7 @@ import { isAdmin } from '../helpers/functions';
 export default class StartHandlers {
 	public static init(bot: api.Telegraf<api.ContextMessageUpdate>) {
 		bot.start(async (ctx: any) => {
-			ctx.session.inlineResult = {counter: 0};
+			ctx.session.inlineResult = { counter: 0 };
 			if (await isAdmin(ctx.from.id)) {
 				// Админ
 				await AdminMessage.send(ctx);
