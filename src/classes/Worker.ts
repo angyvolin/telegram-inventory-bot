@@ -14,6 +14,7 @@ export default class Worker extends Person {
 	public static async requestGetting(ctx: any, chatId: number, username: string, items: ItemRequested[]): Promise<void> {
 		const stockmans = await getStockmans();
 		const message = Worker.getGettingMessage(username, items);
+
 		for (let stockman of stockmans) {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
