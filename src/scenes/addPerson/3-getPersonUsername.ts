@@ -22,7 +22,8 @@ getPersonUsername.enter(async (ctx: any) => {
 });
 
 getPersonUsername.on('text', async (ctx: any) => {
-	ctx.session.addPerson.username = ctx.message.text;
+	ctx.session.addPerson.username = ctx.message.text.replace('@', '');
+
 	await ctx.scene.leave();
 	await addPerson(ctx.session.addPerson.role, ctx.session.addPerson.username, ctx.session.addPerson.fullName);
 	await ctx.reply('Сотрудник был успешно добавлен!');
