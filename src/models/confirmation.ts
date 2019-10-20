@@ -6,11 +6,12 @@ export interface IConfirmation extends Document {
 		id: number;
 		chatId: number;
 	}[];
-	text: string;
+	text: string; // Текст сообщения для подтверждения
 	instruments?: Map<string, number>;
 	furniture?: Map<string, number>;
 	consumables?: Map<string, number>;
-	days?: number;
+	days?: number; // Количество дней (если требуется)
+	stockman?: number; // ChatId кладовщика (если требуется)
 }
 
 // Схема получения
@@ -22,7 +23,8 @@ export const ConfirmationSchema: Schema = new Schema(
 		instruments: { type: Map },
 		furniture: { type: Map },
 		consumables: { type: Map },
-		days: { type: Number }
+		days: { type: Number },
+		stockman: { type: Number }
 	},
 	{ collection: 'confirmations' }
 );

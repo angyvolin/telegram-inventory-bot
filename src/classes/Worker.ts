@@ -2,13 +2,12 @@ import Person from './Person';
 import ItemType from '../enums/ItemType';
 import Getting from '../models/getting';
 import Confirmation from '../models/confirmation';
+import { ItemRequested } from './Person';
 import { getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
 import { getItem } from '../helpers/items';
 
 const Markup = require('telegraf/markup');
-
-type ItemRequested = { type: ItemType; id: string; amount: number };
 
 export default class Worker extends Person {
 	// Private

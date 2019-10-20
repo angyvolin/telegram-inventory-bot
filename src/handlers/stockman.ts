@@ -46,6 +46,8 @@ export default class StockmanHandlers {
 					reply_markup: keyboard
 				};
 
+				confirmation.stockman = ctx.from.id;
+
 				await ctx.telegram.sendMessage(confirmation.chatId, text, options);
 			}
 		});

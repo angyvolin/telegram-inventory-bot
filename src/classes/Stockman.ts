@@ -2,23 +2,7 @@ import Person from './Person';
 import PersonType from '../enums/PersonType';
 
 export default class Stockman extends Person {
-	/**
-	 * Confirm getting
-	 * @desc (Для каждой из трех функций ниже)
-	 * После подтверждения отправляем уведомление Worker о
-	 * возможности получения с кнопкой, с помощью которой он
-	 * сможет подтвердить получение. По нажатию на эту кнопку
-	 * боту будет отправляться JSON с информацией о получении
-	 */
-	public static confirmGettingInstrument(username: string, instruments: Map<number, number>): void {
-		//...
-	}
-
-	public static confirmGettingFurniture(username: string, furniture: Map<number, number>): void {
-		//...
-	}
-
-	public static confirmGettingConsumable(username: string, consumables: Map<number, number>): void {
+	public static async confirmSupply(): Promise<void> {
 		//...
 	}
 
