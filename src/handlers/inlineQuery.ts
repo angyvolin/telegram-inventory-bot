@@ -51,17 +51,22 @@ export default class InlineQueryHandlers {
 			if (!item) {
 				return ctx.telegram.sendMessage(ctx.from.id, 'Ошибка на сервере! Позиция не была найдена');
 			}
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${item.amount}`), Markup.callbackButton('1', 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}>${item.amount}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)]]);
-			const message = `Название: *${item.name}*\nВ наличии: *${item.amount}*`;
-			const options = {
-				parse_mode: 'Markdown',
-				reply_markup: keyboard,
-				caption: message
-			};
-			if (item.photo) {
-				return ctx.telegram.sendPhoto(ctx.from.id, item.photo, options);
+			if (item.amount > 0) {
+				const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${item.amount}`), Markup.callbackButton('1', 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}>${item.amount}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)]]);
+				const message = `Название: *${item.name}*\nВ наличии: *${item.amount}*`;
+				const options = {
+					parse_mode: 'Markdown',
+					reply_markup: keyboard,
+					caption: message
+				};
+				if (item.photo) {
+					return ctx.telegram.sendPhoto(ctx.from.id, item.photo, options);
+				}
+				await ctx.telegram.sendMessage(ctx.from.id, message, options);
+			} else {
+				const message = 'Выбранной позиции сейчас нет на складе';
+				await ctx.telegram.sendMessage(ctx.from.id, message);
 			}
-			await ctx.telegram.sendMessage(ctx.from.id, message, options);
 		});
 
 		const sendResults = async (ctx, items) => {
