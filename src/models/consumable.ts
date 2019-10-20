@@ -6,7 +6,7 @@ export interface IConsumable extends Document {
 	amount: number;
 }
 
-// Схема инструмента
+// Схема расходника
 export const ConsumableSchema: Schema = new Schema(
 	{
 		photo: { type: String },

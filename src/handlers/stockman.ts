@@ -78,7 +78,7 @@ export default class StockmanHandlers {
 			const getting = new Getting(insertDoc);
 			await getting.save();
 
-			const text = ctx.update.callback_query.message.text + '\n✅ Подтверждено';
+			const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
 			await ctx.editMessageText(text);
 		});
 	}

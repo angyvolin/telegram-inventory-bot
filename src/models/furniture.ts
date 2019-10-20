@@ -6,7 +6,7 @@ export interface IFurniture extends Document {
 	amount: number;
 }
 
-// Схема инструмента
+// Схема фурнитуры
 export const FurnitureSchema: Schema = new Schema(
 	{
 		photo: { type: String },
