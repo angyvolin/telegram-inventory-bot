@@ -1,4 +1,5 @@
 import * as api from 'telegraf';
+import Worker from '../classes/Worker';
 import KeyboardMessage from '../controllers/keyboards';
 import PersonType from '../enums/PersonType';
 import { isWorker } from '../helpers/persons';
@@ -30,6 +31,10 @@ export default class WorkerHandlers {
 			if (await isWorker(ctx.from.username)) {
 				await ctx.scene.enter('worker/requestRemoveInstrument');
 			}
+		});
+
+		bot.action(/^confirmGetting>/, async (ctx: any) => {
+			await Worker.confirmGetting(ctx);
 		});
 	}
 }

@@ -1,6 +1,5 @@
 import * as api from 'telegraf';
 import Confirmation from '../models/confirmation';
-import Getting from '../models/getting';
 import PersonType from '../enums/PersonType';
 import KeyboardMessage from '../controllers/keyboards';
 import { isStockman } from '../helpers/persons';
@@ -16,7 +15,6 @@ export default class StockmanHandlers {
 		});
 
 		bot.action(/^declineRequest>/, async (ctx) => {
-			console.log('=> handler called');
 			await ctx.answerCbQuery();
 
 			if (await isStockman(ctx.from.username)) {
@@ -36,7 +34,6 @@ export default class StockmanHandlers {
 		});
 
 		bot.action(/^approveRequest>/, async (ctx) => {
-			console.log('=> handler called');
 			await ctx.answerCbQuery();
 
 			if (await isStockman(ctx.from.username)) {
@@ -59,27 +56,6 @@ export default class StockmanHandlers {
 
 				await ctx.telegram.sendMessage(confirmation.chatId, text, options);
 			}
-		});
-
-		bot.action(/^confirmGetting>/, async ctx => {
-			const id = ctx.callbackQuery.data.split('>')[1];
-			const confirmation = await Confirmation.findById(id);
-			await confirmation.remove();
-
-			let insertDoc: any = {
-				chatId: confirmation.chatId
-			};
-
-			if (confirmation.instruments) insertDoc.instruments = confirmation.instruments;
-			if (confirmation.furniture) insertDoc.furniture = confirmation.furniture;
-			if (confirmation.consumables) insertDoc.consumables = confirmation.consumables;
-			if (confirmation.days) insertDoc.expires = new Date(Date.now() + confirmation.days * 24 * 60 * 60 * 1000);
-
-			const getting = new Getting(insertDoc);
-			await getting.save();
-
-			const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
-			await ctx.editMessageText(text);
 		});
 	}
 }

@@ -1,5 +1,6 @@
 import Person from './Person';
 import ItemType from '../enums/ItemType';
+import Getting from '../models/getting';
 import Confirmation from '../models/confirmation';
 import { getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
@@ -10,6 +11,21 @@ const Markup = require('telegraf/markup');
 type ItemRequested = { type: ItemType; id: string; amount: number };
 
 export default class Worker extends Person {
+	// Private
+	private static async getGettingMessage(username: string, items: ItemRequested[], term = null): Promise<string> {
+		let message = `Работник @${username} хочет получить следующие позиции:\n`;
+		for (let item of items) {
+			const {id, type, amount} = item;
+			const {name} = await getItem(type, id);
+
+			message += `🔹 ${name} -> ${amount} шт.\n`;
+		}
+		if (term)
+			message += `*Срок аренды:* ${term} дней`;
+		return message;
+	}
+
+	// Public
 	/*
 	 * Request getting
 	 */
@@ -72,21 +88,6 @@ export default class Worker extends Person {
 		await confirmation.save();
 	}
 
-	// Private
-	private static async getGettingMessage(username: string, items: ItemRequested[], term = null): Promise<string> {
-		let message = `Работник @${username} хочет получить следующие позиции:\n`;
-		for (let item of items) {
-			const {id, type, amount} = item;
-			const {name} = await getItem(type, id);
-
-			message += `🔹 ${name} -> ${amount} шт.\n`;
-		}
-		if (term)
-			message += `*Срок аренды:* ${term} дней`;
-		return message;
-	}
-
-	// Public
 	/*
 	 * Confirm
 	 */
@@ -99,8 +100,27 @@ export default class Worker extends Person {
 	 * с его requestId. В зависимости от данных в gettingInfo
 	 * заполняем информацию о Request в БД
 	 */
-	public static confirmReceipt(gettingInfo: string): void {
-		//...
+	public static async confirmGetting(ctx: any): void {
+		const id = ctx.callbackQuery.data.split('>')[1];
+		const confirmation = await Confirmation.findById(id);
+		
+		if (!confirmation) { return; }
+		await confirmation.remove();
+
+		let insertDoc: any = {
+			chatId: confirmation.chatId
+		};
+
+		if (confirmation.instruments) insertDoc.instruments = confirmation.instruments;
+		if (confirmation.furniture) insertDoc.furniture = confirmation.furniture;
+		if (confirmation.consumables) insertDoc.consumables = confirmation.consumables;
+		if (confirmation.days) insertDoc.expires = new Date(Date.now() + confirmation.days * 24 * 60 * 60 * 1000);
+
+		const getting = new Getting(insertDoc);
+		await getting.save();
+
+		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
+		await ctx.editMessageText(text);
 	}
 
 	/**
