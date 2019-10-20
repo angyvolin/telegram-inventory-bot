@@ -10,25 +10,12 @@ const Markup = require('telegraf/markup');
 type ItemRequested = { type: ItemType; id: string; amount: number };
 
 export default class Worker extends Person {
-	// Private
-	private static getGettingMessage(username: string, items: ItemRequested[]): string {
-		let message = `Работник @${username} хочет получить следующие позиции:\n`;
-		items.forEach(async (item) => {
-			const { id, type, amount } = item;
-			const { name } = await getItem(type, id);
-
-			message += `🔹 ${name} -> ${amount} шт.\n`;
-		});
-		return message;
-	}
-
-	// Public
 	/*
 	 * Request getting
 	 */
 	public static async requestGetting(ctx: any, chatId: number, username: string, items: ItemRequested[]): Promise<void> {
 		const stockmans = await getStockmans();
-		const messageText = Worker.getGettingMessage(username, items);
+		const messageText = await Worker.getGettingMessage(username, items);
 		const messages = [];
 		for (let stockman of stockmans) {
 			const id = await getChatId(stockman.username);
@@ -45,6 +32,20 @@ export default class Worker extends Person {
 
 		const confirmation = new Confirmation({ messages });
 		await confirmation.save();
+	}
+
+	// Public
+
+	// Private
+	private static async getGettingMessage(username: string, items: ItemRequested[]): Promise<string> {
+		let message = `Работник @${username} хочет получить следующие позиции:\n`;
+		for (let item of items) {
+			const {id, type, amount} = item;
+			const {name} = await getItem(type, id);
+
+			message += `🔹 ${name} -> ${amount} шт.\n`;
+		}
+		return message;
 	}
 
 	/*
