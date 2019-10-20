@@ -10,42 +10,50 @@ const Markup = require('telegraf/markup');
 type ItemRequested = { type: ItemType; id: string; amount: number };
 
 export default class Worker extends Person {
+	// Private
+	private static getGettingMessage(username: string, items: ItemRequested[]): string {
+		let message = `Работник @${username} хочет получить следующие позиции:\n`;
+		items.forEach(async (item) => {
+			const { id, type, amount } = item;
+			const { name } = await getItem(type, id);
+
+			message += `🔹 ${name} -> ${amount} шт.\n`;
+		});
+		return message;
+	}
+
+	// Public
 	/*
 	 * Request getting
 	 */
 	public static async requestGetting(ctx: any, chatId: number, username: string, items: ItemRequested[]): Promise<void> {
+		if (!items.length) {
+			return;
+		}
 		const stockmans = await getStockmans();
-		const messageText = await Worker.getGettingMessage(username, items);
+		if (!stockmans.length) {
+			return;
+		}
+		const messageText = Worker.getGettingMessage(username, items);
 		const messages = [];
+
+		const confirmation = new Confirmation({ messages });
+		const confirmationId = confirmation._id;
+
 		for (let stockman of stockmans) {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([Markup.callbackButton('❌ Отклонить', 'declineRequest'), Markup.callbackButton('✅ Подтвердить', 'approveRequest')]).extra();
+			const keyboard = Markup.inlineKeyboard([Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`), Markup.callbackButton('✅ Подтвердить', `approveRequest>${confirmationId}`)]).extra();
 
-			const message = await ctx.telegram.sendMessage(id, messageText, keyboard);
+			const message = ctx.telegram.sendMessage(id, messageText, keyboard);
 			messages.push({
 				id: message.message_id,
 				chatId: id
 			});
 		}
 
-		const confirmation = new Confirmation({ messages });
 		await confirmation.save();
-	}
-
-	// Public
-
-	// Private
-	private static async getGettingMessage(username: string, items: ItemRequested[]): Promise<string> {
-		let message = `Работник @${username} хочет получить следующие позиции:\n`;
-		for (let item of items) {
-			const {id, type, amount} = item;
-			const {name} = await getItem(type, id);
-
-			message += `🔹 ${name} -> ${amount} шт.\n`;
-		}
-		return message;
 	}
 
 	/*
