@@ -25,12 +25,12 @@ export default class CallbackQueryHandlers {
 		bot.action(/^increase>/, async (ctx) => {
 			const type = +ctx.callbackQuery.data.split('>')[1];
 			const id = ctx.callbackQuery.data.split('>')[2];
-			const amount = ctx.callbackQuery.data.split('>')[3];
+			const amount = +ctx.callbackQuery.data.split('>')[3];
 
 			const counter = parseInt(ctx.update.callback_query.message.reply_markup.inline_keyboard[0][1].text);
 
 			if (amount > counter) {
-				const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}`), Markup.callbackButton(counter + 1, 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter + 1}`)]]);
+				const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${amount}`), Markup.callbackButton(counter + 1, 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}>${amount}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter + 1}`)]]);
 
 				await ctx.editMessageReplyMarkup(keyboard);
 				await ctx.answerCbQuery();
@@ -42,11 +42,12 @@ export default class CallbackQueryHandlers {
 		bot.action(/^reduce>/, async (ctx: any) => {
 			const type = +ctx.callbackQuery.data.split('>')[1];
 			const id = ctx.callbackQuery.data.split('>')[2];
+			const amount = +ctx.callbackQuery.data.split('>')[3];
 
 			const counter = parseInt(ctx.update.callback_query.message.reply_markup.inline_keyboard[0][1].text);
 
 			if (counter > 1) {
-				const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}`), Markup.callbackButton(counter - 1, 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter - 1}`)]]);
+				const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${amount}`), Markup.callbackButton(counter - 1, 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}>${amount}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter - 1}`)]]);
 
 				await ctx.editMessageReplyMarkup(keyboard);
 				await ctx.answerCbQuery();
