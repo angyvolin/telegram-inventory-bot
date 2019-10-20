@@ -1,7 +1,13 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IConfirmation extends Document {
-	messages: [{ id: number; chatId: number }];
+	messages: [
+		{
+			id: number;
+			chatId: number;
+			text: string;
+		}
+	];
 }
 
 // Схема получения
