@@ -2,7 +2,6 @@ import * as api from 'telegraf';
 import AdminMessage from '../controllers/admin';
 import { dismissAdmin, isAdmin } from '../helpers/functions';
 import Logger from '../init/logger';
-import { getItem } from '../helpers/items';
 
 const Markup = require('telegraf/markup');
 
@@ -26,17 +25,17 @@ export default class CallbackQueryHandlers {
 		bot.action(/^increase>/, async (ctx) => {
 			const type = +ctx.callbackQuery.data.split('>')[1];
 			const id = ctx.callbackQuery.data.split('>')[2];
+			const amount = ctx.callbackQuery.data.split('>')[3];
 
 			const counter = parseInt(ctx.update.callback_query.message.reply_markup.inline_keyboard[0][1].text);
-			const item = await getItem(type, id);
 
-			if (item.amount > counter) {
+			if (amount > counter) {
 				const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}`), Markup.callbackButton(counter + 1, 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter + 1}`)]]);
 
 				await ctx.editMessageReplyMarkup(keyboard);
 				await ctx.answerCbQuery();
 			} else {
-				await ctx.answerCbQuery(`На складе всего ${item.amount} позиций`, false);
+				await ctx.answerCbQuery(`На складе всего ${amount} позиций`, false);
 			}
 		});
 

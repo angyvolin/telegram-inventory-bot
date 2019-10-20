@@ -51,7 +51,7 @@ export default class InlineQueryHandlers {
 			if (!item) {
 				return ctx.telegram.sendMessage(ctx.from.id, 'Ошибка на сервере! Позиция не была найдена');
 			}
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}`), Markup.callbackButton('1', 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)]]);
+			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}`), Markup.callbackButton('1', 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}>${item.amount}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)]]);
 			const message = `Название: *${item.name}*\nВ наличии: *${item.amount}*`;
 			const options = {
 				parse_mode: 'Markdown',

@@ -1,20 +1,23 @@
 import Person from './Person';
-import PersonType from '../enums/PersonType';
+import ItemType from '../enums/ItemType';
 import Confirmation from '../models/confirmation';
 import { getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
+import { getItem } from '../helpers/items';
 
 const Markup = require('telegraf/markup');
 
-type ItemRequested = { type: PersonType; id: string; amount: number };
+type ItemRequested = { type: ItemType; id: string; amount: number };
 
 export default class Worker extends Person {
 	// Private
 	private static getGettingMessage(username: string, items: ItemRequested[]): string {
-		let message = `Пользователь @${username} хочет получить следующие инструменты:\n`;
-		items.forEach((item) => {
-			const { id, amount } = item;
-			message += `${id} -> ${amount} шт.\n`;
+		let message = `Работник @${username} хочет получить следующие позиции:\n`;
+		items.forEach(async (item) => {
+			const { id, type, amount } = item;
+			const { name } = await getItem(type, id);
+
+			message += `🔹 ${name} -> ${amount} шт.\n`;
 		});
 		return message;
 	}
