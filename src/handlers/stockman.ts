@@ -5,6 +5,8 @@ import PersonType from '../enums/PersonType';
 import KeyboardMessage from '../controllers/keyboards';
 import { isStockman } from '../helpers/persons';
 
+const Markup = require('telegraf/markup');
+
 export default class StockmanHandlers {
 	public static init(bot) {
 		bot.command('keyboard', async (ctx: api.ContextMessageUpdate) => {
@@ -25,6 +27,10 @@ export default class StockmanHandlers {
 					const text = confirmation.text + '\n' + '❌ Отклонено';
 					await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
 				}
+
+				const text = '❌ Ваша заявка была отклонена:\n\n' + confirmation.text;
+
+				await ctx.telegram.sendMessage(confirmation.chatId, text);
 			}
 		});
 
@@ -40,6 +46,16 @@ export default class StockmanHandlers {
 					const text = confirmation.text + '\n' + '✅ Подтверждено';
 					await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
 				}
+
+				const keyboard = Markup.inlineKeyboard([Markup.callbackButton('✅ Подтвердить', `confirmGetting>${id}`)]);
+				const text = '✅ Ваша заявка была подтверждена:\n\n' +
+							 confirmation.text +
+							 'После получения подтвердите нажатием кнопки ниже';
+				const options = {
+					reply_markup: keyboard,
+				};
+
+				await ctx.telegram.sendMessage(confirmation.chatId, text, options);
 			}
 		});
 	}

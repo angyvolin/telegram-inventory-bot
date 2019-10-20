@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IConfirmation extends Document {
+	chatId: number;
 	messages: {
 		id: number;
 		chatId: number;
@@ -15,6 +16,7 @@ export interface IConfirmation extends Document {
 // Схема получения
 export const ConfirmationSchema: Schema = new Schema(
 	{
+		chatId: { type: Number, required: true },
 		messages: { type: [{ id: String, chatId: Number }], required: true },
 		text: { type: String, required: true },
 		instruments: { type: Map },

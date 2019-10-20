@@ -27,8 +27,6 @@ export default class Worker extends Person {
 		const confirmation = new Confirmation();
 		const confirmationId = confirmation._id;
 
-		console.log('Confirmation ID:', confirmationId);
-
 		for (let stockman of stockmans) {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
@@ -71,6 +69,7 @@ export default class Worker extends Person {
 
 		confirmation.messages = messages;
 		confirmation.text = messageText;
+		confirmation.chatId = chatId;
 		await confirmation.save();
 	}
 
