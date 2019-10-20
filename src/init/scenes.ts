@@ -14,6 +14,7 @@ import getItemPhoto from '../scenes/addItem/3-getItemPhoto';
 import getPersonRole from '../scenes/addPerson/1-getPersonRole';
 import getPersonName from '../scenes/addPerson/2-getPersonName';
 import getPersonUsername from '../scenes/addPerson/3-getPersonUsername';
+import requestReturnDate from '../scenes/worker/requestReturnDate';
 
 const Stage = require('telegraf/stage');
 
@@ -40,6 +41,7 @@ export default class Scenes {
 			stage.register(requestReturn); // Сцена запроса на возврат
 			stage.register(requestReturnInstrument); // Сцена запроса на возврат инструментов
 			stage.register(requestReturnFurniture); // Сцена запроса на возврат фурнитуры
+			stage.register(requestReturnDate);
 
 			bot.use(stage.middleware());
 

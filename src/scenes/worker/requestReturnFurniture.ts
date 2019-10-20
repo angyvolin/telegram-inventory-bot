@@ -7,7 +7,7 @@ const Markup = require('telegraf/markup');
 /**
  * Сцена запроса получения
  */
-const requestReturnFurniture = new Scene('requestReturnFurniture');
+const requestReturnFurniture = new Scene('worker/requestReturnFurniture');
 
 requestReturnFurniture.command('start', async (ctx: any) => {
 	await ctx.scene.leave();

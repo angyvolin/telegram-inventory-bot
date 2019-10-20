@@ -7,7 +7,7 @@ const Markup = require('telegraf/markup');
 /**
  * Сцена запроса получения
  */
-const requestRemoveInstrument = new Scene('requestRemoveInstrument');
+const requestRemoveInstrument = new Scene('worker/requestRemoveInstrument');
 
 requestRemoveInstrument.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
