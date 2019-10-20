@@ -13,7 +13,7 @@ export default class Worker extends Person {
 	/*
 	 * Request getting
 	 */
-	public static async requestGetting(ctx: any, chatId: number, username: string, items: ItemRequested[]): Promise<void> {
+	public static async requestGetting(ctx: any, chatId: number, username: string, items: ItemRequested[], days: number): Promise<void> {
 		if (!items.length) {
 			return;
 		}
@@ -49,8 +49,8 @@ export default class Worker extends Person {
 	private static async getGettingMessage(username: string, items: ItemRequested[]): Promise<string> {
 		let message = `Работник @${username} хочет получить следующие позиции:\n`;
 		for (let item of items) {
-			const {id, type, amount} = item;
-			const {name} = await getItem(type, id);
+			const { id, type, amount } = item;
+			const { name } = await getItem(type, id);
 
 			message += `🔹 ${name} -> ${amount} шт.\n`;
 		}

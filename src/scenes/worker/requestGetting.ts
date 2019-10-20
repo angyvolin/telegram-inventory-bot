@@ -51,11 +51,12 @@ requestGetting.action('more', async (ctx: any) => {
 
 requestGetting.action('finish', async (ctx: any) => {
 	await ctx.scene.leave();
-	const {items} = ctx.session;
+	const { items } = ctx.session;
 
 	for (let item of items) {
-		if (item.type === ItemType.INSTRUMENT)
+		if (item.type === ItemType.INSTRUMENT) {
 			return ctx.scene.enter('worker/requestReturnDate');
+		}
 	}
 	await Worker.requestGetting(ctx, ctx.from.id, ctx.from.username, ctx.session.items);
 	return KeyboardMessage.send(ctx, PersonType.WORKER);

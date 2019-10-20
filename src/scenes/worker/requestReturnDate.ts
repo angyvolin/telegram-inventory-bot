@@ -1,3 +1,4 @@
+import Worker from '../../classes/Worker';
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
 
@@ -17,16 +18,19 @@ requestReturnDate.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestReturnDate.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([
-		Markup.callbackButton('⏪ Назад', 'back')
-	]).extra();
+	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
 	await ctx.replyWithMarkdown('На сколько дней Вы хотите арендовать инструмент(ы)?', keyboard);
 });
 
-requestReturnDate.on('text', async ctx => {
-	const term = ctx.message.text.match(/\d+/)[0];
-	console.log(term);
-	// ...
+requestReturnDate.on('text', async (ctx) => {
+	const term = ctx.message.text.match(/\d+/);
+	if (!term) {
+		return ctx.reply('Вы ввели неверное количество дней. Попробуйте еще раз');
+	}
+	await ctx.scene.leave();
+	const days = term[0];
+	await Worker.requestGetting(ctx, ctx.from.id, ctx.from.username, ctx.session.items, days);
+	return KeyboardMessage.send(ctx, PersonType.WORKER);
 });
 
 requestReturnDate.action('back', async (ctx: any) => {

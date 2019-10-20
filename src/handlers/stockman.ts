@@ -6,7 +6,7 @@ import KeyboardMessage from '../controllers/keyboards';
 import { isStockman } from '../helpers/persons';
 
 export default class StockmanHandlers {
-	public static init(bot: any) {
+	public static init(bot) {
 		bot.command('keyboard', async (ctx: api.ContextMessageUpdate) => {
 			if (await isStockman(ctx.from.username)) {
 				await KeyboardMessage.send(ctx, PersonType.STOCKMAN);
@@ -14,6 +14,8 @@ export default class StockmanHandlers {
 		});
 
 		bot.action(/^declineRequest>/, async (ctx) => {
+			console.log('DECLINED =>');
+
 			if (await isStockman(ctx.from.username)) {
 				const id = +ctx.callbackQuery.data.split('>')[1];
 				const confirmation = await Confirmation.findById(id);
@@ -50,5 +52,45 @@ export default class StockmanHandlers {
 				}
 			}
 		});
+
+		/*bot.action(/^declineRequest>/, async (ctx) => {
+			console.log('DECLINED =>');
+
+			if (await isStockman(ctx.from.username)) {
+				const id = +ctx.callbackQuery.data.split('>')[1];
+				const confirmation = await Confirmation.findById(id);
+				const messages = confirmation.messages;
+
+				console.dir(messages);
+
+				for (const message of messages) {
+					const text = message.text + '\n' + '✅ Подтверждено';
+					ctx.telegram.editMessageText(text, {
+						chat_id: message.chatId,
+						message_id: message.id
+					});
+				}
+			}
+		});
+
+		bot.action(/^approveRequest>/, async (ctx) => {
+			console.log('APPROVED =>');
+
+			if (await isStockman(ctx.from.username)) {
+				const id = +ctx.callbackQuery.data.split('>')[1];
+				const confirmation = await Confirmation.findById(id);
+				const messages = confirmation.messages;
+
+				console.dir(messages);
+
+				for (const message of messages) {
+					const text = message.text + '\n' + '❌ Отклонено';
+					ctx.telegram.editMessageText(text, {
+						chat_id: message.chatId,
+						message_id: message.id
+					});
+				}
+			}
+		});*/
 	}
 }
