@@ -49,9 +49,8 @@ requestGetting.action('more', async (ctx: any) => {
 });
 
 requestGetting.action('finish', async (ctx: any) => {
-	await Worker.requestGetting(ctx, ctx.from.id, ctx.from.username, ctx.session.items);
-
 	await ctx.scene.leave();
+	await Worker.requestGetting(ctx, ctx.from.id, ctx.from.username, ctx.session.items);
 	return KeyboardMessage.send(ctx, PersonType.WORKER);
 });
 

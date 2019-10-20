@@ -1,13 +1,13 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IConfirmation extends Document {
-	messageIds: string[];
+	messages: [{ id: number; chatId: number }];
 }
 
 // Схема получения
 export const ConfirmationSchema: Schema = new Schema(
 	{
-		messageIds: { type: [String], required: true }
+		messages: { type: [{ id: String, chatId: Number }], required: true }
 	},
 	{ collection: 'confirmations' }
 );
