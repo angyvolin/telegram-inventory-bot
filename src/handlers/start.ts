@@ -1,8 +1,9 @@
 import * as api from 'telegraf';
 import AdminMessage from '../controllers/admin';
 import KeyboardMessage from '../controllers/keyboards';
-import { getPersonType } from '../helpers/persons';
+import PersonType from '../enums/PersonType';
 import { isAdmin } from '../helpers/functions';
+import { getPersonType, isWorker, isSupplier, isChief } from '../helpers/persons';
 
 export default class StartHandlers {
 	public static init(bot: api.Telegraf<api.ContextMessageUpdate>) {
@@ -20,6 +21,16 @@ export default class StartHandlers {
 				return;
 			}
 			await KeyboardMessage.send(ctx, type);
+		});
+
+		bot.command('keyboard', async (ctx: api.ContextMessageUpdate) => {
+			if (await isWorker(ctx.from.username)) {
+				await KeyboardMessage.send(ctx, PersonType.WORKER);
+			} else if (await isSupplier(ctx.from.username)) {
+				await KeyboardMessage.send(ctx, PersonType.SUPPLIER);
+			} else if (await isChief(ctx.from.username)) {
+				await KeyboardMessage.send(ctx, PersonType.CHIEF);
+			}
 		});
 	}
 }

@@ -8,12 +8,6 @@ const Markup = require('telegraf/markup');
 
 export default class StockmanHandlers {
 	public static init(bot) {
-		bot.command('keyboard', async (ctx: api.ContextMessageUpdate) => {
-			if (await isStockman(ctx.from.username)) {
-				await KeyboardMessage.send(ctx, PersonType.STOCKMAN);
-			}
-		});
-
 		bot.action(/^declineRequest>/, async (ctx) => {
 			await ctx.answerCbQuery();
 
@@ -47,11 +41,9 @@ export default class StockmanHandlers {
 				}
 
 				const keyboard = Markup.inlineKeyboard([Markup.callbackButton('✅ Подтвердить', `confirmGetting>${id}`)]);
-				const text = '✅ Ваша заявка была подтверждена:\n\n' +
-							 confirmation.text +
-							 'После получения подтвердите нажатием кнопки ниже';
+				const text = '✅ Ваша заявка была подтверждена:\n\n' + confirmation.text + 'После получения подтвердите нажатием кнопки ниже';
 				const options = {
-					reply_markup: keyboard,
+					reply_markup: keyboard
 				};
 
 				await ctx.telegram.sendMessage(confirmation.chatId, text, options);

@@ -5,9 +5,17 @@ import { isSupplier } from '../helpers/persons';
 
 export default class SupplierHandlers {
 	public static init(bot: api.Telegraf<api.ContextMessageUpdate>) {
-		bot.command('keyboard', async (ctx: api.ContextMessageUpdate) => {
+		// Обработчик для "Запросить закупку"
+		bot.hears('Запросить закупку', async (ctx: any) => {
 			if (await isSupplier(ctx.from.username)) {
-				await KeyboardMessage.send(ctx, PersonType.SUPPLIER);
+				await ctx.scene.enter('supplier/requestPurchase');
+			}
+		});
+
+		// Обработчик для "Запросить поставку в склад"
+		bot.hears('Запросить поставку в склад', async (ctx: any) => {
+			if (await isSupplier(ctx.from.username)) {
+				await ctx.scene.enter('supplier/requestSupply');
 			}
 		});
 	}

@@ -15,13 +15,12 @@ export default class Worker extends Person {
 	private static async getGettingMessage(username: string, items: ItemRequested[], term = null): Promise<string> {
 		let message = `Работник @${username} хочет получить следующие позиции:\n`;
 		for (let item of items) {
-			const {id, type, amount} = item;
-			const {name} = await getItem(type, id);
+			const { id, type, amount } = item;
+			const { name } = await getItem(type, id);
 
 			message += `🔹 ${name} -> ${amount} шт.\n`;
 		}
-		if (term)
-			message += `*Срок аренды:* ${term} дней`;
+		if (term) message += `*Срок аренды:* ${term} дней`;
 		return message;
 	}
 
@@ -77,10 +76,18 @@ export default class Worker extends Person {
 			}
 		});
 
-		if (instruments.size > 0) { confirmation.instruments = instruments; }
-		if (furniture.size > 0) { confirmation.furniture = furniture; }
-		if (consumables.size > 0) { confirmation.consumables = consumables; }
-		if (days) { confirmation.days = days; }
+		if (instruments.size > 0) {
+			confirmation.instruments = instruments;
+		}
+		if (furniture.size > 0) {
+			confirmation.furniture = furniture;
+		}
+		if (consumables.size > 0) {
+			confirmation.consumables = consumables;
+		}
+		if (days) {
+			confirmation.days = days;
+		}
 
 		confirmation.messages = messages;
 		confirmation.text = messageText;
@@ -100,11 +107,13 @@ export default class Worker extends Person {
 	 * с его requestId. В зависимости от данных в gettingInfo
 	 * заполняем информацию о Request в БД
 	 */
-	public static async confirmGetting(ctx: any): void {
+	public static async confirmGetting(ctx: any): Promise<void> {
 		const id = ctx.callbackQuery.data.split('>')[1];
 		const confirmation = await Confirmation.findById(id);
-		
-		if (!confirmation) { return; }
+
+		if (!confirmation) {
+			return;
+		}
 		await confirmation.remove();
 
 		let insertDoc: any = {
@@ -128,44 +137,7 @@ export default class Worker extends Person {
 	 * в БД отмечаем Request как завершенный (инструменты были
 	 * возвращены)
 	 */
-	public static confirmReturnInstrument(requestId: number): void {
-		//...
-	}
-
-	/**
-	 * @desc После данного подтверждения возврата фурнитуры
-	 * есть два варианта:
-	 *	1.	Можем создать коллекцию Return, в которую будем писать
-	 *		возвраты (как инструментов, так и фурнитуры)
-	 *	2.	Можем создать новый Request с типом "Возврат", куда
-	 *		напишем информацию про возврат именно фурнитуры (т.к.
-	 *		про инструменты инфа хранится в первичных Request
-	 *		на получение)
-	 */
-	public static confirmReturnFurniture(requestId: number): void {
-		//...
-	}
-
-	/*
-	 * Request return
-	 */
-
-	/**
-	 * @desc Запрос на возврат инструмента. Аргументом передаем
-	 * requestId для того, чтобы мы могли узнать, к какому запросу
-	 * на получения относятся инструменты и отметить этот запрос
-	 * как завершенный (инструменты были возвращены)
-	 */
-	public static requestReturnInstrument(requestId: number): void {
-		//...
-	}
-
-	/**
-	 * @desc Запрос на возврат фурнитуры. Поскольку фурнитура
-	 * не обязательна для возврата, то и requestId не передается.
-	 * Передаем лишь саму фурнитуру для возврата
-	 */
-	public static requestReturnFurniture(furniture: Map<number, number>): void {
+	public static confirmReturn(requestId: number): void {
 		//...
 	}
 

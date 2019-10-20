@@ -5,7 +5,7 @@ const Markup = require('telegraf/markup');
 
 const buttons: any = {
 	worker: [['Запросить получение', 'Запросить возврат'], ['Запросить списание инструмента']],
-	supplier: [],
+	supplier: ['Запросить закупку', 'Запросить поставку в склад'],
 	chief: []
 };
 
