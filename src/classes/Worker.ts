@@ -54,6 +54,33 @@ export default class Worker extends Person {
 			});
 		}
 
+		
+		const instruments: Map<string, number> = new Map();
+		const furniture: Map<string, number> = new Map();
+		const consumables: Map<string, number> = new Map();
+
+		items.forEach((item) => {
+			switch (item.type) {
+				case ItemType.INSTRUMENT: {
+					instruments.set(item.id, item.amount);
+					break;
+				}
+				case ItemType.FURNITURE: {
+					furniture.set(item.id, item.amount);
+					break;
+				}
+				case ItemType.CONSUMABLE: {
+					consumables.set(item.id, item.amount);
+					break;
+				}
+			}
+		});
+
+		if (instruments.size > 0) { confirmation.instruments = instruments; }
+		if (furniture.size > 0) { confirmation.furniture = furniture; }
+		if (consumables.size > 0) { confirmation.consumables = consumables; }
+		if (days) { confirmation.days = days; }
+
 		confirmation.messages = messages;
 		confirmation.text = messageText;
 		await confirmation.save();
