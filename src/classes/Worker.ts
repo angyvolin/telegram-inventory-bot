@@ -40,7 +40,6 @@ export default class Worker extends Person {
 			});
 		}
 
-
 		const instruments: Map<string, number> = new Map();
 		const furniture: Map<string, number> = new Map();
 		const consumables: Map<string, number> = new Map();
