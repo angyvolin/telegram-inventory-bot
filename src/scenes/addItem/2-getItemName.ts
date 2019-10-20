@@ -22,7 +22,6 @@ getItemName.enter(async (ctx: any) => {
 });
 
 getItemName.on('text', async (ctx: any) => {
-	await ctx.answerCbQuery();
 	ctx.session.addItem.itemName = ctx.message.text;
 	await ctx.scene.leave();
 	await ctx.scene.enter('addItem/getItemPhoto');

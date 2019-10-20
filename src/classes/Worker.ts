@@ -13,7 +13,7 @@ export default class Worker extends Person {
 	/*
 	 * Request getting
 	 */
-	public static async requestGetting(ctx: any, chatId: number, username: string, items: ItemRequested[], days: number): Promise<void> {
+	public static async requestGetting(ctx: any, chatId: number, username: string, items: ItemRequested[], days?: number): Promise<void> {
 		if (!items.length) {
 			return;
 		}
