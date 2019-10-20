@@ -10,6 +10,18 @@ const Markup = require('telegraf/markup');
 type ItemRequested = { type: ItemType; id: string; amount: number };
 
 export default class Worker extends Person {
+	// Private
+	private static async getGettingMessage(username: string, items: ItemRequested[]): Promise<string> {
+		let message = `Работник @${username} хочет получить следующие позиции:\n`;
+		for (let item of items) {
+			const { id, type, amount } = item;
+			const { name } = await getItem(type, id);
+
+			message += `🔹 ${name} -> ${amount} шт.\n`;
+		}
+		return message;
+	}
+
 	/*
 	 * Request getting
 	 */
@@ -24,8 +36,10 @@ export default class Worker extends Person {
 		const messageText = await Worker.getGettingMessage(username, items);
 		const messages = [];
 
-		const confirmation = new Confirmation({ messages });
+		const confirmation = new Confirmation();
 		const confirmationId = confirmation._id;
+
+		console.log('Confirmation ID:', confirmationId);
 
 		for (let stockman of stockmans) {
 			const id = await getChatId(stockman.username);
@@ -33,30 +47,19 @@ export default class Worker extends Person {
 
 			const keyboard = Markup.inlineKeyboard([Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`), Markup.callbackButton('✅ Подтвердить', `approveRequest>${confirmationId}`)]).extra();
 
-			const message = ctx.telegram.sendMessage(id, messageText, keyboard);
+			const message = await ctx.telegram.sendMessage(id, messageText, keyboard);
 			messages.push({
 				id: message.message_id,
 				chatId: id
 			});
 		}
 
+		confirmation.messages = messages;
+		confirmation.text = messageText;
 		await confirmation.save();
 	}
 
 	// Public
-
-	// Private
-	private static async getGettingMessage(username: string, items: ItemRequested[]): Promise<string> {
-		let message = `Работник @${username} хочет получить следующие позиции:\n`;
-		for (let item of items) {
-			const { id, type, amount } = item;
-			const { name } = await getItem(type, id);
-
-			message += `🔹 ${name} -> ${amount} шт.\n`;
-		}
-		return message;
-	}
-
 	/*
 	 * Confirm
 	 */

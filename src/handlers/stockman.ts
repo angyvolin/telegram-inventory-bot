@@ -14,83 +14,33 @@ export default class StockmanHandlers {
 		});
 
 		bot.action(/^declineRequest>/, async (ctx) => {
-			console.log('DECLINED =>');
+			console.log('=> handler called');
 
 			if (await isStockman(ctx.from.username)) {
-				const id = +ctx.callbackQuery.data.split('>')[1];
+				const id = ctx.callbackQuery.data.split('>')[1];
 				const confirmation = await Confirmation.findById(id);
 				const messages = confirmation.messages;
 
-				console.dir(messages);
-
 				for (const message of messages) {
-					const text = message.text + '\n' + '✅ Подтверждено';
-					ctx.telegram.editMessageText(text, {
-						chat_id: message.chatId,
-						message_id: message.id
-					});
+					const text = confirmation.text + '\n' + '❌ Отклонено';
+					await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
 				}
 			}
 		});
 
 		bot.action(/^approveRequest>/, async (ctx) => {
-			console.log('APPROVED =>');
+			console.log('=> handler called');
 
 			if (await isStockman(ctx.from.username)) {
-				const id = +ctx.callbackQuery.data.split('>')[1];
+				const id = ctx.callbackQuery.data.split('>')[1];
 				const confirmation = await Confirmation.findById(id);
 				const messages = confirmation.messages;
 
-				console.dir(messages);
-
 				for (const message of messages) {
-					const text = message.text + '\n' + '❌ Отклонено';
-					ctx.telegram.editMessageText(text, {
-						chat_id: message.chatId,
-						message_id: message.id
-					});
+					const text = confirmation.text + '\n' + '✅ Подтверждено';
+					await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
 				}
 			}
 		});
-
-		/*bot.action(/^declineRequest>/, async (ctx) => {
-			console.log('DECLINED =>');
-
-			if (await isStockman(ctx.from.username)) {
-				const id = +ctx.callbackQuery.data.split('>')[1];
-				const confirmation = await Confirmation.findById(id);
-				const messages = confirmation.messages;
-
-				console.dir(messages);
-
-				for (const message of messages) {
-					const text = message.text + '\n' + '✅ Подтверждено';
-					ctx.telegram.editMessageText(text, {
-						chat_id: message.chatId,
-						message_id: message.id
-					});
-				}
-			}
-		});
-
-		bot.action(/^approveRequest>/, async (ctx) => {
-			console.log('APPROVED =>');
-
-			if (await isStockman(ctx.from.username)) {
-				const id = +ctx.callbackQuery.data.split('>')[1];
-				const confirmation = await Confirmation.findById(id);
-				const messages = confirmation.messages;
-
-				console.dir(messages);
-
-				for (const message of messages) {
-					const text = message.text + '\n' + '❌ Отклонено';
-					ctx.telegram.editMessageText(text, {
-						chat_id: message.chatId,
-						message_id: message.id
-					});
-				}
-			}
-		});*/
 	}
 }
