@@ -10,18 +10,6 @@ const Markup = require('telegraf/markup');
 type ItemRequested = { type: ItemType; id: string; amount: number };
 
 export default class Worker extends Person {
-	// Private
-	private static async getGettingMessage(username: string, items: ItemRequested[]): Promise<string> {
-		let message = `Работник @${username} хочет получить следующие позиции:\n`;
-		for (let item of items) {
-			const { id, type, amount } = item;
-			const { name } = await getItem(type, id);
-
-			message += `🔹 ${name} -> ${amount} шт.\n`;
-		}
-		return message;
-	}
-
 	/*
 	 * Request getting
 	 */
@@ -54,7 +42,7 @@ export default class Worker extends Person {
 			});
 		}
 
-		
+
 		const instruments: Map<string, number> = new Map();
 		const furniture: Map<string, number> = new Map();
 		const consumables: Map<string, number> = new Map();
@@ -84,6 +72,20 @@ export default class Worker extends Person {
 		confirmation.messages = messages;
 		confirmation.text = messageText;
 		await confirmation.save();
+	}
+
+	// Private
+	private static async getGettingMessage(username: string, items: ItemRequested[], term = null): Promise<string> {
+		let message = `Работник @${username} хочет получить следующие позиции:\n`;
+		for (let item of items) {
+			const {id, type, amount} = item;
+			const {name} = await getItem(type, id);
+
+			message += `🔹 ${name} -> ${amount} шт.\n`;
+		}
+		if (term)
+			message += `*Срок аренды:* ${term} дней`;
+		return message;
 	}
 
 	// Public
