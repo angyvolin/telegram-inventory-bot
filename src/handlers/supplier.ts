@@ -1,4 +1,5 @@
 import * as api from 'telegraf';
+import Confirmation from '../models/confirmation';
 import Supplier from '../classes/Supplier';
 import { isSupplier } from '../helpers/persons';
 
@@ -17,13 +18,6 @@ export default class SupplierHandlers {
 		bot.hears('Запросить поставку в склад', async (ctx: any) => {
 			if (await isSupplier(ctx.from.username)) {
 				await ctx.scene.enter('supplier/requestSupply');
-			}
-		});
-
-		bot.action(/^confirmGetting>/, async (ctx: any) => {
-			await ctx.answerCbQuery();
-			if (await isSupplier(ctx.from.username)) {
-				await Supplier.confirmSupply(ctx);
 			}
 		});
 	}

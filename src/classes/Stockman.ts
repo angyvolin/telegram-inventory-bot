@@ -3,7 +3,7 @@ import PersonType from '../enums/PersonType';
 import { ItemRequested } from './Person';
 
 export default class Stockman extends Person {
-	public static async confirmSupply(username: string, items: ItemRequested[]): Promise<void> {
+	public static async confirmSupply(username: string, stockmanId: number, items: ItemRequested[]): Promise<void> {
 		console.dir(items);
 	}
 

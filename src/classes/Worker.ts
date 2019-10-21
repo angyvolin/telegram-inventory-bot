@@ -1,4 +1,5 @@
 import Person from './Person';
+import PersonType from '../enums/PersonType';
 import ItemType from '../enums/ItemType';
 import Getting from '../models/getting';
 import Confirmation from '../models/confirmation';
@@ -45,7 +46,7 @@ export default class Worker extends Person {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`), Markup.callbackButton('✅ Подтвердить', `approveRequest>${confirmationId}`)]).extra();
+			const keyboard = Markup.inlineKeyboard([Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`), Markup.callbackButton('✅ Подтвердить', `approveRequestGetting>${confirmationId}`)]).extra();
 
 			const message = await ctx.telegram.sendMessage(id, messageText, keyboard);
 			messages.push({

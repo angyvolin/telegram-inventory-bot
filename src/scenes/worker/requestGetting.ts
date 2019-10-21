@@ -24,11 +24,6 @@ requestGetting.enter(async (ctx: any) => {
 	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите получить', keyboard);
 });
 
-requestGetting.action('back', async (ctx: any) => {
-	await ctx.scene.leave();
-	return KeyboardMessage.send(ctx, PersonType.WORKER);
-});
-
 requestGetting.action(/^increase>/, async (ctx: any) => {
 	const type = +ctx.callbackQuery.data.split('>')[1];
 	const id = ctx.callbackQuery.data.split('>')[2];
@@ -93,6 +88,11 @@ requestGetting.action('finish', async (ctx: any) => {
 		}
 	}
 	await Worker.requestGetting(ctx, ctx.from.id, ctx.from.username, ctx.session.items);
+	return KeyboardMessage.send(ctx, PersonType.WORKER);
+});
+
+requestGetting.action('back', async (ctx: any) => {
+	await ctx.scene.leave();
 	return KeyboardMessage.send(ctx, PersonType.WORKER);
 });
 

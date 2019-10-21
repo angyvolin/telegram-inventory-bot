@@ -1,5 +1,6 @@
 import * as api from 'telegraf';
 import Worker from '../classes/Worker';
+import Confirmation from '../models/confirmation';
 import { isWorker } from '../helpers/persons';
 
 const Markup = require('telegraf/markup');
@@ -31,6 +32,19 @@ export default class WorkerHandlers {
 			await ctx.answerCbQuery();
 			if (await isWorker(ctx.from.username)) {
 				await Worker.confirmGetting(ctx);
+			}
+		});
+
+		bot.action(/^declineGetting>/, async (ctx: any) => {
+			await ctx.answerCbQuery();
+			if (await isWorker(ctx.from.username)) {
+				const id = ctx.callbackQuery.data.split('>')[1];
+				const confirmation = await Confirmation.findById(id);
+
+				await confirmation.remove();
+
+				const text = ctx.update.callback_query.message.text + '\n\n❌ Отклонено';
+				await ctx.editMessageText(text);
 			}
 		});
 	}

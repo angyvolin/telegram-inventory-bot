@@ -48,7 +48,7 @@ export default class Supplier extends Person {
 			return;
 		}
 
-		const messageText = await Supplier.getSupplyMessage(username, items);
+		const supplyText = await Supplier.getSupplyMessage(username, items);
 		const messages = [];
 
 		const confirmation = new Confirmation();
@@ -58,8 +58,9 @@ export default class Supplier extends Person {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`), Markup.callbackButton('✅ Подтвердить', `approveRequest>${confirmationId}`)]).extra();
+			const keyboard = Markup.inlineKeyboard([Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`), Markup.callbackButton('✅ Подтвердить получение', `approveRequestSupply>${confirmationId}`)]).extra();
 
+			const messageText = supplyText + `\n❗️После поставки подтвердите нажатием кнопки ниже\n`;
 			const message = await ctx.telegram.sendMessage(id, messageText, keyboard);
 			messages.push({
 				id: message.message_id,
@@ -99,44 +100,11 @@ export default class Supplier extends Person {
 		}
 
 		confirmation.messages = messages;
-		confirmation.text = messageText;
+		confirmation.text = supplyText;
 		confirmation.chatId = chatId;
 		await confirmation.save();
 	}
-
-	public static async confirmSupply(ctx: any): Promise<void> {
-		const id = ctx.callbackQuery.data.split('>')[1];
-		const confirmation = await Confirmation.findById(id);
-
-		if (!confirmation) {
-			return;
-		}
-		await confirmation.remove();
-
-		const items: ItemRequested[] = [];
-
-		if (confirmation.instruments) {
-			confirmation.instruments.forEach((amount, id) => {
-				items.push({ type: ItemType.INSTRUMENT, id, amount });
-			});
-		}
-		if (confirmation.furniture) {
-			confirmation.furniture.forEach((amount, id) => {
-				items.push({ type: ItemType.FURNITURE, id, amount });
-			});
-		}
-		if (confirmation.consumables) {
-			confirmation.consumables.forEach((amount, id) => {
-				items.push({ type: ItemType.CONSUMABLE, id, amount });
-			});
-		}
-
-		Stockman.confirmSupply(ctx.from.username, items);
-
-		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
-		await ctx.editMessageText(text);
-	}
-
+	
 	/**
 	 * @desc Add new instrument to the database
 	 */
