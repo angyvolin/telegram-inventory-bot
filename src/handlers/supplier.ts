@@ -1,8 +1,8 @@
 import * as api from 'telegraf';
 import Supplier from '../classes/Supplier';
-import KeyboardMessage from '../controllers/keyboards';
-import PersonType from '../enums/PersonType';
 import { isSupplier } from '../helpers/persons';
+
+const Markup = require('telegraf/markup');
 
 export default class SupplierHandlers {
 	public static init(bot: api.Telegraf<api.ContextMessageUpdate>) {

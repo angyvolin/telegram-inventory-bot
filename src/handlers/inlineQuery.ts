@@ -3,6 +3,8 @@ import Furniture from '../classes/Furniture';
 import Consumable from '../classes/Consumable';
 import ItemType from '../enums/ItemType';
 import { getItem } from '../helpers/items';
+import { getPersonType } from '../helpers/persons';
+import PersonType from '../enums/PersonType';
 
 const Markup = require('telegraf/markup');
 
@@ -29,6 +31,7 @@ export default class InlineQueryHandlers {
 			 * query = i / f / c -> тип выбранной позиции
 			 * result_id -> id выбранной позиции
 			 */
+			const personType = await getPersonType(ctx.from.username);
 			let type;
 			switch (ctx.update.chosen_inline_result.query) {
 				case 'i': {
@@ -51,7 +54,8 @@ export default class InlineQueryHandlers {
 			if (!item) {
 				return ctx.telegram.sendMessage(ctx.from.id, 'Ошибка на сервере! Позиция не была найдена');
 			}
-			if (item.amount > 0) {
+
+			if (item.amount > 0 || personType !== PersonType.WORKER) {
 				const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${item.amount}`), Markup.callbackButton('1', 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}>${item.amount}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)]]);
 				const message = `Название: *${item.name}*\nВ наличии: *${item.amount}*`;
 				const options = {
