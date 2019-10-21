@@ -1,11 +1,13 @@
 import Person, { ItemRequested } from './Person';
+import Stockman from './Stockman';
 import ItemType from '../enums/ItemType';
 import Getting from '../models/getting';
 import Confirmation from '../models/confirmation';
+import { ItemCells } from './Person';
 import { getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
 import { getItem, reduceItem } from '../helpers/items';
-import { getCell, reduceFromCell } from '../helpers/cells';
+import { getCell } from '../helpers/cells';
 
 const Markup = require('telegraf/markup');
 
@@ -20,6 +22,12 @@ export default class Worker extends Person {
 			message += `🔹 ${name} -> ${amount} шт.\n`;
 		}
 		if (term) message += `*Срок аренды:* ${term} дней`;
+		return message;
+	}
+
+	private static async getGivingMessage(username: string, items: ItemCells[]): Promise<string> {
+		let message = `Выдайте *работнику* @${username} запрошенные позиции в соответствии со списком:\n`;
+		message += await Stockman.getCellsMessage(items);
 		return message;
 	}
 
@@ -116,26 +124,22 @@ export default class Worker extends Person {
 		if (!confirmation) {
 			return;
 		}
-		confirmation.remove();
 
-		let insertDoc: any = {
-			chatId: confirmation.chatId
-		};
+		const confirmationId = confirmation._id;
 
+		const items: ItemCells[] = [];
 		if (confirmation.instruments) {
 			for (const [id, amount] of confirmation.instruments) {
 				const instrument = await getItem(ItemType.INSTRUMENT, id);
 				const currAmount = instrument.amount;
 				if (amount > currAmount) {
-					/**
-					 * !!! ОШИБКА !!!
-					 * Выводим СМС что недостаточно товара на складе
-					 * делаем заявку отклоненной, говорим типо сори
-					 * создай новую заявку. Выходим из этой функции
-					 */
 					const text = ctx.update.callback_query.message.text + `\n\n🔴 К сожалению, Ваша заявка не может быть выполнена.\n*Причина:* недостаточно позиций на складе`;
 					return ctx.editMessageText(text);
 				}
+				const cell = await getCell(ItemType.INSTRUMENT, id);
+				const cellName = cell ? cell.row + cell.col : null;
+				const name = instrument.name;
+				items.push({ cellName, name });
 			}
 		}
 		if (confirmation.furniture) {
@@ -143,15 +147,13 @@ export default class Worker extends Person {
 				const furniture = await getItem(ItemType.FURNITURE, id);
 				const currAmount = furniture.amount;
 				if (amount > currAmount) {
-					/**
-					 * !!! ОШИБКА !!!
-					 * Выводим СМС что недостаточно товара на складе
-					 * делаем заявку отклоненной, говорим типо сори
-					 * создай новую заявку. Выходим из этой функции
-					 */
 					const text = ctx.update.callback_query.message.text + `\n\n🔴 К сожалению, Ваша заявка не может быть выполнена.\n*Причина:* недостаточно позиций на складе`;
 					return ctx.editMessageText(text);
 				}
+				const cell = await getCell(ItemType.FURNITURE, id);
+				const cellName = cell ? cell.row + cell.col : null;
+				const name = furniture.name;
+				items.push({ cellName, name });
 			}
 		}
 		if (confirmation.consumables) {
@@ -159,52 +161,43 @@ export default class Worker extends Person {
 				const consumable = await getItem(ItemType.CONSUMABLE, id);
 				const currAmount = consumable.amount;
 				if (amount > currAmount) {
-					/**
-					 * !!! ОШИБКА !!!
-					 * Выводим СМС что недостаточно товара на складе
-					 * делаем заявку отклоненной, говорим типо сори
-					 * создай новую заявку. Выходим из этой функции
-					 */
 					const text = ctx.update.callback_query.message.text + `\n\n🔴 К сожалению, Ваша заявка не может быть выполнена.\n*Причина:* недостаточно позиций на складе`;
 					return ctx.editMessageText(text);
 				}
-			}
-		}
-
-		if (confirmation.instruments) {
-			insertDoc.instruments = confirmation.instruments;
-			for (const [id, amount] of confirmation.instruments) {
-				await reduceItem(ItemType.INSTRUMENT, id, amount);
-				const cell = await getCell(ItemType.INSTRUMENT, id);
-				if (cell) {
-					await reduceFromCell(cell._id, ItemType.INSTRUMENT, id, amount);
-				}
-			}
-		}
-		if (confirmation.furniture) {
-			insertDoc.furniture = confirmation.furniture;
-			for (const [id, amount] of confirmation.furniture) {
-				await reduceItem(ItemType.FURNITURE, id, amount);
-				const cell = await getCell(ItemType.FURNITURE, id);
-				if (cell) {
-					await reduceFromCell(cell._id, ItemType.FURNITURE, id, amount);
-				}
-			}
-		}
-		if (confirmation.consumables) {
-			insertDoc.consumables = confirmation.consumables;
-			for (const [id, amount] of confirmation.consumables) {
-				await reduceItem(ItemType.CONSUMABLE, id, amount);
 				const cell = await getCell(ItemType.CONSUMABLE, id);
-				if (cell) {
-					await reduceFromCell(cell._id, ItemType.CONSUMABLE, id, amount);
-				}
+				const cellName = cell ? cell.row + cell.col : null;
+				const name = consumable.name;
+				items.push({ cellName, name });
+
 			}
 		}
-		if (confirmation.days) insertDoc.expires = new Date(Date.now() + confirmation.days * 24 * 60 * 60 * 1000);
 
-		const getting = new Getting(insertDoc);
-		await getting.save();
+		const stockmans = await getStockmans();
+		if (!stockmans.length) {
+			return;
+		}
+
+		const messageText = await Worker.getGivingMessage(ctx.from.username, items);
+		const messages = [];
+
+		for (let stockman of stockmans) {
+			const id = await getChatId(stockman.username);
+			if (!id) continue;
+
+			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить', `approveGiving>${confirmationId}`)], [Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+
+			const message = await ctx.telegram.sendMessage(id, messageText, {
+				reply_markup: keyboard,
+				parse_mode: 'Markdown'
+			});
+			messages.push({
+				id: message.message_id,
+				chatId: id
+			});
+		}
+
+		confirmation.messages = messages;
+		await confirmation.save();
 
 		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
 		await ctx.editMessageText(text);

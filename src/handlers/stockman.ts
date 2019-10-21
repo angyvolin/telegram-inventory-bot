@@ -34,6 +34,14 @@ export default class StockmanHandlers {
 			}
 		});
 
+
+		bot.action(/^approveGiving>/, async (ctx) => {
+			await ctx.answerCbQuery();
+			if (await isStockman(ctx.from.username)) {
+				Stockman.confirmGiving(ctx);
+			}
+		});
+
 		// Подтверждение поставки в склад
 		bot.action(/^approveRequestSupply>/, async (ctx) => {
 			await ctx.answerCbQuery();
