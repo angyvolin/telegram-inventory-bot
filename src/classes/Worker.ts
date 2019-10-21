@@ -6,7 +6,8 @@ import Confirmation from '../models/confirmation';
 import { ItemRequested } from './Person';
 import { getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
-import { getItem } from '../helpers/items';
+import { getItem, reduceItem } from '../helpers/items';
+import { getCell, reduceFromCell } from '../helpers/cells';
 
 const Markup = require('telegraf/markup');
 
@@ -120,9 +121,79 @@ export default class Worker extends Person {
 			chatId: confirmation.chatId
 		};
 
-		if (confirmation.instruments) insertDoc.instruments = confirmation.instruments;
-		if (confirmation.furniture) insertDoc.furniture = confirmation.furniture;
-		if (confirmation.consumables) insertDoc.consumables = confirmation.consumables;
+		if (confirmation.instruments) {
+			for (const [id, amount] of confirmation.instruments) {
+				const instrument = await getItem(ItemType.INSTRUMENT, id);
+				const currAmount = instrument.amount;
+				if (amount > currAmount) {
+					/**
+					 * !!! ОШИБКА !!!
+					 * Выводим СМС что недостаточно товара на складе
+					 * делаем заявку отклоненной, говорим типо сори
+					 * создай новую заявку. Выходим из этой функции
+					 */
+				}
+			}
+		}
+		if (confirmation.furniture) {
+			for (const [id, amount] of confirmation.furniture) {
+				const furniture = await getItem(ItemType.FURNITURE, id);
+				const currAmount = furniture.amount;
+				if (amount > currAmount) {
+					/**
+					 * !!! ОШИБКА !!!
+					 * Выводим СМС что недостаточно товара на складе
+					 * делаем заявку отклоненной, говорим типо сори
+					 * создай новую заявку. Выходим из этой функции
+					 */
+				}
+			}
+		}
+		if (confirmation.consumables) {
+			for (const [id, amount] of confirmation.consumables) {
+				const consumable = await getItem(ItemType.CONSUMABLE, id);
+				const currAmount = consumable.amount;
+				if (amount > currAmount) {
+					/**
+					 * !!! ОШИБКА !!!
+					 * Выводим СМС что недостаточно товара на складе
+					 * делаем заявку отклоненной, говорим типо сори
+					 * создай новую заявку. Выходим из этой функции
+					 */
+				}
+			}
+		}
+
+		if (confirmation.instruments) {
+			insertDoc.instruments = confirmation.instruments;
+			for (const [id, amount] of confirmation.instruments) {
+				await reduceItem(ItemType.INSTRUMENT, id, amount);
+				const cell = await getCell(ItemType.INSTRUMENT, id);
+				if (cell) {
+					await reduceFromCell(cell._id, ItemType.INSTRUMENT, id, amount);
+				}
+			}
+		}
+		if (confirmation.furniture) {
+			insertDoc.furniture = confirmation.furniture;
+			for (const [id, amount] of confirmation.furniture) {
+				await reduceItem(ItemType.FURNITURE, id, amount);
+				const cell = await getCell(ItemType.FURNITURE, id);
+				if (cell) {
+					await reduceFromCell(cell._id, ItemType.FURNITURE, id, amount);
+				}
+			}
+		}
+		if (confirmation.consumables) {
+			insertDoc.consumables = confirmation.consumables;
+			for (const [id, amount] of confirmation.consumables) {
+				await reduceItem(ItemType.CONSUMABLE, id, amount);
+				const cell = await getCell(ItemType.CONSUMABLE, id);
+				if (cell) {
+					await reduceFromCell(cell._id, ItemType.CONSUMABLE, id, amount);
+				}
+			}
+		}
 		if (confirmation.days) insertDoc.expires = new Date(Date.now() + confirmation.days * 24 * 60 * 60 * 1000);
 
 		const getting = new Getting(insertDoc);

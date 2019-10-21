@@ -51,3 +51,38 @@ export async function addItem(type: ItemType, id: string, amount: number): Promi
 		}
 	}
 }
+
+export async function reduceItem(type: ItemType, id: string, amount: number): Promise<void> {
+	switch (type) {
+		case ItemType.INSTRUMENT: {
+			const instrument = await InstrumentModel.findById(id);
+			if (!instrument) {
+				return;
+			}
+			instrument.amount -= amount;
+			instrument.amount = instrument.amount < 0 ? 0 : instrument.amount;
+			await instrument.save();
+			return;
+		}
+		case ItemType.FURNITURE: {
+			const furniture = await FurnitureModel.findById(id);
+			if (!furniture) {
+				return;
+			}
+			furniture.amount -= amount;
+			furniture.amount = furniture.amount < 0 ? 0 : furniture.amount;
+			await furniture.save();
+			return;
+		}
+		case ItemType.CONSUMABLE: {
+			const consumable = await ConsumableModel.findById(id);
+			if (!consumable) {
+				return;
+			}
+			consumable.amount -= amount;
+			consumable.amount = consumable.amount < 0 ? 0 : consumable.amount;
+			await consumable.save();
+			return;
+		}
+	}
+}
