@@ -34,6 +34,7 @@ requestReturnDate.on('text', async (ctx) => {
 });
 
 requestReturnDate.action('cancel', async (ctx: any) => {
+	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	await ctx.scene.enter('worker/requestGetting');
 });

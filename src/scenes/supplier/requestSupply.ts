@@ -63,17 +63,20 @@ requestSupply.action(/^accept>/, async (ctx: any) => {
 		amount
 	};
 	ctx.session.items.push(item);
+	await ctx.answerCbQuery();
 
 	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Добавить еще', 'more'), Markup.callbackButton('Отправить запрос', 'finish')], [Markup.callbackButton('⏪ Назад', 'back')]]).extra();
 	await ctx.replyWithMarkdown('Желаете добавить еще позиции в поставку?', keyboard);
 });
 
 requestSupply.action('more', async (ctx: any) => {
+	await ctx.answerCbQuery();
 	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')], [Markup.switchToCurrentChatButton('Расходники', 'c'), Markup.callbackButton('⏪ Назад', 'back')]]).extra();
 	await ctx.replyWithMarkdown('Выберите тип объектов, которые Вы хотите поставить', keyboard);
 });
 
 requestSupply.action('finish', async (ctx: any) => {
+	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	const { items } = ctx.session;
 
@@ -82,6 +85,7 @@ requestSupply.action('finish', async (ctx: any) => {
 });
 
 requestSupply.action('back', async (ctx: any) => {
+	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	return KeyboardMessage.send(ctx, PersonType.SUPPLIER);
 });
