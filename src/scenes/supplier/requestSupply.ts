@@ -9,6 +9,6 @@ const Markup = require('telegraf/markup');
 /**
  * Сцена запроса получения
  */
-const requestSupply = new Scene('worker/requestSupply');
+const requestSupply = new Scene('request/requestSupply');
 
 export default requestSupply;

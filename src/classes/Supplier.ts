@@ -113,8 +113,25 @@ export default class Supplier extends Person {
 		}
 		await confirmation.remove();
 
-		// Тут мы вызываем Stockman.confirmSupply, где Stockman
-		// выбирает ячейки для поставляемых объектов
+		const items: ItemRequested[] = [];
+
+		if (confirmation.instruments) {
+			confirmation.instruments.forEach((amount, id) => {
+				items.push({ type: ItemType.INSTRUMENT, id, amount });
+			});
+		}
+		if (confirmation.furniture) {
+			confirmation.furniture.forEach((amount, id) => {
+				items.push({ type: ItemType.FURNITURE, id, amount });
+			});
+		}
+		if (confirmation.consumables) {
+			confirmation.consumables.forEach((amount, id) => {
+				items.push({ type: ItemType.CONSUMABLE, id, amount });
+			});
+		}
+
+		Stockman.confirmSupply(ctx.from.username, items);
 
 		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
 		await ctx.editMessageText(text);
