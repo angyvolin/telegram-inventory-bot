@@ -1,7 +1,5 @@
-import Worker from '../../classes/Worker';
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
-import ItemType from '../../enums/ItemType';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -19,8 +17,7 @@ requestGetting.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestGetting.enter(async (ctx: any) => {
-	ctx.session.items = [];
-	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')], [Markup.switchToCurrentChatButton('Расходники', 'c'), Markup.callbackButton('⏪ Назад', 'back')]]).extra();
+	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')], [Markup.switchToCurrentChatButton('Расходники', 'c')], [Markup.callbackButton('⏪ Назад', 'back')]]).extra();
 	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите получить', keyboard);
 });
 
@@ -70,35 +67,17 @@ requestGetting.action(/^accept>/, async (ctx: any) => {
 	ctx.session.items.push(item);
 
 	await ctx.answerCbQuery();
-
-	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Добавить еще', 'more'), Markup.callbackButton('Отправить запрос', 'finish')], [Markup.callbackButton('⏪ Назад', 'back')]]).extra();
-	await ctx.replyWithMarkdown('Желаете добавить еще позиции в запрос?', keyboard);
-});
-
-requestGetting.action('more', async (ctx: any) => {
-	await ctx.answerCbQuery();
-	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')], [Markup.switchToCurrentChatButton('Расходники', 'c'), Markup.callbackButton('⏪ Назад', 'back')]]).extra();
-	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите получить', keyboard);
-});
-
-requestGetting.action('finish', async (ctx: any) => {
-	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	const { items } = ctx.session;
-
-	for (let item of items) {
-		if (item.type === ItemType.INSTRUMENT) {
-			return ctx.scene.enter('worker/requestReturnDate');
-		}
-	}
-	await Worker.requestGetting(ctx, ctx.from.id, ctx.from.username, ctx.session.items);
-	return KeyboardMessage.send(ctx, PersonType.WORKER);
+	await ctx.scene.enter('worker/requestMoreItems');
 });
 
 requestGetting.action('back', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	return KeyboardMessage.send(ctx, PersonType.WORKER);
+	if (ctx.session.items.length > 0)
+		await ctx.scene.enter('worker/requestMoreItems');
+	else
+		await KeyboardMessage.send(ctx, PersonType.WORKER);
 });
 
 export default requestGetting;

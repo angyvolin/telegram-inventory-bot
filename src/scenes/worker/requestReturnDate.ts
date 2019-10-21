@@ -18,7 +18,7 @@ requestReturnDate.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestReturnDate.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('❌ Отменить', 'cancel')]).extra();
+	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
 	await ctx.replyWithMarkdown('На сколько дней Вы хотите арендовать инструмент(ы)?', keyboard);
 });
 
@@ -33,10 +33,10 @@ requestReturnDate.on('text', async (ctx) => {
 	return KeyboardMessage.send(ctx, PersonType.WORKER);
 });
 
-requestReturnDate.action('cancel', async (ctx: any) => {
+requestReturnDate.action('back', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	await ctx.scene.enter('worker/requestGetting');
+	await ctx.scene.enter('worker/requestMoreItems');
 });
 
 export default requestReturnDate;
