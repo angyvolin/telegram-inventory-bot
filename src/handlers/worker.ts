@@ -28,13 +28,6 @@ export default class WorkerHandlers {
 			}
 		});
 
-		bot.action(/^confirmGetting>/, async (ctx: any) => {
-			await ctx.answerCbQuery();
-			if (await isWorker(ctx.from.username)) {
-				await Worker.confirmGetting(ctx);
-			}
-		});
-
 		bot.action(/^declineGetting>/, async (ctx: any) => {
 			await ctx.answerCbQuery();
 			if (await isWorker(ctx.from.username)) {
@@ -45,6 +38,13 @@ export default class WorkerHandlers {
 
 				const text = ctx.update.callback_query.message.text + '\n\n❌ Отклонено';
 				await ctx.editMessageText(text);
+			}
+		});
+
+		bot.action(/^confirmGetting>/, async (ctx: any) => {
+			await ctx.answerCbQuery();
+			if (await isWorker(ctx.from.username)) {
+				await Worker.confirmGetting(ctx);
 			}
 		});
 	}

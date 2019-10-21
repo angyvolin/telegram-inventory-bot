@@ -46,7 +46,7 @@ export default class Worker extends Person {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`), Markup.callbackButton('✅ Подтвердить', `approveRequestGetting>${confirmationId}`)]).extra();
+			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить', `approveRequestGetting>${confirmationId}`)], [Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]).extra();
 
 			const message = await ctx.telegram.sendMessage(id, messageText, keyboard);
 			messages.push({
@@ -114,7 +114,7 @@ export default class Worker extends Person {
 		if (!confirmation) {
 			return;
 		}
-		await confirmation.remove();
+		confirmation.remove();
 
 		let insertDoc: any = {
 			chatId: confirmation.chatId

@@ -58,7 +58,7 @@ export default class Supplier extends Person {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`), Markup.callbackButton('✅ Подтвердить получение', `approveRequestSupply>${confirmationId}`)]).extra();
+			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить получение', `approveRequestSupply>${confirmationId}`)], [Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]).extra();
 
 			const messageText = supplyText + `\n❗️После поставки подтвердите нажатием кнопки ниже\n`;
 			const message = await ctx.telegram.sendMessage(id, messageText, keyboard);
