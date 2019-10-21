@@ -6,7 +6,7 @@ import Furniture from '../models/furniture';
 import Consumable from '../models/consumable';
 import { ItemCells } from './Person';
 import { addItem } from '../helpers/items';
-import { getCell } from '../helpers/cells';
+import { addToCell, getCell, getCellName } from '../helpers/cells';
 
 const Markup = require('telegraf/markup');
 
@@ -15,11 +15,10 @@ export default class Stockman extends Person {
 	private static async getCellsMessage(items: ItemCells[]) {
 		let message = '';
 		for (const item of items) {
-			const cell = await getCell(item.type, item.id);
-			if (!cell) {
+			if (!item.cellName) {
 				message += `🔸 ${item.name} -> вне ячейки\n`;
 			} else {
-				message += `🔸 ${item.name} -> ${cell}\n`;
+				message += `🔸 ${item.name} -> ${item.cellName}\n`;
 			}
 		}
 		return message;
@@ -39,20 +38,26 @@ export default class Stockman extends Person {
 		const items: ItemCells[] = [];
 		if (confirmation.instruments) {
 			for (const [id, amount] of confirmation.instruments) {
+				const cell = await getCell(ItemType.INSTRUMENT, id);
+				const cellName = cell ? cell.row + cell.col : null;
 				const { name } = await Instrument.findById(id);
-				items.push({ type: ItemType.INSTRUMENT, id, name });
+				items.push({ cellName, name });
 			}
 		}
 		if (confirmation.furniture) {
 			for (const [id, amount] of confirmation.furniture) {
+				const cell = await getCell(ItemType.FURNITURE, id);
+				const cellName = cell ? cell.row + cell.col : null;
 				const { name } = await Furniture.findById(id);
-				items.push({ type: ItemType.FURNITURE, id, name });
+				items.push({ cellName, name });
 			}
 		}
 		if (confirmation.consumables) {
 			for (const [id, amount] of confirmation.consumables) {
+				const cell = await getCell(ItemType.CONSUMABLE, id);
+				const cellName = cell ? cell.row + cell.col : null;
 				const { name } = await Consumable.findById(id);
-				items.push({ type: ItemType.CONSUMABLE, id, name });
+				items.push({ cellName, name });
 			}
 		}
 
@@ -87,23 +92,38 @@ export default class Stockman extends Person {
 		const items: ItemCells[] = [];
 		if (confirmation.instruments) {
 			for (const [id, amount] of confirmation.instruments) {
-				addItem(ItemType.INSTRUMENT, id, amount);
+				await addItem(ItemType.INSTRUMENT, id, amount);
+				const cell = await getCell(ItemType.INSTRUMENT, id);
+				const cellName = cell ? cell.row + cell.col : null;
 				const { name } = await Instrument.findById(id);
-				items.push({ type: ItemType.INSTRUMENT, id, name });
+				items.push({ cellName, name });
+				if (cell) {
+					await addToCell(cell._id, ItemType.INSTRUMENT, id, amount);
+				}
 			}
 		}
 		if (confirmation.furniture) {
 			for (const [id, amount] of confirmation.furniture) {
-				addItem(ItemType.FURNITURE, id, amount);
+				await addItem(ItemType.FURNITURE, id, amount);
+				const cell = await getCell(ItemType.FURNITURE, id);
+				const cellName = cell ? cell.row + cell.col : null;
 				const { name } = await Furniture.findById(id);
-				items.push({ type: ItemType.FURNITURE, id, name });
+				items.push({ cellName, name });
+				if (cell) {
+					await addToCell(cell._id, ItemType.FURNITURE, id, amount);
+				}
 			}
 		}
 		if (confirmation.consumables) {
 			for (const [id, amount] of confirmation.consumables) {
-				addItem(ItemType.CONSUMABLE, id, amount);
+				await addItem(ItemType.CONSUMABLE, id, amount);
+				const cell = await getCell(ItemType.CONSUMABLE, id);
+				const cellName = cell ? cell.row + cell.col : null;
 				const { name } = await Consumable.findById(id);
-				items.push({ type: ItemType.CONSUMABLE, id, name });
+				items.push({ cellName, name });
+				if (cell) {
+					await addToCell(cell._id, ItemType.CONSUMABLE, id, amount);
+				}
 			}
 		}
 
