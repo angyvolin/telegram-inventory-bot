@@ -1,5 +1,5 @@
 import * as api from 'telegraf';
-import Stockman from '../classes/Stockman'
+import Stockman from '../classes/Stockman';
 import Confirmation from '../models/confirmation';
 import { isStockman } from '../helpers/persons';
 

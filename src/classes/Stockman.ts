@@ -25,7 +25,7 @@ export default class Stockman extends Person {
 		return message;
 	}
 
-	//
+	// Public
 	public static async confirmGetting(ctx: any): Promise<void> {
 		const id = ctx.callbackQuery.data.split('>')[1];
 		const confirmation = await Confirmation.findById(id);
@@ -36,6 +36,26 @@ export default class Stockman extends Person {
 			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
 		}
 
+		const items: ItemCells[] = [];
+		if (confirmation.instruments) {
+			for (const [id, amount] of confirmation.instruments) {
+				const { name } = await Instrument.findById(id);
+				items.push({ type: ItemType.INSTRUMENT, id, name });
+			}
+		}
+		if (confirmation.furniture) {
+			for (const [id, amount] of confirmation.furniture) {
+				const { name } = await Furniture.findById(id);
+				items.push({ type: ItemType.FURNITURE, id, name });
+			}
+		}
+		if (confirmation.consumables) {
+			for (const [id, amount] of confirmation.consumables) {
+				const { name } = await Consumable.findById(id);
+				items.push({ type: ItemType.CONSUMABLE, id, name });
+			}
+		}
+
 		const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Получил', `confirmGetting>${id}`)], [Markup.callbackButton('❌ Отклонить получение', `declineGetting>${id}`)]]);
 		const text = '✅ Ваша заявка на получение была подтверждена:\n\n' + confirmation.text + '\n❗️После получения подтвердите нажатием кнопки ниже:';
 		const options = {
@@ -43,6 +63,13 @@ export default class Stockman extends Person {
 		};
 
 		await ctx.telegram.sendMessage(confirmation.chatId, text, options);
+
+		/*
+		 * Тут нам нужно опустошать соответствующие ячейки
+		 */
+
+		const message = 'Выдайте запрошенные позиции в соответствии со списком:\n' + (await Stockman.getCellsMessage(items));
+		await ctx.reply(message);
 	}
 
 	public static async confirmSupply(ctx: any): Promise<void> {
@@ -83,7 +110,11 @@ export default class Stockman extends Person {
 		const text = '✅ Ваша заявка на поставку была подтверждена:\n\n' + confirmation.text;
 		await ctx.telegram.sendMessage(confirmation.chatId, text);
 
-		const message = 'Актуальное размещение позиций:\n' + await Stockman.getCellsMessage(items);
+		/*
+		 * Тут нам нужно заполнять соответствующие ячейки
+		 */
+
+		const message = 'Разместите поставленные позиции в соответствии со списком:\n' + (await Stockman.getCellsMessage(items));
 		await ctx.reply(message);
 	}
 

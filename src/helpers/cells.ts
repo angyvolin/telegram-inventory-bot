@@ -9,19 +9,25 @@ export async function getCell(type: ItemType, id: string): Promise<string> {
 	for (const cell of cells) {
 		switch (type) {
 			case ItemType.INSTRUMENT: {
-				if (!cell.instruments) { break; }
+				if (!cell.instruments) {
+					break;
+				}
 				if (cell.instruments.has(id)) {
 					return cell.row + cell.col;
 				}
 			}
 			case ItemType.FURNITURE: {
-				if (!cell.furniture) { break; }
+				if (!cell.furniture) {
+					break;
+				}
 				if (cell.furniture.has(id)) {
 					return cell.row + cell.col;
 				}
 			}
 			case ItemType.CONSUMABLE: {
-				if (!cell.consumables) { break; }
+				if (!cell.consumables) {
+					break;
+				}
 				if (cell.consumables.has(id)) {
 					return cell.row + cell.col;
 				}

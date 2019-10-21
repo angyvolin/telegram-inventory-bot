@@ -104,7 +104,7 @@ export default class Supplier extends Person {
 		confirmation.chatId = chatId;
 		await confirmation.save();
 	}
-	
+
 	/**
 	 * @desc Add new instrument to the database
 	 */

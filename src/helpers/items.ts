@@ -24,21 +24,27 @@ export async function addItem(type: ItemType, id: string, amount: number): Promi
 	switch (type) {
 		case ItemType.INSTRUMENT: {
 			const instrument = await InstrumentModel.findById(id);
-			if (!instrument) { return; }			
+			if (!instrument) {
+				return;
+			}
 			instrument.amount += amount;
 			await instrument.save();
 			return;
 		}
 		case ItemType.FURNITURE: {
 			const furniture = await FurnitureModel.findById(id);
-			if (!furniture) { return; }			
+			if (!furniture) {
+				return;
+			}
 			furniture.amount += amount;
 			await furniture.save();
 			return;
 		}
 		case ItemType.CONSUMABLE: {
 			const consumable = await ConsumableModel.findById(id);
-			if (!consumable) { return; }			
+			if (!consumable) {
+				return;
+			}
 			consumable.amount += amount;
 			await consumable.save();
 			return;
