@@ -1,12 +1,11 @@
-import Person from './Person';
+import Person, { ItemCells } from './Person';
 import ItemType from '../enums/ItemType';
 import Confirmation from '../models/confirmation';
 import Instrument from '../models/instrument';
 import Furniture from '../models/furniture';
 import Consumable from '../models/consumable';
-import { ItemCells } from './Person';
 import { addItem } from '../helpers/items';
-import { addToCell, getCell, getCellName } from '../helpers/cells';
+import { addToCell, getCell } from '../helpers/cells';
 
 const Markup = require('telegraf/markup');
 
@@ -64,7 +63,8 @@ export default class Stockman extends Person {
 		const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Получил', `confirmGetting>${id}`)], [Markup.callbackButton('❌ Отклонить получение', `declineGetting>${id}`)]]);
 		const text = '✅ Ваша заявка на получение была подтверждена:\n\n' + confirmation.text + '\n❗️После получения подтвердите нажатием кнопки ниже:';
 		const options = {
-			reply_markup: keyboard
+			reply_markup: keyboard,
+			parse_mode: 'Markdown'
 		};
 
 		await ctx.telegram.sendMessage(confirmation.chatId, text, options);
@@ -128,7 +128,7 @@ export default class Stockman extends Person {
 		}
 
 		const text = '✅ Ваша заявка на поставку была подтверждена:\n\n' + confirmation.text;
-		await ctx.telegram.sendMessage(confirmation.chatId, text);
+		await ctx.telegram.sendMessage(confirmation.chatId, text, {parse_mode: 'Markdown'});
 
 		/*
 		 * Тут нам нужно заполнять соответствующие ячейки

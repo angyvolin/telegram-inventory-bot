@@ -1,4 +1,3 @@
-import * as api from 'telegraf';
 import Stockman from '../classes/Stockman';
 import Confirmation from '../models/confirmation';
 import { isStockman } from '../helpers/persons';
@@ -23,7 +22,7 @@ export default class StockmanHandlers {
 				const text = '❌ Ваша заявка была отклонена:\n\n' + confirmation.text;
 
 				await confirmation.remove();
-				await ctx.telegram.sendMessage(confirmation.chatId, text);
+				await ctx.telegram.sendMessage(confirmation.chatId, text, {parse_mode: 'Markdown'});
 			}
 		});
 
