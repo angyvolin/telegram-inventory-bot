@@ -1,9 +1,7 @@
-import Person from './Person';
-import PersonType from '../enums/PersonType';
+import Person, { ItemRequested } from './Person';
 import ItemType from '../enums/ItemType';
 import Getting from '../models/getting';
 import Confirmation from '../models/confirmation';
-import { ItemRequested } from './Person';
 import { getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
 import { getItem, reduceItem } from '../helpers/items';
@@ -14,7 +12,7 @@ const Markup = require('telegraf/markup');
 export default class Worker extends Person {
 	// Private
 	private static async getGettingMessage(username: string, items: ItemRequested[], term = null): Promise<string> {
-		let message = `Работник @${username} хочет получить следующие позиции:\n`;
+		let message = `*Работник* @${username} хочет получить следующие позиции:\n`;
 		for (let item of items) {
 			const { id, type, amount } = item;
 			const { name } = await getItem(type, id);
@@ -47,9 +45,12 @@ export default class Worker extends Person {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить', `approveRequestGetting>${confirmationId}`)], [Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]).extra();
+			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить', `approveRequestGetting>${confirmationId}`)], [Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
 
-			const message = await ctx.telegram.sendMessage(id, messageText, keyboard);
+			const message = await ctx.telegram.sendMessage(id, messageText, {
+				reply_markup: keyboard,
+				parse_mode: 'Markdown'
+			});
 			messages.push({
 				id: message.message_id,
 				chatId: id
@@ -132,6 +133,8 @@ export default class Worker extends Person {
 					 * делаем заявку отклоненной, говорим типо сори
 					 * создай новую заявку. Выходим из этой функции
 					 */
+					const text = ctx.update.callback_query.message.text + `\n\n🔴 К сожалению, Ваша заявка не может быть выполнена.\n*Причина:* недостаточно позиций на складе`;
+					return ctx.editMessageText(text);
 				}
 			}
 		}
@@ -146,6 +149,8 @@ export default class Worker extends Person {
 					 * делаем заявку отклоненной, говорим типо сори
 					 * создай новую заявку. Выходим из этой функции
 					 */
+					const text = ctx.update.callback_query.message.text + `\n\n🔴 К сожалению, Ваша заявка не может быть выполнена.\n*Причина:* недостаточно позиций на складе`;
+					return ctx.editMessageText(text);
 				}
 			}
 		}
@@ -160,6 +165,8 @@ export default class Worker extends Person {
 					 * делаем заявку отклоненной, говорим типо сори
 					 * создай новую заявку. Выходим из этой функции
 					 */
+					const text = ctx.update.callback_query.message.text + `\n\n🔴 К сожалению, Ваша заявка не может быть выполнена.\n*Причина:* недостаточно позиций на складе`;
+					return ctx.editMessageText(text);
 				}
 			}
 		}

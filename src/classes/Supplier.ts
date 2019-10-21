@@ -1,9 +1,6 @@
-import Person from './Person';
-import PersonType from '../enums/PersonType';
-import Stockman from './Stockman';
+import Person, { ItemRequested } from './Person';
 import ItemType from '../enums/ItemType';
 import Confirmation from '../models/confirmation';
-import { ItemRequested } from './Person';
 import { getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
 import { getItem } from '../helpers/items';
@@ -13,7 +10,7 @@ const Markup = require('telegraf/markup');
 export default class Supplier extends Person {
 	// Private
 	private static async getSupplyMessage(username: string, items: ItemRequested[]): Promise<string> {
-		let message = `Поставщик @${username} хочет поставить следующие позиции:\n`;
+		let message = `*Поставщик* @${username} хочет поставить следующие позиции:\n`;
 		for (let item of items) {
 			const { id, type, amount } = item;
 			const { name } = await getItem(type, id);
@@ -58,10 +55,13 @@ export default class Supplier extends Person {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить получение', `approveRequestSupply>${confirmationId}`)], [Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]).extra();
+			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить получение', `approveRequestSupply>${confirmationId}`)], [Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
 
 			const messageText = supplyText + `\n❗️После поставки подтвердите нажатием кнопки ниже\n`;
-			const message = await ctx.telegram.sendMessage(id, messageText, keyboard);
+			const message = await ctx.telegram.sendMessage(id, messageText, {
+				reply_markup: keyboard,
+				parse_mode: 'Markdown'
+			});
 			messages.push({
 				id: message.message_id,
 				chatId: id
