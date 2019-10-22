@@ -8,21 +8,21 @@ const Markup = require('telegraf/markup');
 /**
  * Сцена запроса кол-ва дней аренды инструмента
  */
-const requestReturnDate = new Scene('worker/requestReturnDate');
+const requestGettingDate = new Scene('worker/requestGettingDate');
 
-requestReturnDate.command('start', async (ctx: any) => {
+requestGettingDate.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
 	await KeyboardMessage.send(ctx, PersonType.WORKER);
 	ctx.session = {};
 });
 
 // Точка входа в сцену
-requestReturnDate.enter(async (ctx: any) => {
+requestGettingDate.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('❌ Отменить', 'cancel')]).extra();
 	await ctx.replyWithMarkdown('На сколько дней Вы хотите арендовать инструмент(ы)?', keyboard);
 });
 
-requestReturnDate.on('text', async (ctx) => {
+requestGettingDate.on('text', async (ctx) => {
 	const term = ctx.message.text.match(/\d+/);
 	if (!term) {
 		return ctx.reply('Вы ввели неверное количество дней. Попробуйте еще раз');
@@ -33,10 +33,10 @@ requestReturnDate.on('text', async (ctx) => {
 	return KeyboardMessage.send(ctx, PersonType.WORKER);
 });
 
-requestReturnDate.action('cancel', async (ctx: any) => {
+requestGettingDate.action('cancel', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	await ctx.scene.enter('worker/requestGetting');
 });
 
-export default requestReturnDate;
+export default requestGettingDate;

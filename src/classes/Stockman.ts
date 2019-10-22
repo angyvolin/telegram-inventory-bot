@@ -60,10 +60,11 @@ export default class Stockman extends Person {
 		await confirmation.remove();
 
 		let insertDoc: any = {
-			chatId: confirmation.chatId
+			chatId: confirmation.chatId,
 		};
 
 		if (confirmation.instruments) {
+			insertDoc.active = true;
 			insertDoc.instruments = confirmation.instruments;
 			for (const [id, amount] of confirmation.instruments) {
 				await reduceItem(ItemType.INSTRUMENT, id, amount);

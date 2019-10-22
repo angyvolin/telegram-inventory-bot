@@ -2,6 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IGetting extends Document {
 	chatId: number;
+	active?: boolean;
 	instruments?: Map<string, number>;
 	furniture?: Map<string, number>;
 	consumables?: Map<string, number>;
@@ -13,6 +14,7 @@ export interface IGetting extends Document {
 export const GettingSchema: Schema = new Schema(
 	{
 		chatId: { type: Number, required: true },
+		active: { type: Boolean },
 		instruments: { type: Map },
 		furniture: { type: Map },
 		consumables: { type: Map },

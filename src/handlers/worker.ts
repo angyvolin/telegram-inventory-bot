@@ -17,7 +17,7 @@ export default class WorkerHandlers {
 		// Обработчик для "Запросить возврат"
 		bot.hears('Запросить возврат', async (ctx: any) => {
 			if (await isWorker(ctx.from.username)) {
-				await ctx.scene.enter('worker/requestReturn');
+				await ctx.scene.enter('worker/requestReturnDate');
 			}
 		});
 
