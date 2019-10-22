@@ -18,7 +18,7 @@ export default class WorkerHandlers {
 		// Обработчик для "Запросить возврат"
 		bot.hears('Запросить возврат', async (ctx: any) => {
 			if (await isWorker(ctx.from.username)) {
-				await ctx.scene.enter('worker/requestReturn');
+				await ctx.scene.enter('worker/requestReturnDate');
 			}
 		});
 
@@ -26,6 +26,14 @@ export default class WorkerHandlers {
 		bot.hears('Запросить списание инструмента', async (ctx: any) => {
 			if (await isWorker(ctx.from.username)) {
 				await ctx.scene.enter('worker/requestRemoveInstrument');
+			}
+		});
+
+		bot.action('declineReturn', async (ctx: any) => {
+			await ctx.answerCbQuery();
+			if (await isWorker(ctx.from.username)) {
+				const text = ctx.update.callback_query.message.text + '\n\n❌ Отклонено';
+				await ctx.editMessageText(text);
 			}
 		});
 

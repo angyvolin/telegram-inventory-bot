@@ -8,7 +8,6 @@ export default class StockmanHandlers {
 	public static init(bot) {
 		bot.action(/^declineRequest>/, async (ctx) => {
 			await ctx.answerCbQuery();
-
 			if (await isStockman(ctx.from.username)) {
 				const id = ctx.callbackQuery.data.split('>')[1];
 				const confirmation = await Confirmation.findById(id);

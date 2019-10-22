@@ -3,21 +3,20 @@ import Logger from './logger';
 // Scenes
 import gsend from '../scenes/gsend/gsend';
 import addAdmins from '../scenes/addAdmins/addAdmins';
-import requestGetting from '../scenes/worker/requestGetting';
+import requestGetting from '../scenes/worker/1-requestGetting';
+import requestGettingDate from '../scenes/worker/2-requestGettingDate';
+import requestReturnDate from '../scenes/worker/1-requestReturnDate';
+import requestReturnList from '../scenes/worker/2-requestReturnList';
+import requestReturnGetting from '../scenes/worker/3-requestReturnGetting';
 import requestRemoveInstrument from '../scenes/worker/requestRemoveInstrument';
-import requestReturn from '../scenes/worker/requestReturn';
-import requestReturnInstrument from '../scenes/worker/requestReturnInstrument';
-import requestReturnFurniture from '../scenes/worker/requestReturnFurniture';
 import getItemType from '../scenes/addItem/1-getItemType';
 import getItemName from '../scenes/addItem/2-getItemName';
 import getItemPhoto from '../scenes/addItem/3-getItemPhoto';
 import getPersonRole from '../scenes/addPerson/1-getPersonRole';
 import getPersonName from '../scenes/addPerson/2-getPersonName';
 import getPersonUsername from '../scenes/addPerson/3-getPersonUsername';
-import requestReturnDate from '../scenes/worker/requestReturnDate';
 import requestPurchase from '../scenes/supplier/requestPurchase';
 import requestSupply from '../scenes/supplier/requestSupply';
-import requestMoreItems from '../scenes/worker/requestMoreItems';
 
 const Stage = require('telegraf/stage');
 
@@ -41,12 +40,11 @@ export default class Scenes {
 
 			// Сцены Worker
 			stage.register(requestGetting); // Сцена запроса на получение
+			stage.register(requestGettingDate); // Сцена запроса даты возврата инструментов
 			stage.register(requestRemoveInstrument); // Сцена запроса на списание инструментов
-			stage.register(requestReturn); // Сцена запроса на возврат
-			stage.register(requestReturnInstrument); // Сцена запроса на возврат инструментов
-			stage.register(requestReturnFurniture); // Сцена запроса на возврат фурнитуры
-			stage.register(requestReturnDate);
-			stage.register(requestMoreItems);
+			stage.register(requestReturnDate); // Сцена запроса на возврат, выбор даты получения
+			stage.register(requestReturnList); // Сцена запроса на возврат, выбор конкретного получения
+			stage.register(requestReturnGetting); // Сцена запроса на возврат, подтверждение конкретного получения
 
 			// Сцены Supplier
 			stage.register(requestPurchase);

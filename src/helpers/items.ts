@@ -9,6 +9,15 @@ import { IInstrument } from '../models/instrument';
 import { IFurniture } from '../models/furniture';
 import { IConsumable } from '../models/consumable';
 
+export async function getInstrumentsMessage (instruments: Map<string, number>): Promise<string> {
+	let message = '';
+	for (const [id, amount] of instruments) {
+		const { name } = await getItem(ItemType.INSTRUMENT, id);
+		message += `🔹 ${name} -> ${amount} шт.\n`;
+	}
+	return message;
+}
+
 export async function getItem(type: ItemType, id: string): Promise<IInstrument | IFurniture | IConsumable> {
 	switch (type) {
 		case ItemType.INSTRUMENT:

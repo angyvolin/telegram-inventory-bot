@@ -203,12 +203,7 @@ export default class Worker extends Person {
 		await ctx.editMessageText(text);
 	}
 
-	/**
-	 * @desc После данного подтверждения возврата инструмента
-	 * в БД отмечаем Request как завершенный (инструменты были
-	 * возвращены)
-	 */
-	public static confirmReturn(requestId: number): void {
+	public static async requestReturn(gettingId: string): Promise<void> {
 		//...
 	}
 

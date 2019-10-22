@@ -1,5 +1,7 @@
+import Worker from '../../classes/Worker';
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
+import ItemType from '../../enums/ItemType';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -17,7 +19,8 @@ requestGetting.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestGetting.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')], [Markup.switchToCurrentChatButton('Расходники', 'c')], [Markup.callbackButton('⏪ Назад', 'back')]]).extra();
+	ctx.session.items = [];
+	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')], [Markup.switchToCurrentChatButton('Расходники', 'c'), Markup.callbackButton('⏪ Назад', 'back')]]).extra();
 	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите получить', keyboard);
 });
 
@@ -56,28 +59,57 @@ requestGetting.action(/^reduce>/, async (ctx: any) => {
 });
 
 requestGetting.action(/^accept>/, async (ctx: any) => {
+	await ctx.answerCbQuery();
+	
 	const type = +ctx.callbackQuery.data.split('>')[1];
 	const id = ctx.callbackQuery.data.split('>')[2];
 	const amount = +ctx.callbackQuery.data.split('>')[3];
-	const item = {
-		type,
-		id,
-		amount
-	};
-	ctx.session.items.push(item);
 
+	let flag = false;
+	ctx.session.items.forEach((item, index) => {
+		if (item.type === type && item.id === id) {
+			ctx.session.items[index].amount += amount;
+			flag = true;
+		}
+	});
+
+	if (!flag) {
+		const item = {
+			type,
+			id,
+			amount
+		};
+		ctx.session.items.push(item);
+	}
+
+	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Добавить еще', 'more'), Markup.callbackButton('Отправить запрос', 'finish')], [Markup.callbackButton('⏪ Назад', 'back')]]).extra();
+	await ctx.replyWithMarkdown('Желаете добавить еще позиции в запрос?', keyboard);
+});
+
+requestGetting.action('more', async (ctx: any) => {
+	await ctx.answerCbQuery();
+	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')], [Markup.switchToCurrentChatButton('Расходники', 'c'), Markup.callbackButton('⏪ Назад', 'back')]]).extra();
+	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите получить', keyboard);
+});
+
+requestGetting.action('finish', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	await ctx.scene.enter('worker/requestMoreItems');
+	const { items } = ctx.session;
+
+	for (let item of items) {
+		if (item.type === ItemType.INSTRUMENT) {
+			return ctx.scene.enter('worker/requestGettingDate');
+		}
+	}
+	await Worker.requestGetting(ctx, ctx.from.id, ctx.from.username, ctx.session.items);
+	return KeyboardMessage.send(ctx, PersonType.WORKER);
 });
 
 requestGetting.action('back', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	if (ctx.session.items.length > 0)
-		await ctx.scene.enter('worker/requestMoreItems');
-	else
-		await KeyboardMessage.send(ctx, PersonType.WORKER);
+	return KeyboardMessage.send(ctx, PersonType.WORKER);
 });
 
 export default requestGetting;
