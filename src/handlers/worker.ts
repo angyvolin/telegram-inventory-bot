@@ -10,6 +10,7 @@ export default class WorkerHandlers {
 		// Обработчик для "Запросить получение"
 		bot.hears('Запросить получение', async (ctx: any) => {
 			if (await isWorker(ctx.from.username)) {
+				ctx.session.items = [];
 				await ctx.scene.enter('worker/requestGetting');
 			}
 		});

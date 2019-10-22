@@ -17,6 +17,7 @@ import getPersonName from '../scenes/addPerson/2-getPersonName';
 import getPersonUsername from '../scenes/addPerson/3-getPersonUsername';
 import requestPurchase from '../scenes/supplier/requestPurchase';
 import requestSupply from '../scenes/supplier/requestSupply';
+import requestMoreItems from '../scenes/worker/requestMoreItems';
 
 const Stage = require('telegraf/stage');
 
@@ -45,6 +46,7 @@ export default class Scenes {
 			stage.register(requestReturnDate); // Сцена запроса на возврат, выбор даты получения
 			stage.register(requestReturnList); // Сцена запроса на возврат, выбор конкретного получения
 			stage.register(requestReturnGetting); // Сцена запроса на возврат, подтверждение конкретного получения
+			stage.register(requestMoreItems);
 
 			// Сцены Supplier
 			stage.register(requestPurchase);
