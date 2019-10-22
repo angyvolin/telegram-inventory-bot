@@ -36,7 +36,7 @@ export default class Stockman extends Person {
 		const messages = confirmation.messages;
 
 		for (const message of messages) {
-			const text = confirmation.text + '\n✅ Подтверждено';
+			const text = confirmation.text + '\n✅ Подтверждено';			
 			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
 		}
 
@@ -171,17 +171,48 @@ export default class Stockman extends Person {
 
 	/**
 	 * Confirm return
-	 * @desc
-	 * Смс Worker с подтверждением о возможности вернуть
-	 * инструменты, а также кнопкой для подтверждения
-	 * возврата
 	 */
-	public static confirmReturnInstrument(requestId: number): void {
-		//...
-	}
+	public static async confirmReturn(ctx: any): Promise<void> {
+		const id = ctx.callbackQuery.data.split('>')[1];
+		const gettingId = ctx.callbackQuery.data.split('>')[2];
+	
+		const confirmation = await Confirmation.findById(id);
+		const getting = await Getting.findById(gettingId);
 
-	public static confirmReturnFurniture(username: string, furniture: Map<number, number>): void {
-		//...
+		if (!confirmation || !getting) {
+			return;
+		}
+
+		const messages = confirmation.messages;
+
+		for (const message of messages) {
+			const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+		}
+
+		const text = '✅ Инструменты были успешно возвращены';
+		await ctx.telegram.sendMessage(confirmation.chatId, text);
+
+		getting.active = false;
+		await getting.save();
+
+		confirmation.remove();
+		
+		const items: ItemCells[] = [];
+		
+		for (const [id, amount] of getting.instruments) {
+			await addItem(ItemType.INSTRUMENT, id, amount);
+			const cell = await getCell(ItemType.INSTRUMENT, id);
+			const cellName = cell ? cell.row + cell.col : null;
+			const { name } = await Instrument.findById(id);
+			items.push({ cellName, name });
+			if (cell) {
+				await addToCell(cell._id, ItemType.INSTRUMENT, id, amount);
+			}
+		}
+
+		const message = 'Разместите поставленные позиции в соответствии со списком:\n' + (await Stockman.getCellsMessage(items));
+		await ctx.reply(message);
 	}
 
 	/**

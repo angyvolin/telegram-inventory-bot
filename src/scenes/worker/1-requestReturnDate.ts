@@ -19,7 +19,7 @@ requestReturnDate.command('start', async (ctx: any) => {
 // Точка входа в сцену
 requestReturnDate.enter(async (ctx: any) => {
 	const gettings = await getActiveGettings(ctx.from.id);
-	if (!gettings) {
+	if (!gettings.length) {
 		await ctx.scene.leave()
 		await ctx.reply('Активные получения отсутствуют!');
 		return KeyboardMessage.send(ctx, PersonType.WORKER);

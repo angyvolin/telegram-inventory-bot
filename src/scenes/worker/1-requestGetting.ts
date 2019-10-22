@@ -102,7 +102,7 @@ requestGetting.action('finish', async (ctx: any) => {
 			return ctx.scene.enter('worker/requestGettingDate');
 		}
 	}
-	await Worker.requestGetting(ctx, ctx.from.id, ctx.from.username, ctx.session.items);
+	await Worker.requestGetting(ctx, ctx.session.items);
 	return KeyboardMessage.send(ctx, PersonType.WORKER);
 });
 

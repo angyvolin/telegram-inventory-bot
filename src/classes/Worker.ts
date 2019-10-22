@@ -6,7 +6,7 @@ import Confirmation from '../models/confirmation';
 import { ItemCells } from './Person';
 import { getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
-import { getItem, reduceItem } from '../helpers/items';
+import { getInstrumentsMessage, getItem, reduceItem } from '../helpers/items';
 import { getCell } from '../helpers/cells';
 
 const Markup = require('telegraf/markup');
@@ -35,7 +35,7 @@ export default class Worker extends Person {
 	/*
 	 * Request getting
 	 */
-	public static async requestGetting(ctx: any, chatId: number, username: string, items: ItemRequested[], days?: number): Promise<void> {
+	public static async requestGetting(ctx: any, items: ItemRequested[], days?: number): Promise<void> {
 		if (!items.length) {
 			return;
 		}
@@ -43,7 +43,7 @@ export default class Worker extends Person {
 		if (!stockmans.length) {
 			return;
 		}
-		const messageText = await Worker.getGettingMessage(username, items);
+		const messageText = await Worker.getGettingMessage(ctx.from.username, items);
 		const messages = [];
 
 		const confirmation = new Confirmation();
@@ -101,7 +101,7 @@ export default class Worker extends Person {
 
 		confirmation.messages = messages;
 		confirmation.text = messageText;
-		confirmation.chatId = chatId;
+		confirmation.chatId = ctx.from.id;
 		await confirmation.save();
 	}
 
@@ -203,8 +203,42 @@ export default class Worker extends Person {
 		await ctx.editMessageText(text);
 	}
 
-	public static async requestReturn(gettingId: string): Promise<void> {
-		//...
+	public static async requestReturn(ctx: any, gettingId: string): Promise<void> {
+		const getting = await Getting.findById(gettingId);
+		const stockmans = await getStockmans();
+		if (!getting || !stockmans.length) {
+			return;
+		}
+
+		const instruments = getting.instruments;
+
+		const returnText = await getInstrumentsMessage(instruments);
+		const messages = [];
+
+		const confirmation = new Confirmation();
+		const confirmationId = confirmation._id;
+		
+		for (let stockman of stockmans) {
+			const id = await getChatId(stockman.username);
+			if (!id) continue;
+
+			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить', `approveReturn>${confirmationId}>${gettingId}`)], [Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+
+			const messageText = `*Пользователь* ${ctx.from.username} желает вернуть инструменты на склад:\n` + returnText + `\n❗️После возврата подтвердите нажатием кнопки ниже\n`;
+			const message = await ctx.telegram.sendMessage(id, messageText, {
+				reply_markup: keyboard,
+				parse_mode: 'Markdown'
+			});
+			messages.push({
+				id: message.message_id,
+				chatId: id
+			});
+		}
+
+		confirmation.messages = messages;
+		confirmation.text = returnText;
+		confirmation.chatId = ctx.from.id;
+		await confirmation.save();
 	}
 
 	/*

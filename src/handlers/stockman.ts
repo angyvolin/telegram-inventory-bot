@@ -43,11 +43,18 @@ export default class StockmanHandlers {
 		});
 
 		// Подтверждение поставки в склад
-		bot.action(/^approveRequestSupply>/, async (ctx) => {
+		bot.action(/^approveSupply>/, async (ctx) => {
 			await ctx.answerCbQuery();
 			if (await isStockman(ctx.from.username)) {
 				Stockman.confirmSupply(ctx);
 			}
 		});
+
+		bot.action(/^approveReturn>/, async (ctx) => {
+			await ctx.answerCbQuery();
+			if (await isStockman(ctx.from.username)) {
+				Stockman.confirmReturn(ctx);
+			}
+		})
 	}
 }
