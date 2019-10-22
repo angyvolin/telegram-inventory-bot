@@ -27,8 +27,9 @@ requestGettingDate.on('text', async (ctx) => {
 	if (!term) {
 		return ctx.reply('Вы ввели неверное количество дней. Попробуйте еще раз');
 	}
-	await ctx.scene.leave();
 	const days = term[0];
+	await ctx.scene.leave();
+	await ctx.reply('Ваша заявка успешно отправлена! Ожидайте подтверждения от кладовщика');
 	await Worker.requestGetting(ctx, ctx.from.id, ctx.from.username, ctx.session.items, days);
 	return KeyboardMessage.send(ctx, PersonType.WORKER);
 });

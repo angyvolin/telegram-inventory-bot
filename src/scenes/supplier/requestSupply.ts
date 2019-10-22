@@ -80,6 +80,7 @@ requestSupply.action('finish', async (ctx: any) => {
 	await ctx.scene.leave();
 	const { items } = ctx.session;
 
+	await ctx.reply('Ваша заявка успешно отправлена! Ожидайте подтверждения от кладовщика');
 	await Supplier.requestSupply(ctx, ctx.from.id, ctx.from.username, items);
 	return KeyboardMessage.send(ctx, PersonType.SUPPLIER);
 });

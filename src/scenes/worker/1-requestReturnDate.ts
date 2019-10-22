@@ -1,6 +1,5 @@
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
-import { getInstrumentsMessage } from '../../helpers/items';
 import { getDateFormat, getActiveGettings } from '../../helpers/gettings';
 
 const Scene = require('telegraf/scenes/base');
@@ -39,9 +38,8 @@ requestReturnDate.enter(async (ctx: any) => {
 		dates.set(date, currentGettings);
 		buttons.push(Markup.callbackButton(date, `returnDay>${date}`));
 	}
-	console.dir(buttons);
 	ctx.session.dates = dates;
-	const keyboard = Markup.inlineKeyboard(buttons).extra();
+	const keyboard = Markup.inlineKeyboard([buttons, [Markup.callbackButton('⏪ Назад', 'back')]]).extra();
 	await ctx.replyWithMarkdown('Выберите дату получения инструментов, которые вы хотите вернуть', keyboard);
 });
 

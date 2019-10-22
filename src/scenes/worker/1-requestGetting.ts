@@ -99,7 +99,7 @@ requestGetting.action('finish', async (ctx: any) => {
 
 	for (let item of items) {
 		if (item.type === ItemType.INSTRUMENT) {
-			return ctx.scene.enter('worker/requestReturnDate');
+			return ctx.scene.enter('worker/requestGettingDate');
 		}
 	}
 	await Worker.requestGetting(ctx, ctx.from.id, ctx.from.username, ctx.session.items);

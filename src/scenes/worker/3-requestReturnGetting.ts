@@ -1,3 +1,4 @@
+import Worker from '../../classes/Worker';
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
 import { getInstrumentsMessage } from '../../helpers/items';
@@ -19,16 +20,18 @@ requestReturnGetting.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestReturnGetting.enter(async (ctx: any) => {
-	// ctx.session.gettingId
+	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить', `approveRequestReturn>${ctx.session.gettingId}`), Markup.callbackButton('❌ Отклонить', `declineReturn`)], [Markup.callbackButton('⏪ Назад', 'back')]]).extra();
+	await ctx.reply(ctx.session.instrumentMessages[ctx.session.gettingId], keyboard);
 });
 
-/*requestReturnGetting.action(/^returnGetting>/, async (ctx: any) => {
+requestReturnGetting.action(/^approveRequestReturn/, async (ctx: any) => {
 	await ctx.answerCbQuery();
 	const gettingId = ctx.callbackQuery.data.split('>')[1];
-	ctx.session.gettingId = gettingId;
 	await ctx.scene.leave();
-	await ctx.scene.enter('worker/requestReturnGetting');
-});*/
+	await ctx.editMessageText(ctx.update.callback_query.message.text);
+	await ctx.reply('Ваша заявка успешно отправлена! Ожидайте подтверждения от кладовщика');
+	await Worker.requestReturn(gettingId);
+});
 
 requestReturnGetting.action('back', async (ctx: any) => {
 	await ctx.answerCbQuery();

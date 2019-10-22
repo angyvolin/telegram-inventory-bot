@@ -29,13 +29,16 @@ requestReturnList.enter(async (ctx: any) => {
 		await ctx.reply('Активные получения отсутствуют!');
 		return KeyboardMessage.send(ctx, PersonType.WORKER);
 	}
+	ctx.session.instrumentMessages = new Map();
 	const buttons = [];
 	for (const getting of gettings) {
-		const gettingId = getting._id;
+		const gettingId = getting._id.toString();
 		const instruments = new Map(Object.entries(getting.instruments));
 		const instrumentMessage = await getInstrumentsMessage(instruments);
+		ctx.session.instrumentMessages.set(gettingId, instrumentMessage);
 		buttons.push(Markup.callbackButton(instrumentMessage, `returnList>${gettingId}`));
 	}
+	buttons.push(Markup.callbackButton('⏪ Назад', 'back'));
 	const keyboard = Markup.inlineKeyboard(buttons, { columns: 1 }).extra();
 	await ctx.replyWithMarkdown('Выберите инструменты, которые вы хотите вернуть', keyboard);
 });
