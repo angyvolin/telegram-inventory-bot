@@ -2,6 +2,7 @@ import Chief from '../../classes/Chief';
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
 import ItemType from '../../enums/ItemType';
+import { generateTable } from '../../helpers/excel';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -20,14 +21,18 @@ requestGettingTable.command('start', async (ctx: any) => {
 // Точка входа в сцену
 requestGettingTable.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]);
-	/*await ctx.replyWithDocument({
-		source: ...
-	});*/
+	const table = await generateTable();
+	await ctx.replyWithDocument({
+		source: table,
+		filename: 'Шаблон.csv'
+	});
 	await ctx.reply('Заполните данную таблицу с позициями для выдачи работнику, а потом отправьте ее сюда', keyboard);
 });
 
-requestGettingTable.action('accept', async (ctx: any) => {
-	await ctx.answerCbQuery();
+requestGettingTable.on('document', async (ctx: any) => {
+	const fileId = ctx.message.document.file_id;
+	const fileLink = await ctx.telegram.getFileLink(fileId);
+
 	await ctx.scene.leave();
 	await ctx.scene.enter('chief/requestGettingWorker');
 });

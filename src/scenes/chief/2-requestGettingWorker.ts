@@ -19,7 +19,7 @@ requestGettingWorker.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestGettingWorker.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]);
+	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
 	await ctx.reply('Введите юзернейм работника, которому нужно выдать позиции', keyboard);
 });
 
