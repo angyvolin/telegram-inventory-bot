@@ -3,7 +3,6 @@ import DB from './init/db';
 import Handlers from './init/handlers';
 import Middlewares from './init/middlewares';
 import Scenes from './init/scenes';
-import { generateTable } from './helpers/excel';
 
 const main = async () => {
 	await DB.connect(); // подключаемся к БД
@@ -13,8 +12,6 @@ const main = async () => {
 	Middlewares.init(bot); // инициализируем прослойки
 	Scenes.init(bot); // инициализируем сцены
 	Handlers.init(bot); // инициализируем обработчики
-
-	await generateTable();
 };
 
 main();
