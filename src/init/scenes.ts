@@ -18,6 +18,8 @@ import getPersonUsername from '../scenes/addPerson/3-getPersonUsername';
 import requestPurchase from '../scenes/supplier/requestPurchase';
 import requestSupply from '../scenes/supplier/requestSupply';
 import requestMoreItems from '../scenes/worker/requestMoreItems';
+import getMoveItem from '../scenes/stockman/getMoveItem';
+import getMoveDestination from '../scenes/stockman/getMoveDestination';
 
 const Stage = require('telegraf/stage');
 
@@ -38,6 +40,9 @@ export default class Scenes {
 			stage.register(getPersonRole);
 			stage.register(getPersonName);
 			stage.register(getPersonUsername);
+
+			stage.register(getMoveItem);
+			stage.register(getMoveDestination);
 
 			// Сцены Worker
 			stage.register(requestGetting); // Сцена запроса на получение

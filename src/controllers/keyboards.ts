@@ -6,6 +6,7 @@ const Markup = require('telegraf/markup');
 const buttons: any = {
 	worker: [['Запросить получение', 'Запросить возврат'], ['Запросить списание инструмента']],
 	supplier: ['Запросить закупку', 'Запросить поставку в склад'],
+	stockman: ['Переместить позиции по складу'],
 	chief: []
 };
 
@@ -15,6 +16,10 @@ export default class KeyboardMessage {
 		.resize()
 		.extra();
 	private static supplier = Markup.keyboard(buttons.supplier)
+		.oneTime()
+		.resize()
+		.extra();
+	private static stockman = Markup.keyboard(buttons.stockman)
 		.oneTime()
 		.resize()
 		.extra();
@@ -30,6 +35,10 @@ export default class KeyboardMessage {
 			}
 			case PersonType.SUPPLIER: {
 				await ctx.reply('Добро пожаловать, поставщик!', this.supplier);
+				break;
+			}
+			case PersonType.STOCKMAN: {
+				await ctx.reply('Добро пожаловать, кладовщик!', this.stockman);
 				break;
 			}
 			case PersonType.CHIEF: {

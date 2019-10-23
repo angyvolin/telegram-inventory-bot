@@ -5,22 +5,23 @@ import ItemType from '../enums/ItemType';
 import { getItem } from '../helpers/items';
 import { getPersonType } from '../helpers/persons';
 import PersonType from '../enums/PersonType';
+import { getCell } from '../helpers/cells';
 
 const Markup = require('telegraf/markup');
 
 export default class InlineQueryHandlers {
 	public static init(bot: any) {
-		bot.inlineQuery('i', async (ctx) => {
+		bot.inlineQuery(['i', 'move i'], async (ctx) => {
 			const items = await Instrument.getAllItems();
 			await sendResults(ctx, items);
 		});
 
-		bot.inlineQuery('f', async (ctx) => {
+		bot.inlineQuery(['f', 'move f'], async (ctx) => {
 			const items = await Furniture.getAllItems();
 			await sendResults(ctx, items);
 		});
 
-		bot.inlineQuery('c', async (ctx) => {
+		bot.inlineQuery(['c', 'move c'], async (ctx) => {
 			const items = await Consumable.getAllItems();
 			await sendResults(ctx, items);
 		});
@@ -31,18 +32,24 @@ export default class InlineQueryHandlers {
 			 * query = i / f / c -> тип выбранной позиции
 			 * result_id -> id выбранной позиции
 			 */
+			const {query} = ctx.update.chosen_inline_result;
+			const isMoving = query.includes('move');
+
 			const personType = await getPersonType(ctx.from.username);
 			let type;
-			switch (ctx.update.chosen_inline_result.query) {
-				case 'i': {
+			switch (query) {
+				case 'i':
+				case 'move i': {
 					type = ItemType.INSTRUMENT;
 					break;
 				}
-				case 'f': {
+				case 'f':
+				case 'move f': {
 					type = ItemType.FURNITURE;
 					break;
 				}
-				case 'c': {
+				case 'c':
+				case 'move c': {
 					type = ItemType.CONSUMABLE;
 					break;
 				}
@@ -56,8 +63,14 @@ export default class InlineQueryHandlers {
 			}
 
 			if (item.amount > 0) {
-				const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${item.amount}`), Markup.callbackButton('1', 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}>${item.amount}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)]]);
-				const message = `Название: *${item.name}*\nВ наличии: *${item.amount}*`;
+				let keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${item.amount}`), Markup.callbackButton('1', 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}>${item.amount}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)]]);
+				let message = `Название: *${item.name}*\nВ наличии: *${item.amount}*`;
+
+				if (isMoving) {
+					const currCell = await getCell(type, item._id.toString());
+					message += currCell ? `\nАдрес: *${currCell.row + currCell.col}*` : `\nНаходится вне ячейки`;
+					keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back'), , Markup.callbackButton('✅ Выбрать', `selectMoveItem>${type}>${id}`)]);
+				}
 				const options = {
 					parse_mode: 'Markdown',
 					reply_markup: keyboard,
@@ -84,7 +97,7 @@ export default class InlineQueryHandlers {
 			for (let i = +offset; i < limit; i++) {
 				let item = items[i];
 
-				if (personType === PersonType.WORKER && item.amount === 0)
+				if ((personType === PersonType.WORKER || personType === PersonType.STOCKMAN) && item.amount === 0)
 					continue;
 
 				results.push({

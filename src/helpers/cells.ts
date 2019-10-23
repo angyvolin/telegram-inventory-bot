@@ -1,11 +1,15 @@
 import ItemType from '../enums/ItemType';
 import Cell, { ICell } from '../models/cell';
-import Instrument from '../models/instrument';
-import Furniture from '../models/furniture';
-import Consumable from '../models/consumable';
+
+export async function getCells() {
+	return Cell.find({});
+}
 
 export async function getCell(type: ItemType, id: string): Promise<ICell> {
-	const cells = await Cell.find({});
+	console.log(type);
+	console.log(id);
+	const cells = await getCells();
+
 	for (const cell of cells) {
 		switch (type) {
 			case ItemType.INSTRUMENT: {
@@ -38,7 +42,8 @@ export async function getCell(type: ItemType, id: string): Promise<ICell> {
 }
 
 export async function getCellName(type: ItemType, id: string): Promise<string> {
-	const cells = await Cell.find({});
+	const cells = await getCells();
+
 	for (const cell of cells) {
 		switch (type) {
 			case ItemType.INSTRUMENT: {
@@ -109,6 +114,20 @@ export async function addToCell(cellId: string, type: ItemType, id: string, amou
 		}
 	}
 }
+
+export async function removeFromCell(cellId: string, type: ItemType, id: string): Promise<void> {
+	const cell = await Cell.findById(cellId);
+
+	if (cell.instruments) {
+		cell.instruments.delete(id);
+	} else if (cell.furniture) {
+		cell.furniture.delete(id);
+	} else if (cell.consumables) {
+		cell.consumables.delete(id);
+	}
+	await cell.save();
+}
+
 
 export async function reduceFromCell(cellId: string, type: ItemType, id: string, amount: number): Promise<void> {
 	const cell = await Cell.findById(cellId);

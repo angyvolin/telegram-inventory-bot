@@ -3,7 +3,7 @@ import AdminMessage from '../controllers/admin';
 import KeyboardMessage from '../controllers/keyboards';
 import PersonType from '../enums/PersonType';
 import { isAdmin } from '../helpers/functions';
-import { getPersonType, isWorker, isSupplier, isChief } from '../helpers/persons';
+import { getPersonType, isChief, isStockman, isSupplier, isWorker } from '../helpers/persons';
 
 export default class StartHandlers {
 	public static init(bot: api.Telegraf<api.ContextMessageUpdate>) {
@@ -30,6 +30,8 @@ export default class StartHandlers {
 				await KeyboardMessage.send(ctx, PersonType.SUPPLIER);
 			} else if (await isChief(ctx.from.username)) {
 				await KeyboardMessage.send(ctx, PersonType.CHIEF);
+			} else if (await isStockman(ctx.from.username)) {
+				await KeyboardMessage.send(ctx, PersonType.STOCKMAN);
 			}
 		});
 	}

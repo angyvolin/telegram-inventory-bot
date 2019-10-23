@@ -6,6 +6,12 @@ const Markup = require('telegraf/markup');
 
 export default class StockmanHandlers {
 	public static init(bot) {
+		bot.hears('Переместить позиции по складу', async ctx => {
+			if (await isStockman(ctx.from.username)) {
+				await ctx.scene.enter('stockman/getMoveItem');
+			}
+		});
+
 		bot.action(/^declineRequest>/, async (ctx) => {
 			await ctx.answerCbQuery();
 			if (await isStockman(ctx.from.username)) {
@@ -32,7 +38,6 @@ export default class StockmanHandlers {
 				Stockman.confirmGetting(ctx);
 			}
 		});
-
 
 		bot.action(/^approveGiving>/, async (ctx) => {
 			await ctx.answerCbQuery();
