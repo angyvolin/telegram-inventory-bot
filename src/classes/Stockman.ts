@@ -99,8 +99,12 @@ export default class Stockman extends Person {
 		const getting = new Getting(insertDoc);
 		await getting.save();
 
-		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
-		await ctx.editMessageText(text);
+		const messages = confirmation.messages;
+
+		for (const message of messages) {
+			const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
+			await ctx.editMessageText(text);
+		}
 	}
 
 	public static async confirmSupply(ctx: any): Promise<void> {
