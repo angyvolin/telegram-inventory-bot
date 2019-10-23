@@ -2,12 +2,10 @@ import ItemType from '../enums/ItemType';
 import Instrument from '../classes/Instrument';
 import Furniture from '../classes/Furniture';
 import Consumable from '../classes/Consumable';
-import InstrumentModel from '../models/instrument';
-import FurnitureModel from '../models/furniture';
-import ConsumableModel from '../models/consumable';
-import { IInstrument } from '../models/instrument';
-import { IFurniture } from '../models/furniture';
-import { IConsumable } from '../models/consumable';
+import InstrumentModel, { IInstrument } from '../models/instrument';
+import FurnitureModel, { IFurniture } from '../models/furniture';
+import ConsumableModel, { IConsumable } from '../models/consumable';
+import { getCell } from './cells';
 
 export async function getInstrumentsMessage (instruments: Map<string, number>): Promise<string> {
 	let message = '';
@@ -27,6 +25,65 @@ export async function getItem(type: ItemType, id: string): Promise<IInstrument |
 		case ItemType.CONSUMABLE:
 			return Consumable.getItem(id);
 	}
+}
+
+export async function getOutsideItems(): Promise<Array<any>> {
+	const instruments = await Instrument.getAllItems();
+	const furniture = await Furniture.getAllItems();
+	const consumables = await Consumable.getAllItems();
+
+	let items = [];
+
+	for (let item of instruments) {
+		const inCell = await getCell(ItemType.INSTRUMENT, item._id.toString());
+		if (!inCell && item.amount > 0) {
+			items.push(item);
+		}
+	}
+
+	for (let item of furniture) {
+		const inCell = await getCell(ItemType.FURNITURE, item._id.toString());
+		if (!inCell && item.amount > 0) {
+			items.push(item);
+		}
+	}
+
+	for (let item of consumables) {
+		const inCell = await getCell(ItemType.CONSUMABLE, item._id.toString());
+		if (!inCell && item.amount > 0) {
+			items.push(item);
+		}
+	}
+
+	return items;
+}
+
+export async function getAbsentItems(): Promise<Array<any>> {
+	const instruments = await Instrument.getAllItems();
+	const furniture = await Furniture.getAllItems();
+	const consumables = await Consumable.getAllItems();
+
+	let items = [];
+
+	for (let item of instruments) {
+		if (item.amount === 0) {
+			items.push(item);
+		}
+	}
+
+	for (let item of furniture) {
+		if (item.amount === 0) {
+			items.push(item);
+		}
+	}
+
+	for (let item of consumables) {
+		if (item.amount === 0) {
+			items.push(item);
+		}
+	}
+
+	return items;
 }
 
 export async function addItem(type: ItemType, id: string, amount: number): Promise<void> {

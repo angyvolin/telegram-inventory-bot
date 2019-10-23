@@ -1,13 +1,11 @@
 import ItemType from '../enums/ItemType';
 import Cell, { ICell } from '../models/cell';
 
-export async function getCells() {
-	return Cell.find({});
+export async function getCells(filter = {}) {
+	return Cell.find(filter);
 }
 
 export async function getCell(type: ItemType, id: string): Promise<ICell> {
-	console.log(type);
-	console.log(id);
 	const cells = await getCells();
 
 	for (const cell of cells) {

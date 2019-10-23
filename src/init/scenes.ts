@@ -20,6 +20,8 @@ import requestSupply from '../scenes/supplier/requestSupply';
 import requestMoreItems from '../scenes/worker/requestMoreItems';
 import getMoveItem from '../scenes/stockman/getMoveItem';
 import getMoveDestination from '../scenes/stockman/getMoveDestination';
+import getAddresses from '../scenes/stockman/getAddresses';
+import getAbsentItems from '../scenes/stockman/getAbsentItems';
 
 const Stage = require('telegraf/stage');
 
@@ -43,6 +45,8 @@ export default class Scenes {
 
 			stage.register(getMoveItem);
 			stage.register(getMoveDestination);
+			stage.register(getAddresses);
+			stage.register(getAbsentItems);
 
 			// Сцены Worker
 			stage.register(requestGetting); // Сцена запроса на получение

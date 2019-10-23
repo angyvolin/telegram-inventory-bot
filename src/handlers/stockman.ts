@@ -12,6 +12,18 @@ export default class StockmanHandlers {
 			}
 		});
 
+		bot.hears('Просмотреть ячейки', async ctx => {
+			if (await isStockman(ctx.from.username)) {
+				await ctx.scene.enter('stockman/getAddresses');
+			}
+		});
+
+		bot.hears('Отсутствующие позиции', async ctx => {
+			if (await isStockman(ctx.from.username)) {
+				await ctx.scene.enter('stockman/getAbsentItems');
+			}
+		});
+
 		bot.action(/^declineRequest>/, async (ctx) => {
 			await ctx.answerCbQuery();
 			if (await isStockman(ctx.from.username)) {
