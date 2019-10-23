@@ -22,6 +22,7 @@ import getMoveItem from '../scenes/stockman/getMoveItem';
 import getMoveDestination from '../scenes/stockman/getMoveDestination';
 import getAddresses from '../scenes/stockman/getAddresses';
 import getAbsentItems from '../scenes/stockman/getAbsentItems';
+import requestGettingTable from '../scenes/chief/1-requestGettingTable'
 
 const Stage = require('telegraf/stage');
 
@@ -60,6 +61,9 @@ export default class Scenes {
 			// Сцены Supplier
 			stage.register(requestPurchase);
 			stage.register(requestSupply);
+
+			// Сцены Chief
+			stage.register(requestGettingTable); // Сцена запроса выдачи позиций работнику
 
 			bot.use(stage.middleware());
 
