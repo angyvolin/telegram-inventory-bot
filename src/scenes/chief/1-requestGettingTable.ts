@@ -1,8 +1,6 @@
-import Chief from '../../classes/Chief';
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
-import ItemType from '../../enums/ItemType';
-import { generateTable } from '../../helpers/excel';
+import { downloadTable, generateTable } from '../../helpers/excel';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -32,6 +30,8 @@ requestGettingTable.enter(async (ctx: any) => {
 requestGettingTable.on('document', async (ctx: any) => {
 	const fileId = ctx.message.document.file_id;
 	const fileLink = await ctx.telegram.getFileLink(fileId);
+
+	ctx.session.table = await downloadTable(fileLink);
 
 	await ctx.scene.leave();
 	await ctx.scene.enter('chief/requestGettingWorker');

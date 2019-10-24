@@ -60,7 +60,7 @@ requestGetting.action(/^reduce>/, async (ctx: any) => {
 
 requestGetting.action(/^accept>/, async (ctx: any) => {
 	await ctx.answerCbQuery();
-	
+
 	const type = +ctx.callbackQuery.data.split('>')[1];
 	const id = ctx.callbackQuery.data.split('>')[2];
 	const amount = +ctx.callbackQuery.data.split('>')[3];
@@ -82,8 +82,8 @@ requestGetting.action(/^accept>/, async (ctx: any) => {
 		ctx.session.items.push(item);
 	}
 
-	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Добавить еще', 'more'), Markup.callbackButton('Отправить запрос', 'finish')], [Markup.callbackButton('⏪ Назад', 'back')]]).extra();
-	await ctx.replyWithMarkdown('Желаете добавить еще позиции в запрос?', keyboard);
+	await ctx.scene.leave();
+	await ctx.scene.enter('worker/requestMoreItems');
 });
 
 requestGetting.action('more', async (ctx: any) => {
