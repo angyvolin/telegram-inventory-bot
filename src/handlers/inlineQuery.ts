@@ -62,7 +62,7 @@ export default class InlineQueryHandlers {
 				return ctx.telegram.sendMessage(ctx.from.id, 'Ошибка на сервере! Позиция не была найдена');
 			}
 
-			if (item.amount > 0) {
+			if (item.amount > 0 || personType === PersonType.SUPPLIER) {
 				let keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${item.amount}`), Markup.callbackButton('1', 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}>${item.amount}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)]]);
 				let message = `Название: *${item.name}*\nВ наличии: *${item.amount}*`;
 
