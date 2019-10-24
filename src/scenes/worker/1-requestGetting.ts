@@ -82,8 +82,8 @@ requestGetting.action(/^accept>/, async (ctx: any) => {
 		ctx.session.items.push(item);
 	}
 
-	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Добавить еще', 'more'), Markup.callbackButton('Отправить запрос', 'finish')], [Markup.callbackButton('⏪ Назад', 'back')]]).extra();
-	await ctx.replyWithMarkdown('Желаете добавить еще позиции в запрос?', keyboard);
+	await ctx.scene.leave();
+	await ctx.scene.enter('worker/requestMoreItems');
 });
 
 requestGetting.action('more', async (ctx: any) => {
