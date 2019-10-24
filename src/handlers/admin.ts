@@ -28,8 +28,8 @@ export default class AdminHandlers {
 			}
 		});
 
-		// Обработчик для "Добавить объект"
-		bot.hears('Добавить объект ➕', async (ctx: any) => {
+		// Обработчик для "Добавить позицию"
+		bot.hears('Добавить позицию ➕', async (ctx: any) => {
 			if (await isAdmin(ctx.from.id)) {
 				await ctx.scene.enter('addItem/getItemType');
 			}

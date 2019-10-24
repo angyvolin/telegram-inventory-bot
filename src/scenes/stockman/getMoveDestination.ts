@@ -25,18 +25,15 @@ getMoveDestination.enter(async (ctx: any) => {
 	for (let cell of cells) {
 		buttons.push(Markup.callbackButton(cell.row + cell.col, `cell>${cell._id}`));
 	}
-	buttons.push(
-		Markup.callbackButton('⏪ Назад', 'back'),
-		Markup.callbackButton('Вне ячеек', 'outside')
-	);
+	buttons.push(Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('Вне ячеек', 'outside'));
 
-	const keyboard = Markup.inlineKeyboard(buttons, {columns: 9}).extra();
+	const keyboard = Markup.inlineKeyboard(buttons, { columns: 9 }).extra();
 	await ctx.replyWithMarkdown(`Выберите, куда Вы хотите переместить ${ctx.session.move.item.name.toLowerCase()}?`, keyboard);
 });
 
 getMoveDestination.action(/^cell>/, async (ctx: any) => {
 	const cellId = ctx.callbackQuery.data.split('>')[1];
-	const {item, type} = ctx.session.move;
+	const { item, type } = ctx.session.move;
 
 	const itemId = item._id.toString();
 
@@ -53,7 +50,7 @@ getMoveDestination.action(/^cell>/, async (ctx: any) => {
 });
 
 getMoveDestination.action('outside', async (ctx: any) => {
-	const {item, type} = ctx.session.move;
+	const { item, type } = ctx.session.move;
 
 	const itemId = item._id.toString();
 

@@ -32,7 +32,7 @@ export default class InlineQueryHandlers {
 			 * query = i / f / c -> тип выбранной позиции
 			 * result_id -> id выбранной позиции
 			 */
-			const {query} = ctx.update.chosen_inline_result;
+			const { query } = ctx.update.chosen_inline_result;
 			const isMoving = query.includes('move');
 
 			const personType = await getPersonType(ctx.from.username);
@@ -62,7 +62,7 @@ export default class InlineQueryHandlers {
 				return ctx.telegram.sendMessage(ctx.from.id, 'Ошибка на сервере! Позиция не была найдена');
 			}
 
-			if (item.amount > 0) {
+			//if (item.amount > 0) {
 				let keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${item.amount}`), Markup.callbackButton('1', 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}>${item.amount}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)]]);
 				let message = `Название: *${item.name}*\nВ наличии: *${item.amount}*`;
 
@@ -80,7 +80,7 @@ export default class InlineQueryHandlers {
 					return ctx.telegram.sendPhoto(ctx.from.id, item.photo, options);
 				}
 				await ctx.telegram.sendMessage(ctx.from.id, message, options);
-			}
+			//}
 		});
 
 		const sendResults = async (ctx, items) => {
@@ -97,8 +97,7 @@ export default class InlineQueryHandlers {
 			for (let i = +offset; i < limit; i++) {
 				let item = items[i];
 
-				if ((personType === PersonType.WORKER || personType === PersonType.STOCKMAN) && item.amount === 0)
-					continue;
+				if ((personType === PersonType.WORKER || personType === PersonType.STOCKMAN) && item.amount === 0) continue;
 
 				results.push({
 					id: item._id,

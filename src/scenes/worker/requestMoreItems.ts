@@ -32,7 +32,7 @@ requestMoreItems.action('more', async (ctx: any) => {
 requestMoreItems.action('finish', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	const {items} = ctx.session;
+	const { items } = ctx.session;
 
 	for (let item of items) {
 		if (item.type === ItemType.INSTRUMENT) {

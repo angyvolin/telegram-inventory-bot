@@ -75,13 +75,17 @@ export async function getCellName(type: ItemType, id: string): Promise<string> {
 
 export async function addToCell(cellId: string, type: ItemType, id: string, amount: number): Promise<void> {
 	const cell = await Cell.findById(cellId);
-	if (!cell) { return; }
+	if (!cell) {
+		return;
+	}
 	switch (type) {
 		case ItemType.INSTRUMENT: {
-			if (!cell.instruments) { cell.instruments = new Map(); }
+			if (!cell.instruments) {
+				cell.instruments = new Map();
+			}
 			if (cell.instruments.has(id)) {
 				const currAmount = cell.instruments.get(id);
-				cell.instruments.set(id, currAmount + amount)
+				cell.instruments.set(id, currAmount + amount);
 			} else {
 				cell.instruments.set(id, amount);
 			}
@@ -89,10 +93,12 @@ export async function addToCell(cellId: string, type: ItemType, id: string, amou
 			break;
 		}
 		case ItemType.FURNITURE: {
-			if (!cell.furniture) { cell.furniture = new Map(); }
+			if (!cell.furniture) {
+				cell.furniture = new Map();
+			}
 			if (cell.furniture.has(id)) {
 				const currAmount = cell.furniture.get(id);
-				cell.furniture.set(id, currAmount + amount)
+				cell.furniture.set(id, currAmount + amount);
 			} else {
 				cell.furniture.set(id, amount);
 			}
@@ -100,10 +106,12 @@ export async function addToCell(cellId: string, type: ItemType, id: string, amou
 			break;
 		}
 		case ItemType.CONSUMABLE: {
-			if (!cell.consumables) { cell.consumables = new Map(); }
+			if (!cell.consumables) {
+				cell.consumables = new Map();
+			}
 			if (cell.consumables.has(id)) {
 				const currAmount = cell.consumables.get(id);
-				cell.consumables.set(id, currAmount + amount)
+				cell.consumables.set(id, currAmount + amount);
 			} else {
 				cell.consumables.set(id, amount);
 			}
@@ -126,13 +134,16 @@ export async function removeFromCell(cellId: string, type: ItemType, id: string)
 	await cell.save();
 }
 
-
 export async function reduceFromCell(cellId: string, type: ItemType, id: string, amount: number): Promise<void> {
 	const cell = await Cell.findById(cellId);
-	if (!cell) { return; }
+	if (!cell) {
+		return;
+	}
 	switch (type) {
 		case ItemType.INSTRUMENT: {
-			if (!cell.instruments) { return; }
+			if (!cell.instruments) {
+				return;
+			}
 			if (cell.instruments.has(id)) {
 				const currAmount = cell.instruments.get(id);
 				const newAmount = currAmount - amount < 0 ? 0 : currAmount - amount;
@@ -142,7 +153,9 @@ export async function reduceFromCell(cellId: string, type: ItemType, id: string,
 			break;
 		}
 		case ItemType.FURNITURE: {
-			if (!cell.furniture) { return; }
+			if (!cell.furniture) {
+				return;
+			}
 			if (cell.furniture.has(id)) {
 				const currAmount = cell.furniture.get(id);
 				const newAmount = currAmount - amount < 0 ? 0 : currAmount - amount;
@@ -152,7 +165,9 @@ export async function reduceFromCell(cellId: string, type: ItemType, id: string,
 			break;
 		}
 		case ItemType.CONSUMABLE: {
-			if (!cell.consumables) { return; }
+			if (!cell.consumables) {
+				return;
+			}
 			if (cell.consumables.has(id)) {
 				const currAmount = cell.consumables.get(id);
 				const newAmount = currAmount - amount < 0 ? 0 : currAmount - amount;

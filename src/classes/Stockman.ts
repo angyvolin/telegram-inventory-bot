@@ -36,7 +36,7 @@ export default class Stockman extends Person {
 		const messages = confirmation.messages;
 
 		for (const message of messages) {
-			const text = confirmation.text + '\n✅ Подтверждено';			
+			const text = confirmation.text + '\n✅ Подтверждено';
 			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
 		}
 
@@ -60,7 +60,7 @@ export default class Stockman extends Person {
 		await confirmation.remove();
 
 		let insertDoc: any = {
-			chatId: confirmation.chatId,
+			chatId: confirmation.chatId
 		};
 
 		if (confirmation.instruments) {
@@ -179,7 +179,7 @@ export default class Stockman extends Person {
 	public static async confirmReturn(ctx: any): Promise<void> {
 		const id = ctx.callbackQuery.data.split('>')[1];
 		const gettingId = ctx.callbackQuery.data.split('>')[2];
-	
+
 		const confirmation = await Confirmation.findById(id);
 		const getting = await Getting.findById(gettingId);
 
@@ -201,9 +201,9 @@ export default class Stockman extends Person {
 		await getting.save();
 
 		confirmation.remove();
-		
+
 		const items: ItemCells[] = [];
-		
+
 		for (const [id, amount] of getting.instruments) {
 			await addItem(ItemType.INSTRUMENT, id, amount);
 			const cell = await getCell(ItemType.INSTRUMENT, id);

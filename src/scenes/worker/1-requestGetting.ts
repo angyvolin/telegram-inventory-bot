@@ -60,7 +60,7 @@ requestGetting.action(/^reduce>/, async (ctx: any) => {
 
 requestGetting.action(/^accept>/, async (ctx: any) => {
 	await ctx.answerCbQuery();
-	
+
 	const type = +ctx.callbackQuery.data.split('>')[1];
 	const id = ctx.callbackQuery.data.split('>')[2];
 	const amount = +ctx.callbackQuery.data.split('>')[3];

@@ -7,7 +7,7 @@ import FurnitureModel, { IFurniture } from '../models/furniture';
 import ConsumableModel, { IConsumable } from '../models/consumable';
 import { getCell } from './cells';
 
-export async function getInstrumentsMessage (instruments: Map<string, number>): Promise<string> {
+export async function getInstrumentsMessage(instruments: Map<string, number>): Promise<string> {
 	let message = '';
 	for (const [id, amount] of instruments) {
 		const { name } = await getItem(ItemType.INSTRUMENT, id);

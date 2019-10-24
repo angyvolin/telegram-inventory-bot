@@ -5,4 +5,3 @@ enum ItemType {
 }
 
 export default ItemType;
-

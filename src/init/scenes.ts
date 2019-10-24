@@ -22,8 +22,8 @@ import getMoveItem from '../scenes/stockman/getMoveItem';
 import getMoveDestination from '../scenes/stockman/getMoveDestination';
 import getAddresses from '../scenes/stockman/getAddresses';
 import getAbsentItems from '../scenes/stockman/getAbsentItems';
-import requestGettingTable from '../scenes/chief/1-requestGettingTable'
-import requestGettingWorker from '../scenes/chief/2-requestGettingWorker'
+import requestGettingTable from '../scenes/chief/1-requestGettingTable';
+import requestGettingWorker from '../scenes/chief/2-requestGettingWorker';
 
 const Stage = require('telegraf/stage');
 

@@ -168,7 +168,6 @@ export default class Worker extends Person {
 				const cellName = cell ? cell.row + cell.col : null;
 				const name = consumable.name;
 				items.push({ cellName, name });
-
 			}
 		}
 
@@ -217,7 +216,7 @@ export default class Worker extends Person {
 
 		const confirmation = new Confirmation();
 		const confirmationId = confirmation._id;
-		
+
 		for (let stockman of stockmans) {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;

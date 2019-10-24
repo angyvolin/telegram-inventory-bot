@@ -28,12 +28,9 @@ getAddresses.enter(async (ctx: any) => {
 	for (let cell of cells) {
 		buttons.push(Markup.callbackButton(cell.row + cell.col, `cell>${cell._id}`));
 	}
-	buttons.push(
-		Markup.callbackButton('⏪ Назад', 'back'),
-		Markup.callbackButton('Вне ячеек', 'outside')
-	);
+	buttons.push(Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('Вне ячеек', 'outside'));
 
-	const keyboard = Markup.inlineKeyboard(buttons, {columns: 9}).extra();
+	const keyboard = Markup.inlineKeyboard(buttons, { columns: 9 }).extra();
 	await ctx.replyWithMarkdown(`Выберите ячейку, которую хотите просмотреть`, keyboard);
 });
 

@@ -27,7 +27,7 @@ export default class DB {
 				// Создаём сетку ячеек
 				for (let row of alphabet) {
 					for (let col = 1; col <= 9; col++) {
-						await Cell.findOneAndUpdate({row, col}, {row, col}, {upsert: true});
+						await Cell.findOneAndUpdate({ row, col }, { row, col }, { upsert: true });
 					}
 				}
 			}

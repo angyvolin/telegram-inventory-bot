@@ -6,19 +6,19 @@ const Markup = require('telegraf/markup');
 
 export default class StockmanHandlers {
 	public static init(bot) {
-		bot.hears('Переместить позиции по складу', async ctx => {
+		bot.hears('Переместить позиции по складу', async (ctx) => {
 			if (await isStockman(ctx.from.username)) {
 				await ctx.scene.enter('stockman/getMoveItem');
 			}
 		});
 
-		bot.hears('Просмотреть ячейки', async ctx => {
+		bot.hears('Просмотреть ячейки', async (ctx) => {
 			if (await isStockman(ctx.from.username)) {
 				await ctx.scene.enter('stockman/getAddresses');
 			}
 		});
 
-		bot.hears('Отсутствующие позиции', async ctx => {
+		bot.hears('Отсутствующие позиции', async (ctx) => {
 			if (await isStockman(ctx.from.username)) {
 				await ctx.scene.enter('stockman/getAbsentItems');
 			}
@@ -39,7 +39,7 @@ export default class StockmanHandlers {
 				const text = '❌ Ваша заявка была отклонена:\n\n' + confirmation.text;
 
 				await confirmation.remove();
-				await ctx.telegram.sendMessage(confirmation.chatId, text, {parse_mode: 'Markdown'});
+				await ctx.telegram.sendMessage(confirmation.chatId, text, { parse_mode: 'Markdown' });
 			}
 		});
 
@@ -71,6 +71,6 @@ export default class StockmanHandlers {
 			if (await isStockman(ctx.from.username)) {
 				Stockman.confirmReturn(ctx);
 			}
-		})
+		});
 	}
 }
