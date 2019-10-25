@@ -7,7 +7,7 @@ import { ItemCells } from './Person';
 import { getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
 import { getInstrumentsMessage, getItem, reduceItem } from '../helpers/items';
-import { getCell } from '../helpers/cells';
+import { getCell, reduceFromCell } from '../helpers/cells';
 
 const Markup = require('telegraf/markup');
 
@@ -53,7 +53,7 @@ export default class Worker extends Person {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить', `approveRequestGetting>${confirmationId}`)], [Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Выдал позиции', `approveGiving>${confirmationId}`)], [Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
 
 			const message = await ctx.telegram.sendMessage(id, messageText, {
 				reply_markup: keyboard,
@@ -125,78 +125,54 @@ export default class Worker extends Person {
 			return;
 		}
 
-		const confirmationId = confirmation._id;
+		await confirmation.remove();
 
-		const items: ItemCells[] = [];
+		let insertDoc: any = {
+			chatId: confirmation.chatId
+		};
+
 		if (confirmation.instruments) {
+			insertDoc.active = true;
+			insertDoc.instruments = confirmation.instruments;
 			for (const [id, amount] of confirmation.instruments) {
-				const instrument = await getItem(ItemType.INSTRUMENT, id);
-				const currAmount = instrument.amount;
-				if (amount > currAmount) {
-					const text = ctx.update.callback_query.message.text + `\n\n🔴 К сожалению, Ваша заявка не может быть выполнена.\n*Причина:* недостаточно позиций на складе`;
-					return ctx.editMessageText(text);
-				}
+				await reduceItem(ItemType.INSTRUMENT, id, amount);
 				const cell = await getCell(ItemType.INSTRUMENT, id);
-				const cellName = cell ? cell.row + cell.col : null;
-				const name = instrument.name;
-				items.push({ cellName, name });
+				if (cell) {
+					await reduceFromCell(cell._id, ItemType.INSTRUMENT, id, amount);
+				}
 			}
 		}
 		if (confirmation.furniture) {
+			insertDoc.furniture = confirmation.furniture;
 			for (const [id, amount] of confirmation.furniture) {
-				const furniture = await getItem(ItemType.FURNITURE, id);
-				const currAmount = furniture.amount;
-				if (amount > currAmount) {
-					const text = ctx.update.callback_query.message.text + `\n\n🔴 К сожалению, Ваша заявка не может быть выполнена.\n*Причина:* недостаточно позиций на складе`;
-					return ctx.editMessageText(text);
-				}
+				await reduceItem(ItemType.FURNITURE, id, amount);
 				const cell = await getCell(ItemType.FURNITURE, id);
-				const cellName = cell ? cell.row + cell.col : null;
-				const name = furniture.name;
-				items.push({ cellName, name });
+				if (cell) {
+					await reduceFromCell(cell._id, ItemType.FURNITURE, id, amount);
+				}
 			}
 		}
 		if (confirmation.consumables) {
+			insertDoc.consumables = confirmation.consumables;
 			for (const [id, amount] of confirmation.consumables) {
-				const consumable = await getItem(ItemType.CONSUMABLE, id);
-				const currAmount = consumable.amount;
-				if (amount > currAmount) {
-					const text = ctx.update.callback_query.message.text + `\n\n🔴 К сожалению, Ваша заявка не может быть выполнена.\n*Причина:* недостаточно позиций на складе`;
-					return ctx.editMessageText(text);
-				}
+				await reduceItem(ItemType.CONSUMABLE, id, amount);
 				const cell = await getCell(ItemType.CONSUMABLE, id);
-				const cellName = cell ? cell.row + cell.col : null;
-				const name = consumable.name;
-				items.push({ cellName, name });
+				if (cell) {
+					await reduceFromCell(cell._id, ItemType.CONSUMABLE, id, amount);
+				}
 			}
 		}
+		if (confirmation.days) insertDoc.expires = new Date(Date.now() + confirmation.days * 24 * 60 * 60 * 1000);
 
-		const stockmans = await getStockmans();
-		if (!stockmans.length) {
-			return;
+		const getting = new Getting(insertDoc);
+		await getting.save();
+
+		const messages = confirmation.messages;
+
+		for (const message of messages) {
+			const text = confirmation.text + '\n✅ Работник подтвердил получение';
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
 		}
-
-		const messageText = await Worker.getGivingMessage(ctx.from.username, items);
-		const messages = [];
-
-		for (let stockman of stockmans) {
-			const id = await getChatId(stockman.username);
-			if (!id) continue;
-
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить', `approveGiving>${confirmationId}`)], [Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
-
-			const message = await ctx.telegram.sendMessage(id, messageText, {
-				reply_markup: keyboard,
-				parse_mode: 'Markdown'
-			});
-			messages.push({
-				id: message.message_id,
-				chatId: id
-			});
-		}
-
-		confirmation.messages = messages;
-		await confirmation.save();
 
 		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
 		await ctx.editMessageText(text);

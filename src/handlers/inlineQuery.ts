@@ -80,7 +80,7 @@ export default class InlineQueryHandlers {
 					return ctx.telegram.sendPhoto(ctx.from.id, item.photo, options);
 				}
 				await ctx.telegram.sendMessage(ctx.from.id, message, options);
-			//}
+			}
 		});
 
 		const sendResults = async (ctx, items) => {

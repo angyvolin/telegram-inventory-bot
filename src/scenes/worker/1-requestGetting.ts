@@ -19,7 +19,6 @@ requestGetting.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestGetting.enter(async (ctx: any) => {
-	ctx.session.items = [];
 	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')], [Markup.switchToCurrentChatButton('Расходники', 'c'), Markup.callbackButton('⏪ Назад', 'back')]]).extra();
 	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите получить', keyboard);
 });
@@ -102,6 +101,7 @@ requestGetting.action('finish', async (ctx: any) => {
 			return ctx.scene.enter('worker/requestGettingDate');
 		}
 	}
+	await ctx.reply('Ваша заявка успешно отправлена! Отправляйтесь на получение');
 	await Worker.requestGetting(ctx, ctx.session.items);
 	return KeyboardMessage.send(ctx, PersonType.WORKER);
 });

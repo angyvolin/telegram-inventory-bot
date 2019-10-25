@@ -29,7 +29,7 @@ requestGettingDate.on('text', async (ctx) => {
 	}
 	const days = term[0];
 	await ctx.scene.leave();
-	await ctx.reply('Ваша заявка успешно отправлена! Ожидайте подтверждения от кладовщика');
+	await ctx.reply('Ваша заявка успешно отправлена! Отправляйтесь на получение');
 	await Worker.requestGetting(ctx, ctx.session.items, days);
 	return KeyboardMessage.send(ctx, PersonType.WORKER);
 });

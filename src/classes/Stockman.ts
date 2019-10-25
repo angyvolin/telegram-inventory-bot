@@ -25,30 +25,6 @@ export default class Stockman extends Person {
 		return message;
 	}
 
-	public static async confirmGetting(ctx: any): Promise<void> {
-		const id = ctx.callbackQuery.data.split('>')[1];
-		const confirmation = await Confirmation.findById(id);
-
-		if (!confirmation) {
-			return;
-		}
-
-		const messages = confirmation.messages;
-
-		for (const message of messages) {
-			const text = confirmation.text + '\n✅ Подтверждено';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
-		}
-
-		const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Я на получении', `confirmGetting>${id}`)], [Markup.callbackButton('❌ Отклонить получение', `declineGetting>${id}`)]]);
-		const text = '✅ Ваша заявка на получение была подтверждена:\n\n' + confirmation.text + '\n❗️При получении на складе подтвердите нажатием кнопки ниже:';
-		const options = {
-			reply_markup: keyboard
-		};
-
-		await ctx.telegram.sendMessage(confirmation.chatId, text, options);
-	}
-
 	public static async confirmGiving(ctx: any): Promise<void> {
 		const id = ctx.callbackQuery.data.split('>')[1];
 		const confirmation = await Confirmation.findById(id);
@@ -57,54 +33,20 @@ export default class Stockman extends Person {
 			return;
 		}
 
-		await confirmation.remove();
-
-		let insertDoc: any = {
-			chatId: confirmation.chatId
-		};
-
-		if (confirmation.instruments) {
-			insertDoc.active = true;
-			insertDoc.instruments = confirmation.instruments;
-			for (const [id, amount] of confirmation.instruments) {
-				await reduceItem(ItemType.INSTRUMENT, id, amount);
-				const cell = await getCell(ItemType.INSTRUMENT, id);
-				if (cell) {
-					await reduceFromCell(cell._id, ItemType.INSTRUMENT, id, amount);
-				}
-			}
-		}
-		if (confirmation.furniture) {
-			insertDoc.furniture = confirmation.furniture;
-			for (const [id, amount] of confirmation.furniture) {
-				await reduceItem(ItemType.FURNITURE, id, amount);
-				const cell = await getCell(ItemType.FURNITURE, id);
-				if (cell) {
-					await reduceFromCell(cell._id, ItemType.FURNITURE, id, amount);
-				}
-			}
-		}
-		if (confirmation.consumables) {
-			insertDoc.consumables = confirmation.consumables;
-			for (const [id, amount] of confirmation.consumables) {
-				await reduceItem(ItemType.CONSUMABLE, id, amount);
-				const cell = await getCell(ItemType.CONSUMABLE, id);
-				if (cell) {
-					await reduceFromCell(cell._id, ItemType.CONSUMABLE, id, amount);
-				}
-			}
-		}
-		if (confirmation.days) insertDoc.expires = new Date(Date.now() + confirmation.days * 24 * 60 * 60 * 1000);
-
-		const getting = new Getting(insertDoc);
-		await getting.save();
-
 		const messages = confirmation.messages;
 
 		for (const message of messages) {
-			const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
-			await ctx.editMessageText(text);
+			const text = confirmation.text + '\n❗️Ожидание подтверждения получения работника';
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
 		}
+
+		const keyboard = Markup.inlineKeyboard([Markup.callbackButton('✅ Получил', `confirmGetting>${id}`)]);
+		const text = '✅ Вам были выданы следующие позиции:\n\n' + confirmation.text + '\n❗️Подтвердите получение нажатием кнопки ниже:';
+		const options = {
+			reply_markup: keyboard
+		};
+
+		await ctx.telegram.sendMessage(confirmation.chatId, text, options);
 	}
 
 	public static async confirmSupply(ctx: any): Promise<void> {
@@ -122,7 +64,7 @@ export default class Stockman extends Person {
 			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
 		}
 
-		confirmation.remove();
+		await confirmation.remove();
 
 		const items: ItemCells[] = [];
 		if (confirmation.instruments) {
@@ -200,7 +142,7 @@ export default class Stockman extends Person {
 		getting.active = false;
 		await getting.save();
 
-		confirmation.remove();
+		await confirmation.remove();
 
 		const items: ItemCells[] = [];
 

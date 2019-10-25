@@ -43,14 +43,6 @@ export default class StockmanHandlers {
 			}
 		});
 
-		// Подтверждение выдачи позиций работнику
-		bot.action(/^approveRequestGetting>/, async (ctx) => {
-			await ctx.answerCbQuery();
-			if (await isStockman(ctx.from.username)) {
-				Stockman.confirmGetting(ctx);
-			}
-		});
-
 		bot.action(/^approveGiving>/, async (ctx) => {
 			await ctx.answerCbQuery();
 			if (await isStockman(ctx.from.username)) {
