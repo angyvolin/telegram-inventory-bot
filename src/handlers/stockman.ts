@@ -36,7 +36,8 @@ export default class StockmanHandlers {
 					await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
 				}
 
-				const text = '❌ Ваша заявка была отклонена:\n\n' + confirmation.text;
+				const message = confirmation.itemsText ? confirmation.itemsText : confirmation.text;
+				const text = '❌ Ваша заявка была отклонена:\n\n' + message;
 
 				await confirmation.remove();
 				await ctx.telegram.sendMessage(confirmation.chatId, text, { parse_mode: 'Markdown' });

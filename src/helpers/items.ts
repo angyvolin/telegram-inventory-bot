@@ -5,7 +5,19 @@ import Consumable from '../classes/Consumable';
 import InstrumentModel, { IInstrument } from '../models/instrument';
 import FurnitureModel, { IFurniture } from '../models/furniture';
 import ConsumableModel, { IConsumable } from '../models/consumable';
+import { ItemRequested } from '../classes/Person';
 import { getCell } from './cells';
+
+export async function getItemsMessage(items: ItemRequested[]): Promise<string> {
+	let message = '';
+	for (let item of items) {
+		const { id, type, amount } = item;
+		const { name } = await getItem(type, id);
+
+		message += `🔹 ${name} -> ${amount} шт.\n`;
+	}
+	return message;
+}
 
 export async function getInstrumentsMessage(instruments: Map<string, number>): Promise<string> {
 	let message = '';

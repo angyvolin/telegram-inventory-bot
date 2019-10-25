@@ -1,13 +1,12 @@
-import Person, { ItemRequested } from './Person';
+import Person, { ItemRequested, ItemCells } from './Person';
 import Stockman from './Stockman';
 import ItemType from '../enums/ItemType';
 import Getting from '../models/getting';
 import Confirmation from '../models/confirmation';
-import { ItemCells } from './Person';
 import { getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
-import { getInstrumentsMessage, getItem, reduceItem } from '../helpers/items';
-import { getCell, reduceFromCell } from '../helpers/cells';
+import { getItemsMessage, getInstrumentsMessage, getItem, reduceItem } from '../helpers/items';
+import { getCell, reduceFromCell, getCellsMessage } from '../helpers/cells';
 
 const Markup = require('telegraf/markup');
 
@@ -18,8 +17,10 @@ export default class Worker extends Person {
 		for (let item of items) {
 			const { id, type, amount } = item;
 			const { name } = await getItem(type, id);
+			const cell = await getCell(type, id);
+			const location = cell ? "ячейка" + cell.row + cell.col : "Вне ячейки";
 
-			message += `🔹 ${name} -> ${amount} шт.\n`;
+			message += `🔹 ${name} -> ${amount} шт. (${location})\n`;
 		}
 		if (term) message += `*Срок аренды:* ${term} дней`;
 		return message;
@@ -27,7 +28,7 @@ export default class Worker extends Person {
 
 	private static async getGivingMessage(username: string, items: ItemCells[]): Promise<string> {
 		let message = `Выдайте *работнику* @${username} запрошенные позиции в соответствии со списком:\n`;
-		message += await Stockman.getCellsMessage(items);
+		message += await getCellsMessage(items);
 		return message;
 	}
 
@@ -44,6 +45,7 @@ export default class Worker extends Person {
 			return;
 		}
 		const messageText = await Worker.getGettingMessage(ctx.from.username, items);
+		const itemsText = await getItemsMessage(items);
 		const messages = [];
 
 		const confirmation = new Confirmation();
@@ -101,6 +103,7 @@ export default class Worker extends Person {
 
 		confirmation.messages = messages;
 		confirmation.text = messageText;
+		confirmation.itemsText = itemsText;
 		confirmation.chatId = ctx.from.id;
 		await confirmation.save();
 	}
@@ -199,7 +202,7 @@ export default class Worker extends Person {
 
 			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Получил позиции обратно', `approveReturn>${confirmationId}>${gettingId}`)], [Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
 
-			const messageText = `*Работник* ${ctx.from.username} желает вернуть инструменты на склад:\n` + returnText + `\n❗️После возврата подтвердите нажатием кнопки ниже\n`;
+			const messageText = `*Работник* @${ctx.from.username} желает вернуть инструменты на склад:\n` + returnText + `\n❗️После возврата подтвердите нажатием кнопки ниже\n`;
 			const message = await ctx.telegram.sendMessage(id, messageText, {
 				reply_markup: keyboard,
 				parse_mode: 'Markdown'

@@ -3,7 +3,7 @@ import ItemType from '../enums/ItemType';
 import Confirmation from '../models/confirmation';
 import { getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
-import { getItem } from '../helpers/items';
+import { getItemsMessage, getItem } from '../helpers/items';
 
 const Markup = require('telegraf/markup');
 
@@ -11,12 +11,7 @@ export default class Supplier extends Person {
 	// Private
 	private static async getSupplyMessage(username: string, items: ItemRequested[]): Promise<string> {
 		let message = `*Поставщик* @${username} хочет поставить следующие позиции:\n`;
-		for (let item of items) {
-			const { id, type, amount } = item;
-			const { name } = await getItem(type, id);
-
-			message += `🔹 ${name} -> ${amount} шт.\n`;
-		}
+		message += await getItemsMessage(items);
 		return message;
 	}
 
@@ -46,6 +41,7 @@ export default class Supplier extends Person {
 		}
 
 		const supplyText = await Supplier.getSupplyMessage(username, items);
+		const itemsText = await getItemsMessage(items);
 		const messages = [];
 
 		const confirmation = new Confirmation();
@@ -101,6 +97,7 @@ export default class Supplier extends Person {
 
 		confirmation.messages = messages;
 		confirmation.text = supplyText;
+		confirmation.itemsText = itemsText;
 		confirmation.chatId = chatId;
 		await confirmation.save();
 	}

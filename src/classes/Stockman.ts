@@ -7,24 +7,12 @@ import Furniture from '../models/furniture';
 import Consumable from '../models/consumable';
 import { ItemCells } from './Person';
 import { addItem, getItem, reduceItem } from '../helpers/items';
-import { addToCell, getCell, reduceFromCell } from '../helpers/cells';
+import { getCell, addToCell, reduceFromCell, getCellsMessage } from '../helpers/cells';
 
 const Markup = require('telegraf/markup');
 
 export default class Stockman extends Person {
 	// Public
-	public static async getCellsMessage(items: ItemCells[]) {
-		let message = '';
-		for (const item of items) {
-			if (!item.cellName) {
-				message += `🔸 ${item.name} -> вне ячейки\n`;
-			} else {
-				message += `🔸 ${item.name} -> ${item.cellName}\n`;
-			}
-		}
-		return message;
-	}
-
 	public static async confirmGiving(ctx: any): Promise<void> {
 		const id = ctx.callbackQuery.data.split('>')[1];
 		const confirmation = await Confirmation.findById(id);
@@ -41,7 +29,7 @@ export default class Stockman extends Person {
 		}
 
 		const keyboard = Markup.inlineKeyboard([Markup.callbackButton('✅ Получил', `confirmGetting>${id}`)]);
-		const text = '✅ Вам были выданы следующие позиции:\n\n' + confirmation.text + '\n❗️Подтвердите получение нажатием кнопки ниже:';
+		const text = '✅ Вам были выданы следующие позиции:\n' + confirmation.itemsText + '\n❗️Подтвердите получение нажатием кнопки ниже:';
 		const options = {
 			reply_markup: keyboard
 		};
@@ -104,14 +92,14 @@ export default class Stockman extends Person {
 			}
 		}
 
-		const text = '✅ Ваша заявка на поставку была подтверждена:\n\n' + confirmation.text;
+		const text = '✅ Ваша заявка на поставку была подтверждена:\n' + confirmation.itemsText;
 		await ctx.telegram.sendMessage(confirmation.chatId, text);
 
 		/*
 		 * Тут нам нужно заполнять соответствующие ячейки
 		 */
 
-		const message = 'Разместите поставленные позиции в соответствии со списком:\n' + (await Stockman.getCellsMessage(items));
+		const message = 'Разместите поставленные позиции в соответствии со списком:\n' + (await getCellsMessage(items));
 		await ctx.reply(message);
 	}
 
@@ -157,7 +145,7 @@ export default class Stockman extends Person {
 			}
 		}
 
-		const message = 'Разместите поставленные позиции в соответствии со списком:\n' + (await Stockman.getCellsMessage(items));
+		const message = 'Разместите поставленные позиции в соответствии со списком:\n' + (await getCellsMessage(items));
 		await ctx.reply(message);
 	}
 
