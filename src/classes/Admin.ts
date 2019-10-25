@@ -1,10 +1,9 @@
 import Instrument from './Instrument';
 import Furniture from './Furniture';
 import Consumable from './Consumable';
-import Person from './Person';
 import { isAdmin } from '../helpers/functions';
 
-export default class Admin extends Person {
+export default class Admin {
 	// Public
 	public static confirmRemovingInstrument(username: string, instruments: Map<number, number>): void {
 		//...

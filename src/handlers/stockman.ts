@@ -24,6 +24,7 @@ export default class StockmanHandlers {
 			}
 		});
 
+		// Отклонение запроса
 		bot.action(/^declineRequest>/, async (ctx) => {
 			await ctx.answerCbQuery();
 			if (await isStockman(ctx.from.username)) {
@@ -44,6 +45,7 @@ export default class StockmanHandlers {
 			}
 		});
 
+		// Подтверждение выдачи работнику
 		bot.action(/^approveGiving>/, async (ctx) => {
 			await ctx.answerCbQuery();
 			if (await isStockman(ctx.from.username)) {
@@ -59,10 +61,19 @@ export default class StockmanHandlers {
 			}
 		});
 
-		bot.action(/^approveReturn>/, async (ctx) => {
+		// Подтверждение возврата инструментов
+		bot.action(/^approveReturnInstruments>/, async (ctx) => {
 			await ctx.answerCbQuery();
 			if (await isStockman(ctx.from.username)) {
-				Stockman.confirmReturn(ctx);
+				Stockman.confirmReturnInstruments(ctx);
+			}
+		});
+
+		// Подтверждение возврата остатков (фурнитуры / расходников)
+		bot.action(/^approveReturnRemains>/, async (ctx) => {
+			await ctx.answerCbQuery();
+			if (await isStockman(ctx.from.username)) {
+				Stockman.confirmReturnRemains(ctx);
 			}
 		});
 	}

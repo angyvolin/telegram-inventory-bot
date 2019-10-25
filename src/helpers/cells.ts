@@ -1,18 +1,5 @@
-import ItemType from '../enums/ItemType';
-import { ItemCells } from '../classes/Person';
 import Cell, { ICell } from '../models/cell';
-
-export async function getCellsMessage(items: ItemCells[]) {
-	let message = '';
-	for (const item of items) {
-		if (!item.cellName) {
-			message += `🔸 ${item.name} -> вне ячейки\n`;
-		} else {
-			message += `🔸 ${item.name} -> ${item.cellName}\n`;
-		}
-	}
-	return message;
-}
+import ItemType from '../enums/ItemType';
 
 export async function getCells(filter = {}) {
 	return Cell.find(filter);

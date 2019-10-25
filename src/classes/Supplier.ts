@@ -1,15 +1,16 @@
-import Person, { ItemRequested } from './Person';
-import ItemType from '../enums/ItemType';
 import Confirmation from '../models/confirmation';
+import ItemType from '../enums/ItemType';
 import { getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
-import { getItemsMessage, getItem } from '../helpers/items';
+import { getItemsMessage } from '../helpers/messages';
 
 const Markup = require('telegraf/markup');
 
-export default class Supplier extends Person {
+export default class Supplier {
 	// Private
-	private static async getSupplyMessage(username: string, items: ItemRequested[]): Promise<string> {
+	private static async getSupplyMessage(username: string,
+										  items: { type: ItemType; id: string; amount: number }[]
+										 ): Promise<string> {
 		let message = `*Поставщик* @${username} хочет поставить следующие позиции:\n`;
 		message += await getItemsMessage(items);
 		return message;
@@ -31,7 +32,11 @@ export default class Supplier extends Person {
 	 * @desc Supply purchased items to stock, it's
 	 * sent to Stockman
 	 */
-	public static async requestSupply(ctx: any, chatId: number, username: string, items: ItemRequested[]): Promise<void> {
+	public static async requestSupply(ctx: any,
+									  chatId: number,
+									  username: string,
+									  items: { type: ItemType; id: string; amount: number }[]
+									 ): Promise<void> {
 		if (!items.length) {
 			return;
 		}
@@ -51,7 +56,8 @@ export default class Supplier extends Person {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить получение', `approveSupply>${confirmationId}`)], [Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить получение', `approveSupply>${confirmationId}`)],
+													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
 
 			const messageText = supplyText + `\n❗️После поставки подтвердите нажатием кнопки ниже\n`;
 			const message = await ctx.telegram.sendMessage(id, messageText, {

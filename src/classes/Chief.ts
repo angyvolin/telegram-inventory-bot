@@ -1,7 +1,6 @@
-import Person from './Person';
 import PersonType from '../enums/PersonType';
 
-export default class Chief extends Person {
+export default class Chief {
 	// Public
 	/**
 	 * @desc Get all items in the stock

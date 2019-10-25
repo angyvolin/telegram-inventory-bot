@@ -15,15 +15,22 @@ export default class WorkerHandlers {
 			}
 		});
 
-		// Обработчик для "Запросить возврат"
-		bot.hears('Запросить возврат', async (ctx: any) => {
+		// Обработчик для "Запросить возврат инструментов"
+		bot.hears('Запросить возврат инструментов', async (ctx: any) => {
 			if (await isWorker(ctx.from.username)) {
 				await ctx.scene.enter('worker/requestReturnDate');
 			}
 		});
 
-		// Обработчик для "Запросить списание инструмента"
-		bot.hears('Запросить списание инструмента', async (ctx: any) => {
+		// Обработчик для "Запросить возврат фурнитуры / расходников"
+		bot.hears('Запросить возврат фурнитуры / расходников', async (ctx: any) => {
+			if (await isWorker(ctx.from.username)) {
+				await ctx.scene.enter('worker/requestReturnRemains');
+			}
+		});
+
+		// Обработчик для "Запросить списание инструментов"
+		bot.hears('Запросить списание инструментов', async (ctx: any) => {
 			if (await isWorker(ctx.from.username)) {
 				await ctx.scene.enter('worker/requestRemoveInstrument');
 			}
@@ -46,6 +53,20 @@ export default class WorkerHandlers {
 			await ctx.answerCbQuery();
 			if (await isWorker(ctx.from.username)) {
 				await Worker.confirmGetting(ctx);
+			}
+		});
+
+		bot.action(/^confirmReturnInstruments/, async (ctx: any) => {
+			await ctx.answerCbQuery();
+			if (await isWorker(ctx.from.username)) {
+				await Worker.confirmReturnInstruments(ctx);
+			}
+		});
+
+		bot.action(/^confirmReturnRemains/, async (ctx: any) => {
+			await ctx.answerCbQuery();
+			if (await isWorker(ctx.from.username)) {
+				await Worker.confirmReturnRemains(ctx);
 			}
 		});
 	}

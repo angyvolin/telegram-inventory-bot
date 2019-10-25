@@ -18,7 +18,11 @@ getPersonRole.command('start', async (ctx: any) => {
 // Точка входа в сцену
 getPersonRole.enter(async (ctx: any) => {
 	ctx.session.addPerson = {};
-	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Работник', 'worker'), Markup.callbackButton('Кладовщик', 'stockman')], [Markup.callbackButton('Начальник цеха', 'chief'), Markup.callbackButton('Снабженец', 'supplier')], [Markup.callbackButton('Назад', 'back')]]).extra();
+	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Работник', 'worker'),
+											 Markup.callbackButton('Кладовщик', 'stockman')],
+											[Markup.callbackButton('Начальник цеха', 'chief'),
+											 Markup.callbackButton('Снабженец', 'supplier')],
+											[Markup.callbackButton('Назад', 'back')]]).extra();
 	await ctx.replyWithMarkdown('Выберите роль сотрудника, которого вы хотите добавить', keyboard);
 });
 

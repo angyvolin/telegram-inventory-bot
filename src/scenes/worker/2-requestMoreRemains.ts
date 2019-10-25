@@ -9,47 +9,42 @@ const Markup = require('telegraf/markup');
 /**
  * Сцена запроса добавления ещё item'ов
  */
-const requestMoreItems = new Scene('worker/requestMoreItems');
+const requestMoreRemains = new Scene('worker/requestMoreRemains');
 
-requestMoreItems.command('start', async (ctx: any) => {
+requestMoreRemains.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
 	await KeyboardMessage.send(ctx, PersonType.WORKER);
 	ctx.session = {};
 });
 
 // Точка входа в сцену
-requestMoreItems.enter(async (ctx: any) => {
+requestMoreRemains.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Добавить еще', 'more'),
 											 Markup.callbackButton('Отправить запрос', 'finish')],
 											[Markup.callbackButton('⏪ Назад', 'back')]]).extra();
 	await ctx.replyWithMarkdown('Желаете добавить еще позиции в запрос?', keyboard);
 });
 
-requestMoreItems.action('more', async (ctx: any) => {
+requestMoreRemains.action('more', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	await ctx.scene.enter('worker/requestGetting');
+	await ctx.scene.enter('worker/requestReturnRemains');
 });
 
-requestMoreItems.action('finish', async (ctx: any) => {
+requestMoreRemains.action('finish', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	const { items } = ctx.session;
 
-	for (let item of items) {
-		if (item.type === ItemType.INSTRUMENT) {
-			return ctx.scene.enter('worker/requestGettingDate');
-		}
-	}
-	await ctx.reply('Ваша заявка успешно отправлена! Отправляйтесь на получение');
-	await Worker.requestGetting(ctx, ctx.session.items);
+	await ctx.reply('Ваша заявка успешно отправлена! Отправляйтесь на возврат');
+	await Worker.requestReturnRemains(ctx, ctx.session.items);
 	return KeyboardMessage.send(ctx, PersonType.WORKER);
 });
 
-requestMoreItems.action('back', async (ctx: any) => {
+requestMoreRemains.action('back', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	await ctx.scene.enter('worker/requestGetting');
+	await ctx.scene.enter('worker/requestReturnRemains');
 });
 
-export default requestMoreItems;
+export default requestMoreRemains;

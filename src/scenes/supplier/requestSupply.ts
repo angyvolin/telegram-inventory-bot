@@ -19,7 +19,10 @@ requestSupply.command('start', async (ctx: any) => {
 // Точка входа в сцену
 requestSupply.enter(async (ctx: any) => {
 	ctx.session.items = [];
-	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')], [Markup.switchToCurrentChatButton('Расходники', 'c'), Markup.callbackButton('⏪ Назад', 'back')]]).extra();
+	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'),
+											 Markup.switchToCurrentChatButton('Фурнитура', 'f')],
+											[Markup.switchToCurrentChatButton('Расходники', 'c'),
+											 Markup.callbackButton('⏪ Назад', 'back')]]).extra();
 	await ctx.replyWithMarkdown('Выберите тип объектов, которые Вы хотите поставить', keyboard);
 });
 
@@ -30,7 +33,11 @@ requestSupply.action(/^increase>/, async (ctx: any) => {
 
 	const counter = parseInt(ctx.update.callback_query.message.reply_markup.inline_keyboard[0][1].text);
 
-	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${amount}`), Markup.callbackButton(counter + 1, 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}>${amount}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter + 1}`)]]);
+	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${amount}`),
+											 Markup.callbackButton(counter + 1, 'itemAmount'),
+											 Markup.callbackButton('➕', `increase>${type}>${id}>${amount}`)],
+											[Markup.callbackButton('⏪ Назад', 'back'),
+											 Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter + 1}`)]]);
 
 	await ctx.editMessageReplyMarkup(keyboard);
 	await ctx.answerCbQuery();
@@ -44,7 +51,11 @@ requestSupply.action(/^reduce>/, async (ctx: any) => {
 	const counter = parseInt(ctx.update.callback_query.message.reply_markup.inline_keyboard[0][1].text);
 
 	if (counter > 1) {
-		const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${amount}`), Markup.callbackButton(counter - 1, 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}>${amount}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter + 1}`)]]);
+		const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${amount}`),
+												 Markup.callbackButton(counter - 1, 'itemAmount'),
+												 Markup.callbackButton('➕', `increase>${type}>${id}>${amount}`)],
+												[Markup.callbackButton('⏪ Назад', 'back'),
+												 Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter + 1}`)]]);
 
 		await ctx.editMessageReplyMarkup(keyboard);
 		await ctx.answerCbQuery();
@@ -65,13 +76,18 @@ requestSupply.action(/^accept>/, async (ctx: any) => {
 	ctx.session.items.push(item);
 	await ctx.answerCbQuery();
 
-	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Добавить еще', 'more'), Markup.callbackButton('Отправить запрос', 'finish')], [Markup.callbackButton('⏪ Назад', 'back')]]).extra();
+	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Добавить еще', 'more'),
+											 Markup.callbackButton('Отправить запрос', 'finish')],
+											[Markup.callbackButton('⏪ Назад', 'back')]]).extra();
 	await ctx.replyWithMarkdown('Желаете добавить еще позиции в поставку?', keyboard);
 });
 
 requestSupply.action('more', async (ctx: any) => {
 	await ctx.answerCbQuery();
-	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')], [Markup.switchToCurrentChatButton('Расходники', 'c'), Markup.callbackButton('⏪ Назад', 'back')]]).extra();
+	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'),
+											 Markup.switchToCurrentChatButton('Фурнитура', 'f')],
+											[Markup.switchToCurrentChatButton('Расходники', 'c'),
+											 Markup.callbackButton('⏪ Назад', 'back')]]).extra();
 	await ctx.replyWithMarkdown('Выберите тип объектов, которые Вы хотите поставить', keyboard);
 });
 

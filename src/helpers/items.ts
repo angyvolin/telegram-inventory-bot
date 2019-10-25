@@ -1,32 +1,11 @@
-import ItemType from '../enums/ItemType';
 import Instrument from '../classes/Instrument';
 import Furniture from '../classes/Furniture';
 import Consumable from '../classes/Consumable';
 import InstrumentModel, { IInstrument } from '../models/instrument';
 import FurnitureModel, { IFurniture } from '../models/furniture';
 import ConsumableModel, { IConsumable } from '../models/consumable';
-import { ItemRequested } from '../classes/Person';
+import ItemType from '../enums/ItemType';
 import { getCell } from './cells';
-
-export async function getItemsMessage(items: ItemRequested[]): Promise<string> {
-	let message = '';
-	for (let item of items) {
-		const { id, type, amount } = item;
-		const { name } = await getItem(type, id);
-
-		message += `🔹 ${name} -> ${amount} шт.\n`;
-	}
-	return message;
-}
-
-export async function getInstrumentsMessage(instruments: Map<string, number>): Promise<string> {
-	let message = '';
-	for (const [id, amount] of instruments) {
-		const { name } = await getItem(ItemType.INSTRUMENT, id);
-		message += `🔹 ${name} -> ${amount} шт.\n`;
-	}
-	return message;
-}
 
 export async function getItem(type: ItemType, id: string): Promise<IInstrument | IFurniture | IConsumable> {
 	switch (type) {
