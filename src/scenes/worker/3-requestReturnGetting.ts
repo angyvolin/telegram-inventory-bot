@@ -29,7 +29,7 @@ requestReturnGetting.action(/^approveRequestReturn/, async (ctx: any) => {
 	const gettingId = ctx.callbackQuery.data.split('>')[1];
 	await ctx.scene.leave();
 	await ctx.editMessageText(ctx.update.callback_query.message.text);
-	await ctx.reply('Ваша заявка успешно отправлена! Ожидайте подтверждения от кладовщика');
+	await ctx.reply('Ваша заявка успешно отправлена! Отправляйтесь на получение');
 	await Worker.requestReturn(ctx, gettingId);
 });
 
