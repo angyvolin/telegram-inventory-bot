@@ -62,7 +62,7 @@ export default class StockmanHandlers {
 		});
 
 		// Подтверждение возврата инструментов
-		bot.action(/^approveReturnInstruments>/, async (ctx) => {
+		bot.action(/^approveReturn>/, async (ctx) => {
 			await ctx.answerCbQuery();
 			if (await isStockman(ctx.from.username)) {
 				Stockman.confirmReturnInstruments(ctx);

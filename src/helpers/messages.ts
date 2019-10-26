@@ -63,7 +63,7 @@ export async function getGettingMessage(username: string,
 export async function getReturnMessage(username: string,
 									   items: { type: ItemType, id: string, amount: number }[],
 									  ): Promise<string> {
-	let message = `*Работник* @${username} желает вернуть инструменты на склад:\n`;
+	let message = `*Работник* @${username} желает вернуть позиции на склад:\n`;
 	for (let item of items) {
 		const { id, type, amount } = item; // Берем поля текущей позиции
 		const { name } = await getItem(type, id); // Получаем имя позиции из БД
@@ -73,6 +73,5 @@ export async function getReturnMessage(username: string,
 		// Добавляем позицию как строку к сообщению
 		message += `🔹 ${name} -> ${amount} шт. (${cellName})\n`;
 	}
-	message += `\n❗️После возврата подтвердите нажатием кнопки ниже\n`;
 	return message;
 }

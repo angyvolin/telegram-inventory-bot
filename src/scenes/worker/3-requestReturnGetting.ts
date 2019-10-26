@@ -25,9 +25,9 @@ requestReturnGetting.enter(async (ctx: any) => {
 
 requestReturnGetting.action(/^approveRequestReturn/, async (ctx: any) => {
 	await ctx.answerCbQuery();
+	await ctx.scene.leave();
 	// Получаем идентификатор получения
 	const gettingId = ctx.callbackQuery.data.split('>')[1];
-	await ctx.scene.leave();
 	/*
 	 * Убираем клавиатуру с кнопками у последнего сообщения
 	 * для того, чтобы нельзя было повторно подтвердить

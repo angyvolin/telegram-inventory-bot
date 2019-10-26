@@ -56,12 +56,13 @@ export default class Scenes {
 			// Сцены Worker
 			stage.register(requestGetting); // Сцена запроса на получение
 			stage.register(requestGettingDate); // Сцена запроса даты возврата инструментов
-			stage.register(requestRemoveInstrument); // Сцена запроса на списание инструментов
+			stage.register(requestMoreItems); // Сцена запроса на выбор еще позиций
 			stage.register(requestReturnDate); // Сцена запроса на возврат, выбор даты получения
 			stage.register(requestReturnList); // Сцена запроса на возврат, выбор конкретного получения
 			stage.register(requestReturnGetting); // Сцена запроса на возврат, подтверждение конкретного получения
 			stage.register(requestReturnRemains); // Сцена запроса на возврат остатков (фурнитуры / расходников)
-			stage.register(requestMoreItems);
+			stage.register(requestMoreRemains); // Сцена запроса на выбор больших остатков
+			stage.register(requestRemoveInstrument); // Сцена запроса на списание инструментов
 
 			// Сцены Supplier
 			stage.register(requestPurchase);

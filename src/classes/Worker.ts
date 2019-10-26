@@ -1,11 +1,14 @@
 import Stockman from './Stockman';
-import Getting from '../models/getting';
+import Instrument from '../models/instrument';
+import Furniture from '../models/furniture';
+import Consumable from '../models/consumable';
 import Confirmation from '../models/confirmation';
+import Getting from '../models/getting';
 import ItemType from '../enums/ItemType';
 import { getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
-import { reduceItem } from '../helpers/items';
-import { getCell, reduceFromCell } from '../helpers/cells';
+import { addItem, reduceItem } from '../helpers/items';
+import { getCell, addToCell, reduceFromCell } from '../helpers/cells';
 import { getItemsMessage, getGettingMessage, getReturnMessage } from '../helpers/messages'; 
 
 const Markup = require('telegraf/markup');
@@ -129,11 +132,11 @@ export default class Worker {
 			return;
 		}
 
-		let instruments = [];
-		for (const [id, amount] of instruments) {
+		const instruments = [];
+		for (const [id, amount] of getting.instruments.entries()) {
 			instruments.push({
 				type: ItemType.INSTRUMENT,
-				id: id,
+				id: id.toString(),
 				amount: amount
 			});
 		}
@@ -149,14 +152,17 @@ export default class Worker {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Получил позиции обратно', `approveReturnInstruments>${confirmationId}>${gettingId}`)],
+			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Получил позиции обратно', `approveReturn>${confirmationId}>${gettingId}`)],
 													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
 
 			// Отправляем сообщение кладовщику
-			const message = await ctx.telegram.sendMessage(id, returnText, {
-				reply_markup: keyboard,
-				parse_mode: 'Markdown'
-			});
+			const message = await ctx.telegram.sendMessage(id, returnText + '\n❗️После возврата подтвердите нажатием кнопки ниже\n',
+				{
+					reply_markup: keyboard,
+					parse_mode: 'Markdown'
+				}
+			);
+
 			// Добавление сообщения в массив
 			messages.push({
 				id: message.message_id,
@@ -200,15 +206,44 @@ export default class Worker {
 													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
 
 			// Отправляем сообщение кладовщику
-			const message = await ctx.telegram.sendMessage(id, returnText, {
-				reply_markup: keyboard,
-				parse_mode: 'Markdown'
-			});
+			const message = await ctx.telegram.sendMessage(id, returnText + '\n❗️После возврата подтвердите нажатием кнопки ниже\n',
+				{
+					reply_markup: keyboard,
+					parse_mode: 'Markdown'
+				}
+			);
 			// Добавление сообщения в массив
 			messages.push({
 				id: message.message_id,
 				chatId: id
 			});
+		}
+
+		const furniture: Map<string, number> = new Map();
+		const consumables: Map<string, number> = new Map();
+
+		/*
+		 * Заполняем Map с соответствующими
+		 * позициями (идентификатор - количество)
+		 */
+		items.forEach((item) => {
+			switch (item.type) {
+				case ItemType.FURNITURE: {
+					furniture.set(item.id, item.amount);
+					break;
+				}
+				case ItemType.CONSUMABLE: {
+					consumables.set(item.id, item.amount);
+					break;
+				}
+			}
+		});
+
+		if (furniture.size > 0) {
+			confirmation.furniture = furniture;
+		}
+		if (consumables.size > 0) {
+			confirmation.consumables = consumables;
 		}
 
 		confirmation.messages = messages;
@@ -330,7 +365,7 @@ export default class Worker {
 		 * отмечаем, что работник подтвердил получение
 		 */
 		for (const message of messages) {
-			const text = confirmation.text + '\n✅ Работник подтвердил получение';
+			const text = confirmation.text + '\n\n✅ Работник подтвердил получение';
 			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
 		}
 
@@ -343,11 +378,96 @@ export default class Worker {
 		await ctx.editMessageText(text);
 	}
 
-	public static async confirmReturnInstrument(ctx: any): Promise<void> {
-		//
+	public static async confirmReturnInstruments(ctx: any): Promise<void> {
+		const id = ctx.callbackQuery.data.split('>')[1];
+		const gettingId = ctx.callbackQuery.data.split('>')[2];
+
+		const confirmation = await Confirmation.findById(id);
+		const getting = await Getting.findById(gettingId);
+
+		if (!confirmation || !getting) {
+			return;
+		}
+
+		const messages = confirmation.messages;
+
+		for (const message of messages) {
+			const text = confirmation.text + '\n✅ Работник подтвердил возврат';
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+		}
+
+		getting.active = false;
+		await getting.save();
+
+		await confirmation.remove();
+
+		for (const [id, amount] of getting.instruments) {
+			await addItem(ItemType.INSTRUMENT, id, amount);
+			const cell = await getCell(ItemType.INSTRUMENT, id);
+			if (cell) {
+				await addToCell(cell._id, ItemType.INSTRUMENT, id, amount);
+			}
+		}
+
+		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
+		await ctx.editMessageText(text);
 	}
 
 	public static async confirmReturnRemains(ctx: any): Promise<void> {
-		//
+		const id = ctx.callbackQuery.data.split('>')[1];
+		const confirmation = await Confirmation.findById(id);
+
+		console.log(id);
+		console.dir(confirmation);
+
+		if (!confirmation) {
+			return;
+		}
+
+		const messages = confirmation.messages;
+
+		for (const message of messages) {
+			const text = confirmation.text + '\n✅ Работник подтвердил возврат';
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+		}
+
+		await confirmation.remove();
+
+		if (confirmation.instruments) {
+			for (const [id, amount] of confirmation.instruments) {
+				await addItem(ItemType.INSTRUMENT, id, amount);
+				const cell = await getCell(ItemType.INSTRUMENT, id);
+				const cellName = cell ? cell.row + cell.col : null;
+				const { name } = await Instrument.findById(id);
+				if (cell) {
+					await addToCell(cell._id, ItemType.INSTRUMENT, id, amount);
+				}
+			}
+		}
+		if (confirmation.furniture) {
+			for (const [id, amount] of confirmation.furniture) {
+				await addItem(ItemType.FURNITURE, id, amount);
+				const cell = await getCell(ItemType.FURNITURE, id);
+				const cellName = cell ? cell.row + cell.col : null;
+				const { name } = await Furniture.findById(id);
+				if (cell) {
+					await addToCell(cell._id, ItemType.FURNITURE, id, amount);
+				}
+			}
+		}
+		if (confirmation.consumables) {
+			for (const [id, amount] of confirmation.consumables) {
+				await addItem(ItemType.CONSUMABLE, id, amount);
+				const cell = await getCell(ItemType.CONSUMABLE, id);
+				const cellName = cell ? cell.row + cell.col : null;
+				const { name } = await Consumable.findById(id);
+				if (cell) {
+					await addToCell(cell._id, ItemType.CONSUMABLE, id, amount);
+				}
+			}
+		}
+
+		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
+		await ctx.editMessageText(text);
 	}
 }

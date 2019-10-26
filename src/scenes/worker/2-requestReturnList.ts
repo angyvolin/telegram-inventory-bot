@@ -25,6 +25,7 @@ requestReturnList.enter(async (ctx: any) => {
 	}
 	// Массив получений по выбранной дате
 	const gettings = ctx.session.dates[ctx.session.date];
+
 	if (!gettings) {
 		await ctx.scene.leave();
 		await ctx.reply('Активные получения отсутствуют!');
@@ -39,18 +40,18 @@ requestReturnList.enter(async (ctx: any) => {
 	const buttons = [];
 	// Перебираем все получения по выбранной дате
 	for (const getting of gettings) {
-
 		const gettingId = getting._id.toString();
-		
+
 		// Составляем массив определенного типа с инструментами
 		let instruments = [];
-		for (const [id, amount] of instruments) {
+		for (const [id, amount] of Object.entries(getting.instruments)) {
 			instruments.push({
 				type: ItemType.INSTRUMENT,
 				id: id,
 				amount: amount
 			});
 		}
+
 		// Получаем сообщение со списком инструментов
 		const instrumentMessage = await getItemsMessage(instruments);
 		// Пишем в Map
@@ -65,11 +66,11 @@ requestReturnList.enter(async (ctx: any) => {
 
 requestReturnList.action(/^returnList>/, async (ctx: any) => {
 	await ctx.answerCbQuery();
+	await ctx.scene.leave();
 	// Получаем идентификатор получения
 	const gettingId = ctx.callbackQuery.data.split('>')[1];
 	// Пишем его в сессию
 	ctx.session.gettingId = gettingId;
-	await ctx.scene.leave();
 	await ctx.scene.enter('worker/requestReturnGetting');
 });
 

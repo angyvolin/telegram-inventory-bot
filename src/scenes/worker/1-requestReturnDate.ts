@@ -63,9 +63,9 @@ requestReturnDate.enter(async (ctx: any) => {
 
 requestReturnDate.action(/^returnDay>/, async (ctx: any) => {
 	await ctx.answerCbQuery();
+	await ctx.scene.leave();
 	const date = ctx.callbackQuery.data.split('>')[1]; // Получаем выбранную дату
 	ctx.session.date = date; // Пишем ее в сессию
-	await ctx.scene.leave();
 	await ctx.scene.enter('worker/requestReturnList');
 });
 

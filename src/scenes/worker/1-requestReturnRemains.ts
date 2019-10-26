@@ -62,6 +62,7 @@ requestReturnRemains.action(/^reduce>/, async (ctx: any) => {
 
 requestReturnRemains.action(/^accept>/, async (ctx: any) => {
 	await ctx.answerCbQuery();
+	await ctx.scene.leave();
 
 	const type = +ctx.callbackQuery.data.split('>')[1];
 	const id = ctx.callbackQuery.data.split('>')[2];
@@ -84,7 +85,6 @@ requestReturnRemains.action(/^accept>/, async (ctx: any) => {
 		ctx.session.items.push(item);
 	}
 
-	await ctx.scene.leave();
 	await ctx.scene.enter('worker/requestMoreRemains');
 });
 
