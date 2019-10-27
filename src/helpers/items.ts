@@ -49,6 +49,50 @@ export async function getOutsideItems(): Promise<Array<any>> {
 	return items;
 }
 
+export async function getOutsideConsumables(): Promise<Array<any>> {
+	const consumables = await Consumable.getAllItems();
+
+	let items = [];
+
+	for (let item of consumables) {
+		const inCell = await getCell(ItemType.CONSUMABLE, item._id.toString());
+		if (!inCell && item.amount > 0) {
+			items.push(item);
+		}
+	}
+	return items;
+}
+
+export async function getOutsideFurniture(): Promise<Array<any>> {
+	const furniture = await Furniture.getAllItems();
+
+	let items = [];
+
+	for (let item of furniture) {
+		const inCell = await getCell(ItemType.FURNITURE, item._id.toString());
+		if (!inCell && item.amount > 0) {
+			items.push(item);
+		}
+	}
+
+	return items;
+}
+
+export async function getOutsideInstruments(): Promise<Array<any>> {
+	const instruments = await Instrument.getAllItems();
+
+	let items = [];
+
+	for (let item of instruments) {
+		const inCell = await getCell(ItemType.INSTRUMENT, item._id.toString());
+		if (!inCell && item.amount > 0) {
+			items.push(item);
+		}
+	}
+	return items;
+}
+
+
 export async function getAbsentItems(): Promise<Array<any>> {
 	const instruments = await Instrument.getAllItems();
 	const furniture = await Furniture.getAllItems();
