@@ -18,11 +18,10 @@ requestSupply.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestSupply.enter(async (ctx: any) => {
-	ctx.session.items = [];
 	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'),
 											 Markup.switchToCurrentChatButton('Фурнитура', 'f')],
 											[Markup.switchToCurrentChatButton('Расходники', 'c'),
-											 Markup.callbackButton('⏪ Назад', 'back')]]).extra();
+											 Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
 	await ctx.replyWithMarkdown('Выберите тип объектов, которые Вы хотите поставить', keyboard);
 });
 
@@ -102,6 +101,14 @@ requestSupply.action('finish', async (ctx: any) => {
 });
 
 requestSupply.action('back', async (ctx: any) => {
+	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'),
+											 Markup.switchToCurrentChatButton('Фурнитура', 'f')],
+											[Markup.switchToCurrentChatButton('Расходники', 'c'),
+											 Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
+	await ctx.replyWithMarkdown('Выберите тип объектов, которые Вы хотите поставить', keyboard);
+});
+
+requestSupply.action('exit', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	return KeyboardMessage.send(ctx, PersonType.SUPPLIER);
