@@ -12,7 +12,10 @@ import requestReturnList from '../scenes/worker/2-requestReturnList';
 import requestReturnGetting from '../scenes/worker/3-requestReturnGetting';
 import requestReturnRemains from '../scenes/worker/1-requestReturnRemains';
 import requestMoreRemains from '../scenes/worker/2-requestMoreRemains';
-import requestRemoveInstrument from '../scenes/worker/requestRemoveInstrument';
+import requestRemoveInstruments from '../scenes/worker/1-requestRemoveInstruments';
+import requestMoreRemove from '../scenes/worker/2-requestMoreRemove';
+import requestRemoveList from '../scenes/worker/3-requestRemoveList';
+import requestRemoveConfirm from '../scenes/worker/4-requestRemoveConfirm';
 // Admin scenes
 import getItemType from '../scenes/addItem/1-getItemType';
 import getItemName from '../scenes/addItem/2-getItemName';
@@ -62,7 +65,10 @@ export default class Scenes {
 			stage.register(requestReturnGetting); // Сцена запроса на возврат, подтверждение конкретного получения
 			stage.register(requestReturnRemains); // Сцена запроса на возврат остатков (фурнитуры / расходников)
 			stage.register(requestMoreRemains); // Сцена запроса на выбор больших остатков
-			stage.register(requestRemoveInstrument); // Сцена запроса на списание инструментов
+			stage.register(requestRemoveInstruments); // Сцена запроса на списание инструментов
+			stage.register(requestMoreRemove); // Сцена запроса на выбор еще инструментов при списании
+			stage.register(requestRemoveList); // Сцена запроса на выдачу списов активных получений при списании инструментов
+			stage.register(requestRemoveConfirm); // Сцена запроса на подтверждение списания
 
 			// Сцены Supplier
 			stage.register(requestPurchase);

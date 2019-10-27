@@ -46,7 +46,7 @@ export async function getGettingMessage(username: string,
 		const { name } = await getItem(type, id); // Получаем имя позиции из БД
 		const cell = await getCell(type, id); // Получаем номер ячейки
 		// Составляем размещение позиции на складе (номер ячейки)
-		const cellName = cell ? "ячейка" + cell.row + cell.col : "вне ячейки"; 
+		const cellName = cell ? 'ячейка ' + cell.row + cell.col : 'вне ячейки'; 
 		// Добавляем позицию как строку к сообщению
 		message += `🔹 ${name} -> ${amount} шт. (${cellName})\n`;
 	}
@@ -69,7 +69,7 @@ export async function getReturnMessage(username: string,
 		const { name } = await getItem(type, id); // Получаем имя позиции из БД
 		const cell = await getCell(type, id); // Получаем номер ячейки
 		// Составляем размещение позиции на складе (номер ячейки)
-		const cellName = cell ? "ячейка" + cell.row + cell.col : "вне ячейки"; 
+		const cellName = cell ? 'ячейка ' + cell.row + cell.col : 'вне ячейки'; 
 		// Добавляем позицию как строку к сообщению
 		message += `🔹 ${name} -> ${amount} шт. (${cellName})\n`;
 	}

@@ -35,7 +35,7 @@ export default class WorkerHandlers {
 		bot.hears('Запросить списание инструментов', async (ctx: any) => {
 			if (await isWorker(ctx.from.username)) {
 				ctx.session.items = [];
-				await ctx.scene.enter('worker/requestRemoveInstrument');
+				await ctx.scene.enter('worker/requestRemoveInstruments');
 			}
 		});
 

@@ -264,8 +264,12 @@ export default class Worker {
 	 * возвращения в будущем). Вторым аргументом передаем пары с
 	 * инструментами и количеством
 	 */
-	public static requestRemovingInstrument(requestId: number, items: Map<number, number>): void {
-		//...
+	public static requestRemoveInstruments(requestId: number,
+										   items: { type: ItemType; id: string; amount: number }[],
+										   gettingId: string): void {
+		console.log('Getting id:', gettingId);
+		console.dir(items);
+		console.log('======================');
 	}
 
 	/*

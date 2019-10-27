@@ -25,3 +25,27 @@ export async function getActiveGettings(chatId: number) {
 		active: true
 	});
 }
+
+export async function getActiveGettingsByInstruments(chatId: number, instruments: { id: string, amount: number }[]) {
+	const gettings = await Getting.find({
+		chatId,
+		active: true
+	});
+	const arr = [];
+	for (const getting of gettings) {
+		let flag = false;
+		for (const instrument of instruments) {
+			const { id, amount } = instrument;
+			if (!getting.instruments.has(id) ||
+				getting.instruments.get(id) < amount) {
+				flag = true;
+			}			
+		}
+		if (flag) {
+			continue;
+		}
+		arr.push(getting);
+
+	}
+	return arr;
+}
