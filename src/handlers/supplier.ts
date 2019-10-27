@@ -10,6 +10,7 @@ export default class SupplierHandlers {
 		// Обработчик для "Запросить закупку"
 		bot.hears('Запросить закупку', async (ctx: any) => {
 			if (await isSupplier(ctx.from.username)) {
+				ctx.session.items = [];
 				await ctx.scene.enter('supplier/requestPurchase');
 			}
 		});
@@ -17,6 +18,7 @@ export default class SupplierHandlers {
 		// Обработчик для "Запросить поставку в склад"
 		bot.hears('Запросить поставку в склад', async (ctx: any) => {
 			if (await isSupplier(ctx.from.username)) {
+				ctx.session.items = [];
 				await ctx.scene.enter('supplier/requestSupply');
 			}
 		});

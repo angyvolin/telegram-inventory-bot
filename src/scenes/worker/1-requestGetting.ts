@@ -22,7 +22,7 @@ requestGetting.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'),
 											 Markup.switchToCurrentChatButton('Фурнитура', 'f')],
 											[Markup.switchToCurrentChatButton('Расходники', 'c'),
-											 Markup.callbackButton('⏪ Назад', 'back')]]).extra();
+											 Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
 	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите получить', keyboard);
 });
 
@@ -98,6 +98,14 @@ requestGetting.action(/^accept>/, async (ctx: any) => {
 });
 
 requestGetting.action('back', async (ctx: any) => {
+	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'),
+											 Markup.switchToCurrentChatButton('Фурнитура', 'f')],
+											[Markup.switchToCurrentChatButton('Расходники', 'c'),
+											 Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
+	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите получить', keyboard);
+});
+
+requestGetting.action('exit', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	return KeyboardMessage.send(ctx, PersonType.WORKER);

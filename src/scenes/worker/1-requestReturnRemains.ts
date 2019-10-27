@@ -20,7 +20,7 @@ requestReturnRemains.command('start', async (ctx: any) => {
 requestReturnRemains.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Фурнитура', 'f'),
 											 Markup.switchToCurrentChatButton('Расходники', 'c')],
-											[Markup.callbackButton('⏪ Назад', 'back')]]).extra();
+											[Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
 	await ctx.replyWithMarkdown('Выберите тип предметов, которые вы хотите вернуть', keyboard);
 });
 
@@ -89,6 +89,13 @@ requestReturnRemains.action(/^accept>/, async (ctx: any) => {
 });
 
 requestReturnRemains.action('back', async (ctx: any) => {
+	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Фурнитура', 'f'),
+											 Markup.switchToCurrentChatButton('Расходники', 'c')],
+											[Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
+	await ctx.replyWithMarkdown('Выберите тип предметов, которые вы хотите вернуть', keyboard);
+});
+
+requestReturnRemains.action('exit', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	return KeyboardMessage.send(ctx, PersonType.WORKER);

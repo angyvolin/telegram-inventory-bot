@@ -204,14 +204,12 @@ export default class Stockman {
 		};
 		await ctx.telegram.sendMessage(confirmation.chatId, text, options);
 
-		console.dir(confirmation)
-
 		const items: { name: string, cellName: string }[] = [];
 		if (confirmation.furniture) {
 			for (const [id, amount] of confirmation.furniture.entries()) {
 				const cell = await getCell(ItemType.FURNITURE, id);
 				const cellName = cell ? cell.row + cell.col : null;
-				const { name } = await Instrument.findById(id);
+				const { name } = await Furniture.findById(id);
 				items.push({ cellName, name });
 			}
 		}
@@ -219,13 +217,11 @@ export default class Stockman {
 			for (const [id, amount] of confirmation.consumables.entries()) {
 				const cell = await getCell(ItemType.CONSUMABLE, id);
 				const cellName = cell ? cell.row + cell.col : null;
-				const { name } = await Instrument.findById(id);
+				const { name } = await Consumable.findById(id);
 				items.push({ cellName, name });
 			}
 		}
 
-		console.dir(items);
-		
 		const message = 'Разместите поставленные позиции в соответствии со списком:\n' + (await getCellsMessage(items));
 		await ctx.reply(message);
 	}

@@ -18,6 +18,7 @@ export default class WorkerHandlers {
 		// Обработчик для "Запросить возврат инструментов"
 		bot.hears('Запросить возврат инструментов', async (ctx: any) => {
 			if (await isWorker(ctx.from.username)) {
+				ctx.session.items = [];
 				await ctx.scene.enter('worker/requestReturnDate');
 			}
 		});
@@ -25,6 +26,7 @@ export default class WorkerHandlers {
 		// Обработчик для "Запросить возврат фурнитуры / расходников"
 		bot.hears('Запросить возврат фурнитуры / расходников', async (ctx: any) => {
 			if (await isWorker(ctx.from.username)) {
+				ctx.session.items = [];
 				await ctx.scene.enter('worker/requestReturnRemains');
 			}
 		});
@@ -32,6 +34,7 @@ export default class WorkerHandlers {
 		// Обработчик для "Запросить списание инструментов"
 		bot.hears('Запросить списание инструментов', async (ctx: any) => {
 			if (await isWorker(ctx.from.username)) {
+				ctx.session.items = [];
 				await ctx.scene.enter('worker/requestRemoveInstrument');
 			}
 		});
