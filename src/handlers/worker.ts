@@ -59,14 +59,14 @@ export default class WorkerHandlers {
 			}
 		});
 
-		bot.action(/^confirmReturn/, async (ctx: any) => {
+		bot.action(/^confirmReturn>/, async (ctx: any) => {
 			await ctx.answerCbQuery();
 			if (await isWorker(ctx.from.username)) {
 				await Worker.confirmReturnInstruments(ctx);
 			}
 		});
 
-		bot.action(/^confirmReturnRemains/, async (ctx: any) => {
+		bot.action(/^confirmReturnRemains>/, async (ctx: any) => {
 			await ctx.answerCbQuery();
 			if (await isWorker(ctx.from.username)) {
 				await Worker.confirmReturnRemains(ctx);
