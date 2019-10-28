@@ -30,6 +30,14 @@ export default class SupplierHandlers {
 			}
 		});
 
+		// Подтверждение закупки
+		bot.action(/^confirmPurchase>/, async (ctx) => {
+			await ctx.answerCbQuery();
+			if (await isSupplier(ctx.from.username)) {
+				Supplier.confirmPurchase(ctx);
+			}
+		});
+
 		// Подтверждение поставки в склад
 		bot.action(/^confirmSupply>/, async (ctx) => {
 			await ctx.answerCbQuery();

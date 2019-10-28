@@ -92,5 +92,12 @@ export default class AdminHandlers {
 				Admin.confirmRemoveInstruments(ctx);
 			}
 		});
+
+		bot.action(/^approvePurchase>/, async (ctx: any) => {
+			await ctx.answerCbQuery();
+			if (await isAdmin(ctx.from.id)) {
+				Admin.confirmPurchase(ctx);
+			}
+		});
 	}
 }

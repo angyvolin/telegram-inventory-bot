@@ -5,6 +5,8 @@ import Confirmation from '../models/confirmation';
 import Getting from '../models/getting';
 import { isAdmin } from '../helpers/functions';
 
+const Markup = require('telegraf/markup');
+
 export default class Admin {
 	// Public
 	public static async confirmRemoveInstruments(ctx: any): Promise<void> {
@@ -64,15 +66,41 @@ export default class Admin {
 		await getting.save();
 	}
 
+	public static async confirmPurchase(ctx: any): Promise<void> {
+		const id = ctx.callbackQuery.data.split('>')[1];
+		const confirmation = await Confirmation.findById(id);
+	
+		if (!confirmation) {
+			return;
+		}
+
+		// Получаем все сообщения отправленные админам
+		const messages = confirmation.messages;
+
+		// Редактируем эти сообщения
+		for (const message of messages) {
+			const text = confirmation.text + '\n❗️Ожидание подтверждения закупки снабженца';
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+		}
+
+		// Отправляем сообщение работнику с уведомлением о списании инструментов
+		const keyboard = Markup.inlineKeyboard([Markup.callbackButton('✅ Закупил', `confirmPurchase>${id}`)]);
+		const text = '✅ Закупка была подтверждено:\n' +
+					 confirmation.itemsText +
+					 '\n❗️Подтвердите закупку нажатием кнопки ниже:';
+		const options = {
+			reply_markup: keyboard
+		};
+		await ctx.telegram.sendMessage(confirmation.chatId, text, options);
+	}
+
+
+
 	public static confirmRemovingInstrument(username: string, instruments: Map<number, number>): void {
 		//...
 	}
 
 	public static confirmSupply(supply: string): void {
-		//...
-	}
-
-	public static confirmPurchase(purchase: string): void {
 		//...
 	}
 

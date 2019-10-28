@@ -7,7 +7,7 @@ import { getChatId, getAdmins } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
 import { addItem } from '../helpers/items';
 import { getCell, addToCell } from '../helpers/cells';
-import { getItemsMessage, getPurchaseMessage, getSupplyMessage } from '../helpers/messages';
+import { getItemsMessage, getItemsPriceMessage, getPurchaseMessage, getSupplyMessage } from '../helpers/messages';
 
 const Markup = require('telegraf/markup');
 
@@ -29,7 +29,7 @@ export default class Supplier {
 		}
 
 		const purchaseText = await getPurchaseMessage(ctx.from.username, items);
-		const itemsText = await getItemsMessage(items);
+		const itemsText = await getItemsPriceMessage(items);
 		const messages = [];
 
 		const confirmation = new Confirmation();
@@ -135,6 +135,37 @@ export default class Supplier {
 		confirmation.itemsText = itemsText;
 		confirmation.chatId = ctx.from.id;
 		await confirmation.save();
+	}
+
+	public static async confirmPurchase(ctx: any): Promise<void> {
+		const id = ctx.callbackQuery.data.split('>')[1];
+		const confirmation = await Confirmation.findById(id);
+
+		if (!confirmation) {
+			return;
+		}
+
+		// Удаляем подтверждаемый Confirmation
+		await confirmation.remove();
+
+		const messages = confirmation.messages;
+
+		/**
+		 * Модифицируем сообщения у всех кладовщиков,
+		 * отмечаем, что работник подтвердил получение
+		 */
+		for (const message of messages) {
+			const text = confirmation.text + '\n✅ Снабженец закупил позиции';
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+		}
+
+		/**
+		 * Модифицируем сообщение у поставщика
+		 * (убираем кнопки для подтверждения,
+		 * отмечаем как "Подтверждено")
+		 */
+		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
+		await ctx.editMessageText(text);
 	}
 
 	public static async confirmSupply(ctx: any): Promise<void> {
