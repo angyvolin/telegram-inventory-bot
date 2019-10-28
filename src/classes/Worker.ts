@@ -1,4 +1,3 @@
-import Stockman from './Stockman';
 import Instrument from '../models/instrument';
 import Furniture from '../models/furniture';
 import Consumable from '../models/consumable';

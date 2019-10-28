@@ -22,5 +22,20 @@ export default class SupplierHandlers {
 				await ctx.scene.enter('supplier/requestSupply');
 			}
 		});
+
+		// Обработчик для "Добавить позицию в базу"
+		bot.hears('Добавить позицию в базу', async (ctx: any) => {
+			if (await isSupplier(ctx.from.id)) {
+				await ctx.scene.enter('addItem/getItemType');
+			}
+		});
+
+		// Подтверждение поставки в склад
+		bot.action(/^confirmSupply>/, async (ctx) => {
+			await ctx.answerCbQuery();
+			if (await isSupplier(ctx.from.username)) {
+				Supplier.confirmSupply(ctx);
+			}
+		});
 	}
 }

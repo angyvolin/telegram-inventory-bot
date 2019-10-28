@@ -1,42 +1,24 @@
+import Instrument from '../models/instrument';
+import Furniture from '../models/furniture';
+import Consumable from '../models/consumable';
 import Confirmation from '../models/confirmation';
 import ItemType from '../enums/ItemType';
 import { getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
-import { getItemsMessage } from '../helpers/messages';
+import { addItem } from '../helpers/items';
+import { getCell, addToCell } from '../helpers/cells';
+import { getItemsMessage, getSupplyMessage } from '../helpers/messages';
 
 const Markup = require('telegraf/markup');
 
 export default class Supplier {
-	// Private
-	private static async getSupplyMessage(username: string,
-										  items: { type: ItemType; id: string; amount: number }[]
-										 ): Promise<string> {
-		let message = `*Поставщик* @${username} хочет поставить следующие позиции:\n`;
-		message += await getItemsMessage(items);
-		return message;
-	}
-
 	// Public
 	/**
-	 * @param {string} purchase - text with items to
-	 * buy (with their prices and amount)
-	 * @desc Request purchase, it's sent to admin
-	 */
-	public static async requestPurchase(purchase: string): Promise<void> {
-		//...
-	}
-
-	/**
-	 * @param {Map<number, number>} items - pairs (id - amount) to
-	 * supply to the stock
-	 * @desc Supply purchased items to stock, it's
-	 * sent to Stockman
+	 * @desc Запрос на поставку позиций в склад
 	 */
 	public static async requestSupply(ctx: any,
-									  chatId: number,
-									  username: string,
-									  items: { type: ItemType; id: string; amount: number }[]
-									 ): Promise<void> {
+										items: { type: ItemType; id: string; amount: number }[]
+									   ): Promise<void> {
 		if (!items.length) {
 			return;
 		}
@@ -45,7 +27,7 @@ export default class Supplier {
 			return;
 		}
 
-		const supplyText = await Supplier.getSupplyMessage(username, items);
+		const supplyText = await getSupplyMessage(ctx.from.username, items);
 		const itemsText = await getItemsMessage(items);
 		const messages = [];
 
@@ -59,11 +41,12 @@ export default class Supplier {
 			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить получение', `approveSupply>${confirmationId}`)],
 													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
 
-			const messageText = supplyText + `\n❗️После поставки подтвердите нажатием кнопки ниже\n`;
-			const message = await ctx.telegram.sendMessage(id, messageText, {
-				reply_markup: keyboard,
-				parse_mode: 'Markdown'
-			});
+			const message = await ctx.telegram.sendMessage(id, supplyText + `\n❗️После поставки подтвердите нажатием кнопки ниже\n`,
+				{
+					reply_markup: keyboard,
+					parse_mode: 'Markdown'
+				}
+			);
 			messages.push({
 				id: message.message_id,
 				chatId: id
@@ -104,28 +87,89 @@ export default class Supplier {
 		confirmation.messages = messages;
 		confirmation.text = supplyText;
 		confirmation.itemsText = itemsText;
-		confirmation.chatId = chatId;
+		confirmation.chatId = ctx.from.id;
 		await confirmation.save();
 	}
 
-	/**
-	 * @desc Add new instrument to the database
-	 */
-	public static addInstrument(id: number, photo: string, name: string): void {
-		//..
+	public static async confirmSupply(ctx: any): Promise<void> {
+		const id = ctx.callbackQuery.data.split('>')[1];
+		const confirmation = await Confirmation.findById(id);
+
+		if (!confirmation) {
+			return;
+		}
+
+		// Удаляем подтверждаемый Confirmation
+		await confirmation.remove();
+
+		const messages = confirmation.messages;
+
+		/**
+		 * Модифицируем сообщения у всех кладовщиков,
+		 * отмечаем, что работник подтвердил получение
+		 */
+		for (const message of messages) {
+			const text = confirmation.text + '\n✅ Снабженец подтвердил поставку';
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+		}
+
+		/*
+		 * Iterate all items, add them to a
+		 * database and relevant cells
+		 */
+		const items: { name: string, cellName: string }[] = [];
+		if (confirmation.instruments) {
+			for (const [id, amount] of confirmation.instruments) {
+				await addItem(ItemType.INSTRUMENT, id, amount);
+				const cell = await getCell(ItemType.INSTRUMENT, id);
+				const cellName = cell ? cell.row + cell.col : null;
+				const { name } = await Instrument.findById(id);
+				items.push({ cellName, name });
+				if (cell) {
+					await addToCell(cell._id, ItemType.INSTRUMENT, id, amount);
+				}
+			}
+		}
+		if (confirmation.furniture) {
+			for (const [id, amount] of confirmation.furniture) {
+				await addItem(ItemType.FURNITURE, id, amount);
+				const cell = await getCell(ItemType.FURNITURE, id);
+				const cellName = cell ? cell.row + cell.col : null;
+				const { name } = await Furniture.findById(id);
+				items.push({ cellName, name });
+				if (cell) {
+					await addToCell(cell._id, ItemType.FURNITURE, id, amount);
+				}
+			}
+		}
+		if (confirmation.consumables) {
+			for (const [id, amount] of confirmation.consumables) {
+				await addItem(ItemType.CONSUMABLE, id, amount);
+				const cell = await getCell(ItemType.CONSUMABLE, id);
+				const cellName = cell ? cell.row + cell.col : null;
+				const { name } = await Consumable.findById(id);
+				items.push({ cellName, name });
+				if (cell) {
+					await addToCell(cell._id, ItemType.CONSUMABLE, id, amount);
+				}
+			}
+		}
+
+		/**
+		 * Модифицируем сообщение у поставщика
+		 * (убираем кнопки для подтверждения,
+		 * отмечаем как "Подтверждено")
+		 */
+		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
+		await ctx.editMessageText(text);
 	}
 
 	/**
-	 * @desc Add new furniture to the database
+	 * @param {string} purchase - text with items to
+	 * buy (with their prices and amount)
+	 * @desc Request purchase, it's sent to admin
 	 */
-	public static addFurniture(id: number, photo: string, name: string): void {
-		//..
-	}
-
-	/**
-	 * @desc Add new consumable to the database
-	 */
-	public static addConsumable(id: number, photo: string, name: string): void {
-		//..
-	}
+	/*public static async requestPurchase(purchase: string): Promise<void> {
+		//...
+	}*/
 }
