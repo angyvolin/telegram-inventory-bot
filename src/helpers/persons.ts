@@ -1,4 +1,3 @@
-import * as api from 'telegraf';
 import Logger from '../init/logger';
 import PersonType from '../enums/PersonType';
 import Person, { IPerson } from '../models/person';
@@ -56,32 +55,20 @@ export async function addPerson(type: PersonType, username: string, fullName: st
 
 export async function isWorker(username: string): Promise<boolean> {
 	const type = await getPersonType(username);
-	if (type === PersonType.WORKER) {
-		return true;
-	}
-	return false;
+	return type === PersonType.WORKER;
 }
 
 export async function isStockman(username: string): Promise<boolean> {
 	const type = await getPersonType(username);
-	if (type === PersonType.STOCKMAN) {
-		return true;
-	}
-	return false;
+	return type === PersonType.STOCKMAN;
 }
 
 export async function isSupplier(username: string): Promise<boolean> {
 	const type = await getPersonType(username);
-	if (type === PersonType.SUPPLIER) {
-		return true;
-	}
-	return false;
+	return type === PersonType.SUPPLIER;
 }
 
 export async function isChief(username: string): Promise<boolean> {
 	const type = await getPersonType(username);
-	if (type === PersonType.CHIEF) {
-		return true;
-	}
-	return false;
+	return type === PersonType.CHIEF;
 }

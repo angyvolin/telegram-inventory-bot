@@ -1,5 +1,4 @@
 import * as api from 'telegraf';
-import Confirmation from '../models/confirmation';
 import Supplier from '../classes/Supplier';
 import { isSupplier } from '../helpers/persons';
 
@@ -25,7 +24,7 @@ export default class SupplierHandlers {
 
 		// Обработчик для "Добавить позицию в базу"
 		bot.hears('Добавить позицию в базу', async (ctx: any) => {
-			if (await isSupplier(ctx.from.id)) {
+			if (await isSupplier(ctx.from.username)) {
 				await ctx.scene.enter('addItem/getItemType');
 			}
 		});
