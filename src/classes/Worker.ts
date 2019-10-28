@@ -7,9 +7,10 @@ import Getting from '../models/getting';
 import ItemType from '../enums/ItemType';
 import { getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
+import { getAdmins } from '../helpers/functions';
 import { addItem, reduceItem } from '../helpers/items';
 import { getCell, addToCell, reduceFromCell } from '../helpers/cells';
-import { getItemsMessage, getGettingMessage, getReturnMessage } from '../helpers/messages'; 
+import { getItemsMessage, getGettingMessage, getReturnMessage, getRemoveMessage } from '../helpers/messages'; 
 
 const Markup = require('telegraf/markup');
 
@@ -264,12 +265,60 @@ export default class Worker {
 	 * возвращения в будущем). Вторым аргументом передаем пары с
 	 * инструментами и количеством
 	 */
-	public static requestRemoveInstruments(requestId: number,
-										   items: { type: ItemType; id: string; amount: number }[],
-										   gettingId: string): void {
-		console.log('Getting id:', gettingId);
-		console.dir(items);
-		console.log('======================');
+	public static async requestRemoveInstruments(ctx: any,
+												 items: { type: ItemType; id: string; amount: number }[],
+												 gettingId: string): Promise<void> {
+		const admins = await getAdmins();
+
+		if (!admins.length) {
+			return;
+		}
+
+		const removeText = await getRemoveMessage(ctx.from.username, items);
+		const itemsText = await getItemsMessage(items);
+		const messages = [];
+
+		const confirmation = new Confirmation();
+		const confirmationId = confirmation._id;
+
+		for (let admin of admins) {
+			const id = await getChatId(admin.username);
+			if (!id) continue;
+
+			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить списание', `approveRemove>${confirmationId}>${gettingId}`)],
+													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+
+			// Отправляем сообщение кладовщику
+			const message = await ctx.telegram.sendMessage(id, removeText,
+				{
+					reply_markup: keyboard,
+					parse_mode: 'Markdown'
+				}
+			);
+			// Добавление сообщения в массив
+			messages.push({
+				id: message.message_id,
+				chatId: id
+			});
+
+			const instruments: Map<string, number> = new Map();
+
+			/*
+			 * Заполняем Map с инструментами
+			 * позициями (идентификатор - количество)
+			 */
+			items.forEach((item) => {
+				instruments.set(item.id, item.amount);
+			});
+
+			confirmation.instruments = instruments;
+
+			confirmation.messages = messages;
+			confirmation.text = removeText;
+			confirmation.itemsText = itemsText;
+			confirmation.chatId = ctx.from.id;
+			await confirmation.save();
+		}
 	}
 
 	/*

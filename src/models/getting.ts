@@ -6,6 +6,7 @@ export interface IGetting extends Document {
 	instruments?: Map<string, number>;
 	furniture?: Map<string, number>;
 	consumables?: Map<string, number>;
+	removed?: Map<string, number>; // Removed instruments
 	created: Date;
 	expires?: Date;
 }
@@ -18,6 +19,7 @@ export const GettingSchema: Schema = new Schema(
 		instruments: { type: Map },
 		furniture: { type: Map },
 		consumables: { type: Map },
+		removed: { type: Map },
 		created: { type: Date, required: true, default: Date.now },
 		expires: { type: Date }
 	},

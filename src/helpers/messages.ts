@@ -75,3 +75,23 @@ export async function getReturnMessage(username: string,
 	}
 	return message;
 }
+
+/**
+ * @desc Составляет сообщение админу для
+ * запроса на списание инструментов работником
+ */
+export async function getRemoveMessage(username: string,
+									   items: { type: ItemType, id: string, amount: number }[],
+									  ): Promise<string> {
+	let message = `*Работник* @${username} желает списать инструменты:\n`;
+	for (let item of items) {
+		const { id, type, amount } = item; // Берем поля текущей позиции
+		const { name } = await getItem(type, id); // Получаем имя позиции из БД
+		const cell = await getCell(type, id); // Получаем номер ячейки
+		// Составляем размещение позиции на складе (номер ячейки)
+		const cellName = cell ? 'ячейка ' + cell.row + cell.col : 'вне ячейки'; 
+		// Добавляем позицию как строку к сообщению
+		message += `🔹 ${name} -> ${amount} шт. (${cellName})\n`;
+	}
+	return message;
+}

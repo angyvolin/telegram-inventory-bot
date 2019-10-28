@@ -1,10 +1,69 @@
 import Instrument from './Instrument';
 import Furniture from './Furniture';
 import Consumable from './Consumable';
+import Confirmation from '../models/confirmation';
+import Getting from '../models/getting';
 import { isAdmin } from '../helpers/functions';
 
 export default class Admin {
 	// Public
+	public static async confirmRemoveInstruments(ctx: any): Promise<void> {
+		const id = ctx.callbackQuery.data.split('>')[1];
+		const gettingId = ctx.callbackQuery.data.split('>')[2];
+
+		const confirmation = await Confirmation.findById(id);
+		const getting = await Getting.findById(gettingId);
+
+		if (!confirmation || !getting) {
+			return;
+		}
+
+		// Получаем все сообщения отправленные админам
+		const messages = confirmation.messages;
+
+		// Редактируем эти сообщения
+		for (const message of messages) {
+			const text = confirmation.text + '\n✅ Подтверждено';
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+		}
+
+		// Удаляем подтверждение с БД
+		await confirmation.remove();
+
+		// Отправляем сообщение работнику с уведомлением о списании инструментов
+		const text = '✅ Списание инструментов было подтверждено:\n' +
+					 confirmation.itemsText;
+		await ctx.telegram.sendMessage(confirmation.chatId, text);
+
+		// Создаем Мар со списанными инструментами
+		const removed: Map<string, number> = new Map();
+
+		// Заполняем этот Мар
+		for (const [id, amount] of confirmation.instruments) {
+			// Добавляем инструмент в Мар со списанными инструментами
+			removed.set(id, amount);
+			// Удаляем эти инструменты с получения
+			// (чтобы позднее не требовать их возврата)
+			const newAmount = getting.instruments.has(id) ?
+							  getting.instruments.get(id) - amount : 0;
+			if (newAmount === 0) {
+				getting.instruments.delete(id);	
+			} else {
+				getting.instruments.set(id, newAmount);
+			}
+		}
+
+		if (getting.instruments.size === 0) {
+			getting.active = false;
+		}
+
+		// Добавляем этот Мар в получение в БД
+		getting.removed = removed;
+
+		// Сохраняем получение
+		await getting.save();
+	}
+
 	public static confirmRemovingInstrument(username: string, instruments: Map<number, number>): void {
 		//...
 	}
