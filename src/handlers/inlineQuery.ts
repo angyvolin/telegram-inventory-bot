@@ -78,8 +78,6 @@ export default class InlineQueryHandlers {
 			if (!item) {
 				return ctx.telegram.sendMessage(ctx.from.id, 'Ошибка на сервере! Позиция не была найдена');
 			}
-
-			// if (item.amount > 0 || personType === PersonType.SUPPLIER) {
 			let keyboard = Markup.inlineKeyboard([
 				[
 					Markup.callbackButton('➖ 10', `increase>${type}>${id}>${item.amount}>-10`),
@@ -93,29 +91,38 @@ export default class InlineQueryHandlers {
 					Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)
 				]
 			]);
-				let message = `Название: *${item.name}*\nВ наличии: *${item.amount}*`;
+			let message = `Название: *${item.name}*\nВ наличии: *${item.amount}*`;
 
-				if (isMoving) {
-					const currCell = await getCell(type, item._id.toString());
-					message += currCell ? `\nАдрес: *${currCell.row + currCell.col}*` : `\nНаходится вне ячейки`;
-					keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back'), , Markup.callbackButton('✅ Выбрать', `selectMoveItem>${type}>${id}`)]);
-				}
-				const options = {
-					parse_mode: 'Markdown',
-					reply_markup: keyboard,
-					caption: message
-				};
-				if (item.photo) {
-					return ctx.telegram.sendPhoto(ctx.from.id, item.photo, options);
-				}
-				await ctx.telegram.sendMessage(ctx.from.id, message, options);
-			// }
+			if (isMoving) {
+				const currCell = await getCell(type, item._id.toString());
+				message += currCell ? `\nАдрес: *${currCell.row + currCell.col}*` : `\nНаходится вне ячейки`;
+				keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Выбрать', `selectMoveItem>${type}>${id}`)]);
+			}
+			const options = {
+				parse_mode: 'Markdown',
+				reply_markup: keyboard,
+				caption: message
+			};
+			if (item.photo) {
+				return ctx.telegram.sendPhoto(ctx.from.id, item.photo, options);
+			}
+			await ctx.telegram.sendMessage(ctx.from.id, message, options);
 		});
 
 		const sendResults = async (ctx, items, returnAbsent = false) => {
 			const personType = await getPersonType(ctx.from.username);
 			const offset = ctx.inlineQuery.offset ? ctx.inlineQuery.offset : '0';
 			const portion = 15;
+
+			items.sort((a: any, b: any) => {
+				if (a.name > b.name) {
+					return 1;
+				}
+				if (a.name < b.name) {
+					return -1;
+				}
+				return 0;
+			});
 
 			let results = [];
 
