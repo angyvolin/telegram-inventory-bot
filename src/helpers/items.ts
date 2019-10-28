@@ -121,6 +121,21 @@ export async function getAbsentItems(): Promise<Array<any>> {
 	return items;
 }
 
+export async function getAbsentInstruments(): Promise<Array<any>> {
+	const instruments = await Instrument.getAllItems();
+	return instruments.filter(item => item.amount === 0);
+}
+
+export async function getAbsentFurniture(): Promise<Array<any>> {
+	const furniture = await Furniture.getAllItems();
+	return furniture.filter(item => item.amount === 0);
+}
+
+export async function getAbsentConsumables(): Promise<Array<any>> {
+	const consumables = await Consumable.getAllItems();
+	return consumables.filter(item => item.amount === 0);
+}
+
 export async function addItem(type: ItemType, id: string, amount: number): Promise<void> {
 	switch (type) {
 		case ItemType.INSTRUMENT: {
