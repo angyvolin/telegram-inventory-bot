@@ -47,6 +47,17 @@ export async function getItemsCellsMessage(items: { type: ItemType; id: string; 
 	return message;
 }
 
+export async function getItemsPriceMessage(items: { type: ItemType; id: string; amount: number, price: string }[]): Promise<string> {
+	let message = '';
+	for (let item of items) {
+		const { id, type, amount, price } = item; // Берем поля текущей позиции
+		const { name } = await getItem(type, id); // Получаем имя позиции из БД
+		// Добавляем позицию как строку к сообщению
+		message += `🔹 ${name} -> ${amount} шт. (${price}/шт.)\n`;
+	}
+	return message;
+}
+
 /**
  * @desc Составляет сообщение кладовщику для
  * запроса на получение позиций работником
@@ -82,10 +93,26 @@ export async function getRemoveMessage(username: string,
 									   items: { type: ItemType, id: string, amount: number }[],
 									  ): Promise<string> {
 	let message = `*Работник* @${username} желает списать инструменты:\n`;
-	message += await getItemsCellsMessage(items);
+	message += await getItemsMessage(items);
 	return message;
 }
 
+/**
+ * @desc Составляет сообщение админу для
+ * запроса на закупку позиций снабженцем
+ */
+export async function getPurchaseMessage(username: string,
+									   items: { type: ItemType; id: string; amount: number, price: string }[]
+									  ): Promise<string> {
+	let message = `*Поставщик* @${username} хочет закупить следующие позиции:\n`;
+	message += await getItemsPriceMessage(items);
+	return message;
+}
+
+/**
+ * @desc Составляет сообщение кладовщику для
+ * запроса на поставку позиций снабженцем
+ */
 export async function getSupplyMessage(username: string,
 									   items: { type: ItemType; id: string; amount: number }[]
 									  ): Promise<string> {

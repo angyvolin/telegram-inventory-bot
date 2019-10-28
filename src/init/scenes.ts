@@ -24,7 +24,9 @@ import getPersonRole from '../scenes/addPerson/1-getPersonRole';
 import getPersonName from '../scenes/addPerson/2-getPersonName';
 import getPersonUsername from '../scenes/addPerson/3-getPersonUsername';
 // Supplier scenes
-import requestPurchase from '../scenes/supplier/requestPurchase';
+import requestPurchase from '../scenes/supplier/1-requestPurchase';
+import requestPurchasePrice from '../scenes/supplier/2-requestPurchasePrice';
+import requestPurchaseMore from '../scenes/supplier/3-requestPurchaseMore';
 import requestSupply from '../scenes/supplier/1-requestSupply';
 import requestSupplyMore from '../scenes/supplier/2-requestSupplyMore';
 // Stockman scenes
@@ -73,6 +75,8 @@ export default class Scenes {
 
 			// Сцены Supplier
 			stage.register(requestPurchase);
+			stage.register(requestPurchasePrice);
+			stage.register(requestPurchaseMore);
 			stage.register(requestSupply);
 			stage.register(requestSupplyMore);
 

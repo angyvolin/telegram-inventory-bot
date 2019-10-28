@@ -3,22 +3,68 @@ import Furniture from '../models/furniture';
 import Consumable from '../models/consumable';
 import Confirmation from '../models/confirmation';
 import ItemType from '../enums/ItemType';
-import { getChatId } from '../helpers/functions';
+import { getChatId, getAdmins } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
 import { addItem } from '../helpers/items';
 import { getCell, addToCell } from '../helpers/cells';
-import { getItemsMessage, getSupplyMessage } from '../helpers/messages';
+import { getItemsMessage, getPurchaseMessage, getSupplyMessage } from '../helpers/messages';
 
 const Markup = require('telegraf/markup');
 
 export default class Supplier {
 	// Public
 	/**
+	 * @desc Запрос на закупку позиций
+	 * (с ценами на них)
+	 */
+	public static async requestPurchase(ctx: any,
+										items: { type: ItemType; id: string; amount: number, price: string }[]
+									   ): Promise<void> {
+		if (!items.length) {
+			return;
+		}
+		const admins = await getAdmins();
+		if (!admins.length) {
+			return;
+		}
+
+		const purchaseText = await getPurchaseMessage(ctx.from.username, items);
+		const itemsText = await getItemsMessage(items);
+		const messages = [];
+
+		const confirmation = new Confirmation();
+		const confirmationId = confirmation._id;
+
+		for (let admin of admins) {
+			const id = await getChatId(admin.username);
+			if (!id) continue;
+
+			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить закупку', `approvePurchase>${confirmationId}`)],
+													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+
+			const message = await ctx.telegram.sendMessage(id, purchaseText, {
+				reply_markup: keyboard,
+				parse_mode: 'Markdown'
+			});
+			messages.push({
+				id: message.message_id,
+				chatId: id
+			});
+		}
+
+		confirmation.messages = messages;
+		confirmation.text = purchaseText;
+		confirmation.itemsText = itemsText;
+		confirmation.chatId = ctx.from.id;
+		await confirmation.save();
+	}
+
+	/**
 	 * @desc Запрос на поставку позиций в склад
 	 */
 	public static async requestSupply(ctx: any,
 										items: { type: ItemType; id: string; amount: number }[]
-									   ): Promise<void> {
+									 ): Promise<void> {
 		if (!items.length) {
 			return;
 		}
@@ -163,13 +209,4 @@ export default class Supplier {
 		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
 		await ctx.editMessageText(text);
 	}
-
-	/**
-	 * @param {string} purchase - text with items to
-	 * buy (with their prices and amount)
-	 * @desc Request purchase, it's sent to admin
-	 */
-	/*public static async requestPurchase(purchase: string): Promise<void> {
-		//...
-	}*/
 }
