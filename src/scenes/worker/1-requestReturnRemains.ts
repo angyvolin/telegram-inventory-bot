@@ -18,8 +18,8 @@ requestReturnRemains.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestReturnRemains.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Фурнитура', 'f'),
-											 Markup.switchToCurrentChatButton('Расходники', 'c')],
+	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f'),
+											 Markup.switchToCurrentChatButton('Расходники', 'incl_abs c')],
 											[Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
 	await ctx.replyWithMarkdown('Выберите тип предметов, которые вы хотите вернуть', keyboard);
 });

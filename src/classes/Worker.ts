@@ -418,7 +418,7 @@ export default class Worker {
 		 * отмечаем, что работник подтвердил получение
 		 */
 		for (const message of messages) {
-			const text = confirmation.text + '\n\n✅ Работник подтвердил получение';
+			const text = confirmation.text + '\n✅ Работник подтвердил получение';
 			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
 		}
 

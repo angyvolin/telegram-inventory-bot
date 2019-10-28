@@ -17,7 +17,7 @@ requestRemoveInstruments.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestRemoveInstruments.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i')],
+	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i')],
 											[Markup.callbackButton('Назад', 'back')]]).extra();
 	await ctx.reply('Выберите инструменты, которые вы хотите списать', keyboard);
 });

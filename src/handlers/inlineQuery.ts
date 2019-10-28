@@ -2,9 +2,9 @@ import Instrument from '../classes/Instrument';
 import Furniture from '../classes/Furniture';
 import Consumable from '../classes/Consumable';
 import ItemType from '../enums/ItemType';
+import PersonType from '../enums/PersonType';
 import { getItem } from '../helpers/items';
 import { getPersonType } from '../helpers/persons';
-import PersonType from '../enums/PersonType';
 import { getCell } from '../helpers/cells';
 
 const Markup = require('telegraf/markup');
@@ -54,17 +54,20 @@ export default class InlineQueryHandlers {
 			let type;
 			switch (query) {
 				case 'i':
-				case 'move i': {
+				case 'move i':
+				case 'incl_abs i': {
 					type = ItemType.INSTRUMENT;
 					break;
 				}
 				case 'f':
-				case 'move f': {
+				case 'move f':
+				case 'incl_abs f': {
 					type = ItemType.FURNITURE;
 					break;
 				}
 				case 'c':
-				case 'move c': {
+				case 'move c':
+				case 'incl_abs c': {
 					type = ItemType.CONSUMABLE;
 					break;
 				}
@@ -77,7 +80,7 @@ export default class InlineQueryHandlers {
 				return ctx.telegram.sendMessage(ctx.from.id, 'Ошибка на сервере! Позиция не была найдена');
 			}
 
-			if (item.amount > 0 || personType === PersonType.SUPPLIER) {
+			// if (item.amount > 0 || personType === PersonType.SUPPLIER) {
 				let keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${item.amount}`), Markup.callbackButton('1', 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}>${item.amount}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)]]);
 				let message = `Название: *${item.name}*\nВ наличии: *${item.amount}*`;
 
@@ -95,7 +98,7 @@ export default class InlineQueryHandlers {
 					return ctx.telegram.sendPhoto(ctx.from.id, item.photo, options);
 				}
 				await ctx.telegram.sendMessage(ctx.from.id, message, options);
-			}
+			// }
 		});
 
 		const sendResults = async (ctx, items, returnAbsent = false) => {
@@ -112,7 +115,9 @@ export default class InlineQueryHandlers {
 			for (let i = +offset; i < limit; i++) {
 				let item = items[i];
 
-				if (!returnAbsent) continue;
+				if (!returnAbsent && item.amount === 0) {
+					continue;
+				}
 
 				results.push({
 					id: item._id,
