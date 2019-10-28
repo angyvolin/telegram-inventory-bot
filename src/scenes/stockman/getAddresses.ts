@@ -1,13 +1,7 @@
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
-import {
-	getItem,
-	getOutsideConsumables,
-	getOutsideFurniture,
-	getOutsideInstruments,
-	getOutsideItems
-} from '../../helpers/items';
-import {getCells} from '../../helpers/cells';
+import { getItem, getOutsideConsumables, getOutsideFurniture, getOutsideInstruments } from '../../helpers/items';
+import { getCells } from '../../helpers/cells';
 import Cell from '../../models/cell';
 import ItemType from '../../enums/ItemType';
 
@@ -70,7 +64,7 @@ getAddresses.action(/^cell>/, async (ctx: any) => {
 			break;
 	}
 
-	let message = `В ячейке *${cell.row + cell.col}* находится ${itemsCount} позиций${lastDigit}\n\n`;
+	let message = `В ячейке *${cell.row + cell.col}* находится ${itemsCount} позици${ending}\n\n`;
 
 	if (cell.instruments) {
 		message += '*Инструменты*\n';
