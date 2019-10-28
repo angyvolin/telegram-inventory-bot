@@ -1,7 +1,5 @@
-import Worker from '../../classes/Worker';
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
-import ItemType from '../../enums/ItemType';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -31,40 +29,28 @@ requestGetting.action(/^increase>/, async (ctx: any) => {
 	const type = +ctx.callbackQuery.data.split('>')[1];
 	const id = ctx.callbackQuery.data.split('>')[2];
 	const amount = +ctx.callbackQuery.data.split('>')[3];
+	const offset = +ctx.callbackQuery.data.split('>')[4];
 
-	const counter = +ctx.update.callback_query.message.reply_markup.inline_keyboard[0][1].text;
+	const counter = +ctx.update.callback_query.message.reply_markup.inline_keyboard[0][2].text;
 
-	if (amount > counter) {
-		const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${amount}`),
-												 Markup.callbackButton(counter + 1, 'itemAmount'),
-												 Markup.callbackButton('➕', `increase>${type}>${id}>${amount}`)],
-												[Markup.callbackButton('⏪ Назад', 'back'),
-												 Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter + 1}`)]]);
+	if (amount >= counter + offset && counter + offset >= 1) {
+		const keyboard = Markup.inlineKeyboard([
+			[
+				Markup.callbackButton('➖ 10', `increase>${type}>${id}>${amount}>-10`),
+				Markup.callbackButton('➖', `increase>${type}>${id}>${amount}>-1`),
+				Markup.callbackButton(counter + offset, 'itemAmount'),
+				Markup.callbackButton('➕', `increase>${type}>${id}>${amount}>1`),
+				Markup.callbackButton('➕ 10', `increase>${type}>${id}>${amount}>10`)
+			],
+			[
+				Markup.callbackButton('⏪ Назад', 'back'),
+				Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter + offset}`)
+			]
+		]);
 		await ctx.editMessageReplyMarkup(keyboard);
 		await ctx.answerCbQuery();
 	} else {
-		await ctx.answerCbQuery(`На складе всего ${amount} позиций`, false);
-	}
-});
-
-// Уменьшение количества позиции на получение
-requestGetting.action(/^reduce>/, async (ctx: any) => {
-	const type = +ctx.callbackQuery.data.split('>')[1];
-	const id = ctx.callbackQuery.data.split('>')[2];
-	const amount = +ctx.callbackQuery.data.split('>')[3];
-
-	const counter = ctx.update.callback_query.message.reply_markup.inline_keyboard[0][1].text;
-
-	if (counter > 1) {
-		const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${amount}`),
-												 Markup.callbackButton(counter - 1, 'itemAmount'),
-												 Markup.callbackButton('➕', `increase>${type}>${id}>${amount}`)],
-												[Markup.callbackButton('⏪ Назад', 'back'),
-												 Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter - 1}`)]]);
-		await ctx.editMessageReplyMarkup(keyboard);
-		await ctx.answerCbQuery();
-	} else {
-		await ctx.answerCbQuery(`Значение должно быть больше нуля`, false);
+		await ctx.answerCbQuery(`Недопустимое значение`, false);
 	}
 });
 

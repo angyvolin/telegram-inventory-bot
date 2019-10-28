@@ -2,7 +2,6 @@ import Instrument from '../classes/Instrument';
 import Furniture from '../classes/Furniture';
 import Consumable from '../classes/Consumable';
 import ItemType from '../enums/ItemType';
-import PersonType from '../enums/PersonType';
 import { getItem } from '../helpers/items';
 import { getPersonType } from '../helpers/persons';
 import { getCell } from '../helpers/cells';
@@ -81,7 +80,19 @@ export default class InlineQueryHandlers {
 			}
 
 			// if (item.amount > 0 || personType === PersonType.SUPPLIER) {
-				let keyboard = Markup.inlineKeyboard([[Markup.callbackButton('➖', `reduce>${type}>${id}>${item.amount}`), Markup.callbackButton('1', 'itemAmount'), Markup.callbackButton('➕', `increase>${type}>${id}>${item.amount}`)], [Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)]]);
+			let keyboard = Markup.inlineKeyboard([
+				[
+					Markup.callbackButton('➖ 10', `increase>${type}>${id}>${item.amount}>-10`),
+					Markup.callbackButton('➖', `increase>${type}>${id}>${item.amount}>-1`),
+					Markup.callbackButton('1', 'itemAmount'),
+					Markup.callbackButton('➕', `increase>${type}>${id}>${item.amount}>1`),
+					Markup.callbackButton('➕ 10', `increase>${type}>${id}>${item.amount}>10`)
+				],
+				[
+					Markup.callbackButton('⏪ Назад', 'back'),
+					Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)
+				]
+			]);
 				let message = `Название: *${item.name}*\nВ наличии: *${item.amount}*`;
 
 				if (isMoving) {
