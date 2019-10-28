@@ -16,14 +16,29 @@ export default class InlineQueryHandlers {
 			await sendResults(ctx, items);
 		});
 
+		bot.inlineQuery('incl_abs i', async (ctx) => {
+			const items = await Instrument.getAllItems();
+			await sendResults(ctx, items, true);
+		});
+
 		bot.inlineQuery(['f', 'move f'], async (ctx) => {
 			const items = await Furniture.getAllItems();
 			await sendResults(ctx, items);
 		});
 
+		bot.inlineQuery('incl_abs f', async (ctx) => {
+			const items = await Furniture.getAllItems();
+			await sendResults(ctx, items, true);
+		});
+
 		bot.inlineQuery(['c', 'move c'], async (ctx) => {
 			const items = await Consumable.getAllItems();
 			await sendResults(ctx, items);
+		});
+
+		bot.inlineQuery('incl_abs c', async (ctx) => {
+			const items = await Consumable.getAllItems();
+			await sendResults(ctx, items, true);
 		});
 
 		bot.on('chosen_inline_result', async (ctx) => {
@@ -83,7 +98,7 @@ export default class InlineQueryHandlers {
 			}
 		});
 
-		const sendResults = async (ctx, items) => {
+		const sendResults = async (ctx, items, returnAbsent = false) => {
 			const personType = await getPersonType(ctx.from.username);
 			const offset = ctx.inlineQuery.offset ? ctx.inlineQuery.offset : '0';
 			const portion = 15;
@@ -97,7 +112,7 @@ export default class InlineQueryHandlers {
 			for (let i = +offset; i < limit; i++) {
 				let item = items[i];
 
-				if ((personType === PersonType.WORKER || personType === PersonType.STOCKMAN) && item.amount === 0) continue;
+				if (!returnAbsent) continue;
 
 				results.push({
 					id: item._id,
