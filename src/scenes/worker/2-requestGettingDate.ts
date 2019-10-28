@@ -29,9 +29,9 @@ requestGettingDate.on('text', async (ctx) => {
 	}
 	const days = term[0];
 	await ctx.scene.leave();
-	await ctx.reply('Ваша заявка успешно отправлена! Отправляйтесь на получение');
+	//await ctx.reply('Ваша заявка успешно отправлена! Отправляйтесь на получение');
 	await Worker.requestGetting(ctx, ctx.session.items, days);
-	return KeyboardMessage.send(ctx, PersonType.WORKER);
+	return KeyboardMessage.send(ctx, PersonType.WORKER, 'Ваша заявка успешно отправлена! Отправляйтесь на получение');
 });
 
 requestGettingDate.action('back', async (ctx: any) => {

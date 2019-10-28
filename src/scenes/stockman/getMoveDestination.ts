@@ -44,9 +44,9 @@ getMoveDestination.action(/^cell>/, async (ctx: any) => {
 	}
 	await addToCell(cellId, type, itemId, item.amount);
 
-	await ctx.answerCbQuery('Успешно перемещено!');
+	//await ctx.answerCbQuery('Успешно перемещено!');
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.STOCKMAN);
+	await KeyboardMessage.send(ctx, PersonType.STOCKMAN, 'Успешно перемещено!');
 });
 
 getMoveDestination.action('outside', async (ctx: any) => {
@@ -61,9 +61,9 @@ getMoveDestination.action('outside', async (ctx: any) => {
 		await removeFromCell(currCell._id, type, itemId);
 	}
 
-	await ctx.answerCbQuery('Успешно перемещено!');
+	//await ctx.answerCbQuery('Успешно перемещено!');
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.STOCKMAN);
+	await KeyboardMessage.send(ctx, PersonType.STOCKMAN, 'Успешно перемещено!');
 });
 
 getMoveDestination.action('back', async (ctx: any) => {

@@ -25,7 +25,7 @@ getAbsentItemsScene.enter(async (ctx: any) => {
 	if (instruments.length && furniture.length && consumables.length) {
 		await ctx.answerCbQuery();
 		await ctx.scene.leave();
-		return ctx.reply('Отсутствующих позиций не найдено', KeyboardMessage.stockman);
+		return KeyboardMessage.send(ctx, PersonType.STOCKMAN, 'Отсутствующих позиций не найдено');
 	}
 
 	let itemsCount = 0;
@@ -76,10 +76,9 @@ getAbsentItemsScene.enter(async (ctx: any) => {
 		}
 	}
 
-	await ctx.telegram.sendMessage(ctx.from.id, message, {parse_mode: 'Markdown'});
-
+	//await ctx.telegram.sendMessage(ctx.from.id, message, { parse_mode: 'Markdown' });
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.STOCKMAN);
+	await KeyboardMessage.send(ctx, PersonType.STOCKMAN, message);
 });
 
 export default getAbsentItemsScene;

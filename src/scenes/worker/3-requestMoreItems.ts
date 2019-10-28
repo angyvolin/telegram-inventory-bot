@@ -41,9 +41,9 @@ requestMoreItems.action('finish', async (ctx: any) => {
 			return ctx.scene.enter('worker/requestGettingDate');
 		}
 	}
-	await ctx.reply('Ваша заявка успешно отправлена! Отправляйтесь на получение');
+	//await ctx.reply('Ваша заявка успешно отправлена! Отправляйтесь на получение');
 	await Worker.requestGetting(ctx, ctx.session.items);
-	return KeyboardMessage.send(ctx, PersonType.WORKER);
+	return KeyboardMessage.send(ctx, PersonType.WORKER, 'Ваша заявка успешно отправлена! Отправляйтесь на получение');
 });
 
 requestMoreItems.action('back', async (ctx: any) => {

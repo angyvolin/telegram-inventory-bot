@@ -35,10 +35,9 @@ requestMoreRemains.action('finish', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	const { items } = ctx.session;
-
-	await ctx.reply('Ваша заявка успешно отправлена! Отправляйтесь на возврат');
+	//await ctx.reply('Ваша заявка успешно отправлена! Отправляйтесь на возврат');
 	await Worker.requestReturnRemains(ctx, ctx.session.items);
-	return KeyboardMessage.send(ctx, PersonType.WORKER);
+	return KeyboardMessage.send(ctx, PersonType.WORKER, 'Ваша заявка успешно отправлена! Отправляйтесь на возврат');
 });
 
 requestMoreRemains.action('back', async (ctx: any) => {

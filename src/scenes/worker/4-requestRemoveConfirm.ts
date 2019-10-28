@@ -33,9 +33,9 @@ requestRemoveConfirm.action(/^approveRequestRemove/, async (ctx: any) => {
 	 * для того, чтобы нельзя было повторно подтвердить
 	 */
 	await ctx.editMessageText(ctx.update.callback_query.message.text);
-	await ctx.reply('Ваша заявка успешно отправлена! Ожидайте подтверждения админа');
+	//await ctx.reply('Ваша заявка успешно отправлена! Ожидайте подтверждения админа');
 	await Worker.requestRemoveInstruments(ctx, ctx.session.items, gettingId);
-	return KeyboardMessage.send(ctx, PersonType.WORKER);
+	return KeyboardMessage.send(ctx, PersonType.WORKER, 'Ваша заявка успешно отправлена! Ожидайте подтверждения админа');
 });
 
 requestRemoveConfirm.action('back', async (ctx: any) => {

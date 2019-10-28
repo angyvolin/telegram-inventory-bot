@@ -35,9 +35,9 @@ requestSupplyMore.action('finish', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	const { items } = ctx.session;
-	await ctx.reply('Ваша заявка на поставку успешно отправлена!');
+	//await ctx.reply('Ваша заявка на поставку успешно отправлена!');
 	await Supplier.requestSupply(ctx, ctx.session.items);
-	return KeyboardMessage.send(ctx, PersonType.SUPPLIER);
+	return KeyboardMessage.send(ctx, PersonType.SUPPLIER, 'Ваша заявка на поставку успешно отправлена!');
 });
 
 requestSupplyMore.action('back', async (ctx: any) => {

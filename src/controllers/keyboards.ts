@@ -30,22 +30,24 @@ export default class KeyboardMessage {
 		.oneTime()
 		.resize()
 		.extra();
-	public static async send(ctx: api.ContextMessageUpdate, type: PersonType): Promise<void> {
+	public static async send(ctx: api.ContextMessageUpdate,
+							 type: PersonType,
+							 message: string = 'Выберите действие'): Promise<void> {
 		switch (type) {
 			case PersonType.WORKER: {
-				await ctx.reply('Выберите действие', this.worker);
+				await ctx.replyWithMarkdown(message, this.worker);
 				break;
 			}
 			case PersonType.SUPPLIER: {
-				await ctx.reply('Выберите действие', this.supplier);
+				await ctx.replyWithMarkdown(message, this.supplier);
 				break;
 			}
 			case PersonType.STOCKMAN: {
-				await ctx.reply('Выберите действие', this.stockman);
+				await ctx.replyWithMarkdown(message, this.stockman);
 				break;
 			}
 			case PersonType.CHIEF: {
-				await ctx.reply('Выберите действие', this.chief);
+				await ctx.replyWithMarkdown(message, this.chief);
 				break;
 			}
 		}
