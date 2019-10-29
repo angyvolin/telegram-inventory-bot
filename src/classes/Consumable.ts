@@ -1,11 +1,13 @@
 import ConsumableModel, { IConsumable } from '../models/consumable';
 
 export default class Consumable {
-	public static async add(name: string, photoId?: string) {
+	public static async add(name: string, measure: string, photoId?: string, description?: string) {
 		const consumable = new ConsumableModel({
 			name,
 			amount: 0,
-			photo: photoId ? photoId : null
+			photo: photoId || null,
+			measure,
+			description: description || null
 		});
 
 		await consumable.save();

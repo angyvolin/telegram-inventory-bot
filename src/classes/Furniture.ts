@@ -1,11 +1,13 @@
 import FurnitureModel, { IFurniture } from '../models/furniture';
 
 export default class Furniture {
-	public static async add(name: string, photoId?: string) {
+	public static async add(name: string, measure: string, photoId?: string, description?: string) {
 		const furniture = new FurnitureModel({
 			name,
 			amount: 0,
-			photo: photoId ? photoId : null
+			photo: photoId || null,
+			measure,
+			description: description || null
 		});
 
 		await furniture.save();

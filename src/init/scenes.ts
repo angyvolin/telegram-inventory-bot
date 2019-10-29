@@ -38,6 +38,8 @@ import getAbsentItems from '../scenes/stockman/getAbsentItems';
 import requestGettingTable from '../scenes/chief/1-requestGettingTable';
 import requestGettingWorker from '../scenes/chief/2-requestGettingWorker';
 import requestGettingTerm from '../scenes/chief/3-requestGettingTerm';
+import getItemMeasure from '../scenes/addItem/4-getItemMeasure';
+import getItemDesc from '../scenes/addItem/5-getItemDesc';
 
 const Stage = require('telegraf/stage');
 
@@ -54,6 +56,8 @@ export default class Scenes {
 			stage.register(getItemType);
 			stage.register(getItemName);
 			stage.register(getItemPhoto);
+			stage.register(getItemMeasure);
+			stage.register(getItemDesc);
 
 			// Сцена добавления сотрудника
 			stage.register(getPersonRole);

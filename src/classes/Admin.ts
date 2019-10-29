@@ -3,7 +3,6 @@ import Furniture from './Furniture';
 import Consumable from './Consumable';
 import Confirmation from '../models/confirmation';
 import Getting from '../models/getting';
-import { isAdmin } from '../helpers/functions';
 
 const Markup = require('telegraf/markup');
 
@@ -49,7 +48,7 @@ export default class Admin {
 			const newAmount = getting.instruments.has(id) ?
 							  getting.instruments.get(id) - amount : 0;
 			if (newAmount === 0) {
-				getting.instruments.delete(id);	
+				getting.instruments.delete(id);
 			} else {
 				getting.instruments.set(id, newAmount);
 			}
@@ -69,7 +68,7 @@ export default class Admin {
 	public static async confirmPurchase(ctx: any): Promise<void> {
 		const id = ctx.callbackQuery.data.split('>')[1];
 		const confirmation = await Confirmation.findById(id);
-	
+
 		if (!confirmation) {
 			return;
 		}
@@ -173,21 +172,21 @@ export default class Admin {
 	/**
 	 * @desc Add new instrument to the database
 	 */
-	public static addInstrument(name: string, photoId?: string): void {
-		Instrument.add(name, photoId);
+	public static addInstrument(name: string, measure: string, photoId?: string, description?: string): void {
+		Instrument.add(name, measure, photoId, description);
 	}
 
 	/**
 	 * @desc Add new furniture to the database
 	 */
-	public static addFurniture(name: string, photoId?: string): void {
-		Furniture.add(name, photoId);
+	public static addFurniture(name: string, measure: string, photoId?: string, description?: string): void {
+		Furniture.add(name, measure, photoId, description);
 	}
 
 	/**
 	 * @desc Add new consumable to the database
 	 */
-	public static addConsumable(name: string, photoId?: string): void {
-		Consumable.add(name, photoId);
+	public static addConsumable(name: string, measure: string, photoId?: string, description?: string): void {
+		Consumable.add(name, measure, photoId, description);
 	}
 }

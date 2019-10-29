@@ -1,11 +1,13 @@
 import InstrumentModel, { IInstrument } from '../models/instrument';
 
 export default class Instrument {
-	public static async add(name: string, photoId?: string) {
+	public static async add(name: string, measure: string, photoId?: string, description?: string) {
 		const instrument = new InstrumentModel({
 			name,
 			amount: 0,
-			photo: photoId ? photoId : null
+			photo: photoId || null,
+			measure,
+			description: description || null
 		});
 
 		await instrument.save();
