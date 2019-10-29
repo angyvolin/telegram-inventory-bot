@@ -20,19 +20,14 @@ requestGettingTable.command('start', async (ctx: any) => {
 requestGettingTable.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]);
 	const table = await generateTable();
-	await ctx.replyWithDocument({
-		source: table,
-		filename: 'Шаблон.csv'
-	});
-	await ctx.reply('Заполните данную таблицу с позициями для выдачи работнику, а потом отправьте ее сюда', keyboard);
+	await ctx.reply('Отправьте таблицу Excel с позициями для выдачи', keyboard);
 });
 
 requestGettingTable.on('document', async (ctx: any) => {
-	const fileId = ctx.message.document.file_id;
-	const fileLink = await ctx.telegram.getFileLink(fileId);
+	ctx.session.table = ctx.message.document.file_id;
 
-	ctx.session.table = await downloadTable(fileLink);
-
+	/*const fileId = ctx.message.document.file_id;
+	const fileLink = await ctx.telegram.getFileLink(fileId);*/
 	await ctx.scene.leave();
 	await ctx.scene.enter('chief/requestGettingWorker');
 });

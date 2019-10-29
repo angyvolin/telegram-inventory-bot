@@ -1,12 +1,14 @@
 import * as api from 'telegraf';
+import Confirmation from '../models/confirmation';
 import AdminMessage from '../controllers/admin';
-import { dismissAdmin, isAdmin } from '../helpers/functions';
 import Logger from '../init/logger';
 import Cell from '../models/cell';
 import KeyboardMessage from '../controllers/keyboards';
-import { getItem, getOutsideConsumables, getOutsideFurniture, getOutsideInstruments } from '../helpers/items';
 import ItemType from '../enums/ItemType';
 import PersonType from '../enums/PersonType';
+import { isStockman } from '../helpers/persons';
+import { dismissAdmin, isAdmin } from '../helpers/functions';
+import { getItem, getOutsideConsumables, getOutsideFurniture, getOutsideInstruments } from '../helpers/items';
 
 const Markup = require('telegraf/markup');
 
@@ -164,6 +166,32 @@ export default class CallbackQueryHandlers {
 			await ctx.answerCbQuery();
 			await ctx.scene.leave();
 			await KeyboardMessage.send(ctx, PersonType.STOCKMAN);
+		});
+
+		// Отклонение запроса
+		bot.action(/^declineRequest>/, async (ctx) => {
+			await ctx.answerCbQuery();
+			if (await isStockman(ctx.from.username) || await isAdmin(ctx.from.id)) {
+				const id = ctx.callbackQuery.data.split('>')[1];
+				const confirmation = await Confirmation.findById(id);
+				
+				if (!confirmation) {
+					return;
+				}
+
+				const messages = confirmation.messages;
+
+				for (const message of messages) {
+					const text = confirmation.text + '\n' + '❌ Отклонено';
+					await ctx.telegram.editMessageCaption(message.chatId, message.id, message.id, text);
+				}
+
+				const message = confirmation.itemsText ? confirmation.itemsText : confirmation.text;
+				const text = '❌ Ваша заявка была отклонена:\n\n' + message;
+
+				await confirmation.remove();
+				await ctx.telegram.sendMessage(confirmation.chatId, text, { parse_mode: 'Markdown' });
+			}
 		});
 	}
 }

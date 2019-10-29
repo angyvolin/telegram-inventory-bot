@@ -24,27 +24,6 @@ export default class StockmanHandlers {
 			}
 		});
 
-		// Отклонение запроса
-		bot.action(/^declineRequest>/, async (ctx) => {
-			await ctx.answerCbQuery();
-			if (await isStockman(ctx.from.username)) {
-				const id = ctx.callbackQuery.data.split('>')[1];
-				const confirmation = await Confirmation.findById(id);
-				const messages = confirmation.messages;
-
-				for (const message of messages) {
-					const text = confirmation.text + '\n' + '❌ Отклонено';
-					await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
-				}
-
-				const message = confirmation.itemsText ? confirmation.itemsText : confirmation.text;
-				const text = '❌ Ваша заявка была отклонена:\n\n' + message;
-
-				await confirmation.remove();
-				await ctx.telegram.sendMessage(confirmation.chatId, text, { parse_mode: 'Markdown' });
-			}
-		});
-
 		// Подтверждение выдачи работнику
 		bot.action(/^approveGiving>/, async (ctx) => {
 			await ctx.answerCbQuery();

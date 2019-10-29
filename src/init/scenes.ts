@@ -37,6 +37,7 @@ import getAbsentItems from '../scenes/stockman/getAbsentItems';
 // Chief scenes
 import requestGettingTable from '../scenes/chief/1-requestGettingTable';
 import requestGettingWorker from '../scenes/chief/2-requestGettingWorker';
+import requestGettingTerm from '../scenes/chief/3-requestGettingTerm';
 
 const Stage = require('telegraf/stage');
 
@@ -89,6 +90,7 @@ export default class Scenes {
 			// Сцены Chief
 			stage.register(requestGettingTable); // Сцена запроса выдачи позиций работнику
 			stage.register(requestGettingWorker); // Сцена запроса выдачи позиций работнику
+			stage.register(requestGettingTerm); // Сцена запроса срока выдачи инструментов
 
 			bot.use(stage.middleware());
 

@@ -68,7 +68,7 @@ export async function getGettingMessage(username: string,
 	let message = `*Работник* @${username} хочет получить следующие позиции:\n`;
 	message += await getItemsCellsMessage(items);
 	if (days) { // Есть срок получения
-		message += `*Срок аренды:* ${days} дней`; // Добавляем срок к сообщению
+		message += `*Срок аренды:* ${days} дней\n`; // Добавляем срок к сообщению
 	}
 	return message;
 }
@@ -118,5 +118,15 @@ export async function getSupplyMessage(username: string,
 									  ): Promise<string> {
 	let message = `*Поставщик* @${username} хочет поставить следующие позиции:\n`;
 	message += await getItemsCellsMessage(items);
+	return message;
+}
+
+export async function getChiefGettingMessage(chief: string,
+											 worker: string,
+											 days?: number): Promise<string> {
+	let message = `*Начальник цеха* @${chief} запрашивает выдачу работнику @${worker} согласно таблице.\n`;
+	if (days) {
+		message += `*Срок аренды:* ${days} дней\n`; // Добавляем срок к сообщению
+	}
 	return message;
 }

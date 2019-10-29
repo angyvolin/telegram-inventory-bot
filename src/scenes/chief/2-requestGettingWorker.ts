@@ -21,11 +21,10 @@ requestGettingWorker.enter(async (ctx: any) => {
 	await ctx.reply('Введите юзернейм работника, которому нужно выдать позиции', keyboard);
 });
 
-requestGettingWorker.action('accept', async (ctx: any) => {
-	await ctx.answerCbQuery();
-	const username = ctx.message.text.replace('@', '');
+requestGettingWorker.on('text', async (ctx: any) => {
+	ctx.session.username = ctx.message.text.replace('@', '');
 	await ctx.scene.leave();
-	//...
+	await ctx.scene.enter('chief/requestGettingTerm');
 });
 
 requestGettingWorker.action('back', async (ctx: any) => {
