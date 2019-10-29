@@ -70,7 +70,7 @@ export default class CallbackQueryHandlers {
 
 				for (let instrument of cell.instruments) {
 					const item = await getItem(ItemType.INSTRUMENT, instrument[0]);
-					message += `🔹 Название: *${item.name}* (${item.amount} шт.)\n`;
+					message += `🔹 Название: *${item.name}* (${item.amount} шт.)${'\n' + item.description || ''}\n`;
 				}
 				message += '\n';
 			}
@@ -80,7 +80,7 @@ export default class CallbackQueryHandlers {
 
 				for (let furniture of cell.furniture) {
 					const item = await getItem(ItemType.FURNITURE, furniture[0]);
-					message += `🔹 Название: *${item.name}* (${item.amount} шт.)\n`;
+					message += `🔹 Название: *${item.name}* (${item.amount} шт.)${'\n' + item.description || ''}\n`;
 				}
 
 				message += '\n';
@@ -91,7 +91,7 @@ export default class CallbackQueryHandlers {
 
 				for (let consumable of cell.consumables) {
 					const item = await getItem(ItemType.CONSUMABLE, consumable[0]);
-					message += `🔹 Название: *${item.name}* (${item.amount} шт.)\n`;
+					message += `🔹 Название: *${item.name}* (${item.amount} шт.)${'\n' + item.description || ''}\n`;
 				}
 			}
 
@@ -138,7 +138,7 @@ export default class CallbackQueryHandlers {
 				message += '*Инструменты*\n';
 
 				for (let instrument of instruments) {
-					message += `🔹 Название: *${instrument.name}* (${instrument.amount} шт.)\n`;
+					message += `🔹 Название: *${instrument.name}* (${instrument.amount} шт.)${'\n' + instrument.description || ''}\n`;
 				}
 				message += '\n';
 			}
@@ -147,7 +147,7 @@ export default class CallbackQueryHandlers {
 				message += '*Фурнитура*\n';
 
 				for (let f of furniture) {
-					message += `🔹 Название: *${f.name}* (${f.amount} шт.)\n`;
+					message += `🔹 Название: *${f.name}* (${f.amount} шт.)${'\n' + f.description || ''}\n`;
 				}
 
 				message += '\n';
@@ -157,7 +157,7 @@ export default class CallbackQueryHandlers {
 				message += '*Расходники*\n';
 
 				for (let consumable of consumables) {
-					message += `🔹 Название: *${consumable.name}* (${consumable.amount} шт.)\n`;
+					message += `🔹 Название: *${consumable.name}* (${consumable.amount} шт.)${'\n' + consumable.description || ''}\n`;
 				}
 			}
 
@@ -174,7 +174,7 @@ export default class CallbackQueryHandlers {
 			if (await isStockman(ctx.from.username) || await isAdmin(ctx.from.id)) {
 				const id = ctx.callbackQuery.data.split('>')[1];
 				const confirmation = await Confirmation.findById(id);
-				
+
 				if (!confirmation) {
 					return;
 				}
