@@ -1,8 +1,9 @@
 import * as api from 'telegraf';
+import Common from '../classes/Common';
 import Confirmation from '../models/confirmation';
 import AdminMessage from '../controllers/admin';
 import Logger from '../init/logger';
-import { isStockman } from '../helpers/persons';
+import { isStockman, isChief } from '../helpers/persons';
 import { dismissAdmin, isAdmin } from '../helpers/functions';
 
 const Markup = require('telegraf/markup');
@@ -47,6 +48,20 @@ export default class CallbackQueryHandlers {
 
 				await confirmation.remove();
 				await ctx.telegram.sendMessage(confirmation.chatId, text, { parse_mode: 'Markdown' });
+			}
+		});
+
+		bot.action(/^viewCell>/, async (ctx: any) => {
+			await ctx.answerCbQuery();
+			if (await isStockman(ctx.from.username) || await isChief(ctx.from.username)) {
+				Common.viewCell(ctx);
+			}
+		});
+
+		bot.action('viewOutside', async (ctx: any) => {
+			await ctx.answerCbQuery();
+			if (await isStockman(ctx.from.username) || await isChief(ctx.from.username)) {
+				Common.viewOutside(ctx);
 			}
 		});
 	}

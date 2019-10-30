@@ -2,6 +2,7 @@ import * as api from 'telegraf';
 import CallbackQueryHandlers from '../handlers/callbackQuery';
 import StartHandlers from '../handlers/start';
 import Logger from './logger';
+import CommonHandlers from '../handlers/common';
 import AdminHandlers from '../handlers/admin';
 import WorkerHandlers from '../handlers/worker';
 import StockmanHandlers from '../handlers/stockman';
@@ -15,6 +16,7 @@ export default class Handlers {
 			StartHandlers.init(bot); // Обработчик для /start
 			CallbackQueryHandlers.init(bot); // Обработчик для callback запросов
 			InlineQueryHandlers.init(bot);
+			CommonHandlers.init(bot); // Обработчик для общих запросов (для нескольких ролей)
 			AdminHandlers.init(bot); // Обработчик для админа
 			WorkerHandlers.init(bot); // Обработчик для рабочего
 			StockmanHandlers.init(bot); // Обработчик для кладовщика

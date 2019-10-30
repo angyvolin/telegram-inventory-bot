@@ -1,4 +1,5 @@
 import * as api from 'telegraf';
+import Stockman from '../classes/Stockman';
 import KeyboardMessage from '../controllers/keyboards';
 import PersonType from '../enums/PersonType';
 import { isChief } from '../helpers/persons';
@@ -9,6 +10,13 @@ export default class ChiefHandlers {
 		bot.hears('Запросить выдачу позиций работнику', async (ctx: any) => {
 			if (await isChief(ctx.from.username)) {
 				await ctx.scene.enter('chief/requestGettingTable');
+			}
+		});
+
+		// Обработчик для "Запросить закупку товара"
+		bot.hears('Запросить закупку товара', async (ctx: any) => {
+			if (await isChief(ctx.from.username)) {
+				//await ctx.scene.enter('chief/requestGettingTable');
 			}
 		});
 	}

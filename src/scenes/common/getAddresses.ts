@@ -1,5 +1,6 @@
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
+import { getPerson } from '../../helpers/persons';
 import { getCells } from '../../helpers/cells';
 
 const Scene = require('telegraf/scenes/base');
@@ -8,11 +9,12 @@ const Markup = require('telegraf/markup');
 /**
  * Сцена инспеции склада
  */
-const getAddresses = new Scene('stockman/getAddresses');
+const getAddresses = new Scene('getAddresses');
 
 getAddresses.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.WORKER);
+	const { type } = await getPerson(ctx.from.username);
+	await KeyboardMessage.send(ctx, type);
 	ctx.session = {};
 });
 
@@ -34,7 +36,8 @@ getAddresses.enter(async (ctx: any) => {
 getAddresses.action('back', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	return KeyboardMessage.send(ctx, PersonType.STOCKMAN);
+	const { type } = await getPerson(ctx.from.username);
+	return KeyboardMessage.send(ctx, type);
 });
 
 export default getAddresses;

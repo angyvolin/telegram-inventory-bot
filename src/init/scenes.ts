@@ -3,6 +3,7 @@ import Logger from './logger';
 // General scenes
 import gsend from '../scenes/gsend/gsend';
 import addAdmins from '../scenes/addAdmins/addAdmins';
+import getAddresses from '../scenes/common/getAddresses';
 // Worker scenes
 import requestGetting from '../scenes/worker/1-requestGetting';
 import requestGettingDate from '../scenes/worker/2-requestGettingDate';
@@ -32,7 +33,6 @@ import requestSupplyMore from '../scenes/supplier/2-requestSupplyMore';
 // Stockman scenes
 import getMoveItem from '../scenes/stockman/getMoveItem';
 import getMoveDestination from '../scenes/stockman/getMoveDestination';
-import getAddresses from '../scenes/stockman/getAddresses';
 import getAbsentItems from '../scenes/stockman/getAbsentItems';
 import requestGettingUsername from '../scenes/stockman/1-requestGettingUsername';
 import requestGettingWorkerItems from '../scenes/stockman/2-requestGettingWorkerItems';
@@ -57,6 +57,7 @@ export default class Scenes {
 			// Базовые сцены в шаблоне
 			stage.register(gsend); // Сцена рассылки
 			stage.register(addAdmins); // Сцена добавления админа
+			stage.register(getAddresses);
 
 			// Сцена добавления товара
 			stage.register(getItemType);
@@ -64,7 +65,6 @@ export default class Scenes {
 			stage.register(getItemPhoto);
 			stage.register(getItemMeasure);
 			stage.register(getItemDesc);
-
 			stage.register(getItemCount);
 
 			// Сцена добавления сотрудника
@@ -96,7 +96,6 @@ export default class Scenes {
 			// Сцены Stockman
 			stage.register(getMoveItem);
 			stage.register(getMoveDestination);
-			stage.register(getAddresses);
 			stage.register(getAbsentItems);
 			stage.register(requestGettingUsername);
 			stage.register(requestGettingWorkerItems);

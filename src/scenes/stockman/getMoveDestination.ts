@@ -12,7 +12,7 @@ const getMoveDestination = new Scene('stockman/getMoveDestination');
 
 getMoveDestination.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.WORKER);
+	await KeyboardMessage.send(ctx, PersonType.STOCKMAN);
 	ctx.session = {};
 });
 
