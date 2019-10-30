@@ -25,7 +25,7 @@ export default class Admin {
 		// Редактируем эти сообщения
 		for (const message of messages) {
 			const text = confirmation.text + '\n✅ Подтверждено';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
 		}
 
 		// Удаляем подтверждение с БД
@@ -79,7 +79,7 @@ export default class Admin {
 		// Редактируем эти сообщения
 		for (const message of messages) {
 			const text = confirmation.text + '\n❗️Ожидание подтверждения закупки снабженца';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
 		}
 
 		// Отправляем сообщение работнику с уведомлением о списании инструментов

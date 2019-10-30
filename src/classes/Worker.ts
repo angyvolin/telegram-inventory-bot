@@ -4,12 +4,11 @@ import Consumable from '../models/consumable';
 import Confirmation from '../models/confirmation';
 import Getting from '../models/getting';
 import ItemType from '../enums/ItemType';
-import { getChatId } from '../helpers/functions';
+import { getAdmins, getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
-import { getAdmins } from '../helpers/functions';
 import { addItem, reduceItem } from '../helpers/items';
-import { getCell, addToCell, reduceFromCell } from '../helpers/cells';
-import { getItemsMessage, getGettingMessage, getReturnMessage, getRemoveMessage } from '../helpers/messages'; 
+import { addToCell, getCell, reduceFromCell } from '../helpers/cells';
+import { getGettingMessage, getItemsMessage, getRemoveMessage, getReturnMessage } from '../helpers/messages';
 
 const Markup = require('telegraf/markup');
 
@@ -418,7 +417,7 @@ export default class Worker {
 		 */
 		for (const message of messages) {
 			const text = confirmation.text + '\n✅ Работник подтвердил получение';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
 		}
 
 		/**
@@ -427,7 +426,7 @@ export default class Worker {
 		 * отмечаем как "Подтверждено")
 		 */
 		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
-		await ctx.editMessageText(text);
+		await ctx.editMessageText(text, {parse_mode: 'Markdown'});
 	}
 
 	public static async confirmReturnInstruments(ctx: any): Promise<void> {
@@ -445,7 +444,7 @@ export default class Worker {
 
 		for (const message of messages) {
 			const text = confirmation.text + '\n✅ Работник подтвердил возврат';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
 		}
 
 		getting.active = false;
@@ -462,7 +461,7 @@ export default class Worker {
 		}
 
 		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
-		await ctx.editMessageText(text);
+		await ctx.editMessageText(text, {parse_mode: 'Markdown'});
 	}
 
 	public static async confirmReturnRemains(ctx: any): Promise<void> {
@@ -480,7 +479,7 @@ export default class Worker {
 
 		for (const message of messages) {
 			const text = confirmation.text + '\n✅ Работник подтвердил возврат';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
 		}
 
 		await confirmation.remove();
@@ -520,6 +519,6 @@ export default class Worker {
 		}
 
 		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
-		await ctx.editMessageText(text);
+		await ctx.editMessageText(text, {parse_mode: 'Markdown'});
 	}
 }

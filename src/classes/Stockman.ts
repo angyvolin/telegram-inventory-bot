@@ -32,7 +32,7 @@ export default class Stockman {
 		// Edit these messages
 		for (const message of messages) {
 			const text = confirmation.text + '\n❗️Ожидание подтверждения получения работника';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
 		}
 
 		/*
@@ -66,7 +66,7 @@ export default class Stockman {
 		// Edit these messages
 		for (const message of messages) {
 			const text = confirmation.text + '\n❗️Ожидание подтверждения поставки снабженца';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
 		}
 
 		/*
@@ -105,7 +105,7 @@ export default class Stockman {
 
 		for (const message of messages) {
 			const text = confirmation.text + '\n❗️Ожидание подтверждения возврата работника';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
 		}
 
 		/*
@@ -149,7 +149,7 @@ export default class Stockman {
 
 		for (const message of messages) {
 			const text = confirmation.text + '\n❗️Ожидание подтверждения возврата работника';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
 		}
 
 		const keyboard = Markup.inlineKeyboard([Markup.callbackButton('✅ Вернул остатки', `confirmReturnRemains>${id}`)]);

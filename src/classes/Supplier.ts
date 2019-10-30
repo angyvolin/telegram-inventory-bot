@@ -3,10 +3,10 @@ import Furniture from '../models/furniture';
 import Consumable from '../models/consumable';
 import Confirmation from '../models/confirmation';
 import ItemType from '../enums/ItemType';
-import { getChatId, getAdmins } from '../helpers/functions';
+import { getAdmins, getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
 import { addItem } from '../helpers/items';
-import { getCell, addToCell } from '../helpers/cells';
+import { addToCell, getCell } from '../helpers/cells';
 import { getItemsMessage, getItemsPriceMessage, getPurchaseMessage, getSupplyMessage } from '../helpers/messages';
 
 const Markup = require('telegraf/markup');
@@ -156,7 +156,7 @@ export default class Supplier {
 		 */
 		for (const message of messages) {
 			const text = confirmation.text + '\n✅ Снабженец закупил позиции';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
 		}
 
 		/**
@@ -165,7 +165,7 @@ export default class Supplier {
 		 * отмечаем как "Подтверждено")
 		 */
 		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
-		await ctx.editMessageText(text);
+		await ctx.editMessageText(text, {parse_mode: 'Markdown'});
 	}
 
 	public static async confirmSupply(ctx: any): Promise<void> {
@@ -187,7 +187,7 @@ export default class Supplier {
 		 */
 		for (const message of messages) {
 			const text = confirmation.text + '\n✅ Снабженец подтвердил поставку';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text);
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
 		}
 
 		/*
@@ -238,6 +238,6 @@ export default class Supplier {
 		 * отмечаем как "Подтверждено")
 		 */
 		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
-		await ctx.editMessageText(text);
+		await ctx.editMessageText(text, {parse_mode: 'Markdown'});
 	}
 }

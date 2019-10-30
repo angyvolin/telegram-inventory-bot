@@ -32,7 +32,7 @@ requestRemoveConfirm.action(/^approveRequestRemove/, async (ctx: any) => {
 	 * Убираем клавиатуру с кнопками у последнего сообщения
 	 * для того, чтобы нельзя было повторно подтвердить
 	 */
-	await ctx.editMessageText(ctx.update.callback_query.message.text);
+	await ctx.editMessageText(ctx.update.callback_query.message.text, {parse_mode: 'Markdown'});
 	//await ctx.reply('Ваша заявка успешно отправлена! Ожидайте подтверждения админа');
 	await Worker.requestRemoveInstruments(ctx, ctx.session.items, gettingId);
 	return KeyboardMessage.send(ctx, PersonType.WORKER, 'Ваша заявка успешно отправлена! Ожидайте подтверждения админа');

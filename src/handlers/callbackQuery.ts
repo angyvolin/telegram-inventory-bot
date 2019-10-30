@@ -2,8 +2,6 @@ import * as api from 'telegraf';
 import Confirmation from '../models/confirmation';
 import AdminMessage from '../controllers/admin';
 import Logger from '../init/logger';
-import ItemType from '../enums/ItemType';
-import PersonType from '../enums/PersonType';
 import { isStockman } from '../helpers/persons';
 import { dismissAdmin, isAdmin } from '../helpers/functions';
 
@@ -45,7 +43,7 @@ export default class CallbackQueryHandlers {
 
 				for (const message of messages) {
 					const text = confirmation.text + '\n' + '❌ Отклонено';
-					await ctx.telegram.editMessageCaption(message.chatId, message.id, message.id, text);
+					await ctx.telegram.editMessageCaption(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
 				}
 
 				const message = confirmation.itemsText ? confirmation.itemsText : confirmation.text;
