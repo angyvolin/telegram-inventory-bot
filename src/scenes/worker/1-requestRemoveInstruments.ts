@@ -36,7 +36,7 @@ requestRemoveInstruments.action(/^increase>/, async (ctx: any) => {
 			[
 				Markup.callbackButton('➖ 10', `increase>${type}>${id}>${amount}>-10`),
 				Markup.callbackButton('➖', `increase>${type}>${id}>${amount}>-1`),
-				Markup.callbackButton(counter + offset, 'itemAmount'),
+				Markup.callbackButton(counter + offset, `itemAmount>${type}>${id}>${amount}`),
 				Markup.callbackButton('➕', `increase>${type}>${id}>${amount}>1`),
 				Markup.callbackButton('➕ 10', `increase>${type}>${id}>${amount}>10`)
 			],

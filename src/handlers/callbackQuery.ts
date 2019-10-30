@@ -24,10 +24,6 @@ export default class CallbackQueryHandlers {
 			}
 		});
 
-		bot.action('itemAmount', async (ctx) => {
-			await ctx.answerCbQuery();
-		});
-
 		// Отклонение запроса
 		bot.action(/^declineRequest>/, async (ctx) => {
 			await ctx.answerCbQuery();
@@ -43,7 +39,7 @@ export default class CallbackQueryHandlers {
 
 				for (const message of messages) {
 					const text = confirmation.text + '\n' + '❌ Отклонено';
-					await ctx.telegram.editMessageCaption(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
+					await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
 				}
 
 				const message = confirmation.itemsText ? confirmation.itemsText : confirmation.text;

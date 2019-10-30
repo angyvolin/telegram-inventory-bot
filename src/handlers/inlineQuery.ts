@@ -82,7 +82,7 @@ export default class InlineQueryHandlers {
 				[
 					Markup.callbackButton('➖ 10', `increase>${type}>${id}>${item.amount}>-10`),
 					Markup.callbackButton('➖', `increase>${type}>${id}>${item.amount}>-1`),
-					Markup.callbackButton('1', 'itemAmount'),
+					Markup.callbackButton('1', `itemAmount>${type}>${id}>${item.amount}`),
 					Markup.callbackButton('➕', `increase>${type}>${id}>${item.amount}>1`),
 					Markup.callbackButton('➕ 10', `increase>${type}>${id}>${item.amount}>10`)
 				],

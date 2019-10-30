@@ -38,7 +38,7 @@ requestGetting.action(/^increase>/, async (ctx: any) => {
 			[
 				Markup.callbackButton('➖ 10', `increase>${type}>${id}>${amount}>-10`),
 				Markup.callbackButton('➖', `increase>${type}>${id}>${amount}>-1`),
-				Markup.callbackButton(counter + offset, 'itemAmount'),
+				Markup.callbackButton(counter + offset, `itemAmount>${type}>${id}>${amount}`),
 				Markup.callbackButton('➕', `increase>${type}>${id}>${amount}>1`),
 				Markup.callbackButton('➕ 10', `increase>${type}>${id}>${amount}>10`)
 			],
@@ -81,6 +81,17 @@ requestGetting.action(/^accept>/, async (ctx: any) => {
 	}
 
 	await ctx.scene.enter('worker/requestMoreItems');
+});
+
+requestGetting.action(/^itemAmount>/, async (ctx: any) => {
+	const type = +ctx.callbackQuery.data.split('>')[1];
+	const id = ctx.callbackQuery.data.split('>')[2];
+	const amount = +ctx.callbackQuery.data.split('>')[3];
+
+	ctx.session.selectedItem = {type, id, itemAmount: amount};
+
+	await ctx.answerCbQuery();
+	await ctx.scene.enter('getItemCount');
 });
 
 requestGetting.action('back', async (ctx: any) => {
