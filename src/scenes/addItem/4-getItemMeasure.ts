@@ -26,7 +26,7 @@ getItemMeasure.enter(async (ctx: any) => {
 		Markup.button('⏪ Назад')
 	], {columns: 2}).extra();
 
-	await ctx.replyWithMarkdown('Какая величина измерения?\nЕсли нужной единицы нет в списке, введите сокращение 👇', keyboard);
+	await ctx.replyWithMarkdown('Какая величина измерения?\nЕсли нужной единицы нет в списке, введите ее с клавиатуры 👇', keyboard);
 });
 
 getItemMeasure.on('text', async (ctx: any) => {

@@ -23,6 +23,9 @@ export async function getCellsMessage(items: { name: string, cellName: string }[
  * и ихним количеством в наличии
  */
 export async function getItemsMessage(items: { type: ItemType; id: string; amount: number }[]): Promise<string> {
+	console.dir(items);
+	console.log('=========');
+
 	let message = '';
 	for (let item of items) {
 		const { id, type, amount } = item;

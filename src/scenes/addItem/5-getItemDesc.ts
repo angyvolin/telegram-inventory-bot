@@ -36,11 +36,11 @@ getItemDesc.on('text', async (ctx: any) => {
 
 getItemDesc.action('skip', async (ctx: any) => {
 	ctx.session.addItem.itemDesc = null;
-
-	await addItem(ctx);
+	
+	const message = await addItem(ctx);
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	await AdminMessage.send(ctx);
+	await AdminMessage.send(ctx, message);
 });
 
 getItemDesc.action('back', async (ctx: any) => {
@@ -49,21 +49,21 @@ getItemDesc.action('back', async (ctx: any) => {
 	await ctx.scene.enter('addItem/getItemMeasure');
 });
 
-const addItem = async (ctx: any) => {
+const addItem = async (ctx: any): Promise<string> => {
 	const {itemType, itemName, itemPhotoId, itemMeasure, itemDesc} = ctx.session.addItem;
 
 	switch (itemType) {
 		case ItemType.INSTRUMENT:
 			await Admin.addInstrument(itemName, itemMeasure, itemPhotoId, itemDesc);
-			await ctx.reply('Инструмент успешно добавлен');
+			return 'Инструмент успешно добавлен';
 			break;
 		case ItemType.FURNITURE:
 			await Admin.addFurniture(itemName, itemMeasure, itemPhotoId, itemDesc);
-			await ctx.reply('Фурнитура успешно добавлена');
+			return 'Фурнитура успешно добавлена';
 			break;
 		case ItemType.CONSUMABLE:
 			await Admin.addConsumable(itemName, itemMeasure, itemPhotoId, itemDesc);
-			await ctx.reply('Расходники успешно добавлены');
+			return 'Расходники успешно добавлены';
 			break;
 	}
 };

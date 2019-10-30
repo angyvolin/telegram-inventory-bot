@@ -2,6 +2,7 @@ import Stockman from '../classes/Stockman';
 import Confirmation from '../models/confirmation';
 import { isStockman } from '../helpers/persons';
 
+
 const Markup = require('telegraf/markup');
 
 export default class StockmanHandlers {
@@ -53,6 +54,20 @@ export default class StockmanHandlers {
 			await ctx.answerCbQuery();
 			if (await isStockman(ctx.from.username)) {
 				Stockman.confirmReturnRemains(ctx);
+			}
+		});
+
+		bot.action(/^viewCell>/, async (ctx: any) => {
+			await ctx.answerCbQuery();
+			if (await isStockman(ctx.from.username)) {
+				Stockman.viewCell(ctx);
+			}
+		});
+
+		bot.action('viewOutside', async (ctx: any) => {
+			await ctx.answerCbQuery();
+			if (await isStockman(ctx.from.username)) {
+				Stockman.viewOutside(ctx);
 			}
 		});
 	}

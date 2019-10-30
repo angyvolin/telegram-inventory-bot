@@ -18,16 +18,13 @@ requestGettingTable.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestGettingTable.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]);
+	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
 	const table = await generateTable();
 	await ctx.reply('Отправьте таблицу Excel с позициями для выдачи', keyboard);
 });
 
 requestGettingTable.on('document', async (ctx: any) => {
 	ctx.session.table = ctx.message.document.file_id;
-
-	/*const fileId = ctx.message.document.file_id;
-	const fileLink = await ctx.telegram.getFileLink(fileId);*/
 	await ctx.scene.leave();
 	await ctx.scene.enter('chief/requestGettingWorker');
 });

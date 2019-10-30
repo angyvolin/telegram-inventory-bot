@@ -31,7 +31,7 @@ requestReturnRemains.action(/^increase>/, async (ctx: any) => {
 
 	const counter = +ctx.update.callback_query.message.reply_markup.inline_keyboard[0][2].text;
 
-	if (amount >= counter + offset && counter + offset >= 1) {
+	if (counter + offset >= 1) {
 		const keyboard = Markup.inlineKeyboard([
 			[
 				Markup.callbackButton('➖ 10', `increase>${type}>${id}>${amount}>-10`),

@@ -91,7 +91,10 @@ export default class InlineQueryHandlers {
 					Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)
 				]
 			]);
-			let message = `Название: *${item.name}*\nВ наличии: *${item.amount}*\nОписание: ${item.description}`;
+			let message = `Название: *${item.name}*\nВ наличии: *${item.amount} ${item.measure}*`;
+			if (item.description) {
+				message += `\nОписание: ${item.description}`;
+			}
 
 			if (isMoving) {
 				const currCell = await getCell(type, item._id.toString());
@@ -136,14 +139,20 @@ export default class InlineQueryHandlers {
 					continue;
 				}
 
+				const description = item.description ?
+									`${item.amount} ${item.measure} в наличии\n${item.description}` :
+									`${item.amount} ${item.measure} в наличии`;
+				const message_text = item.description ?
+									`<b>${item.name} 🔨</b>\n${item.amount} ${item.measure} в наличии\n${item.description}` :
+									`<b>${item.name} 🔨</b>\n${item.amount} ${item.measure} в наличии`;
 				results.push({
 					id: item._id,
 					type: 'article',
 					title: item.name,
 					thumb_url: 'https://res.cloudinary.com/teepublic/image/private/s--Ctrqwzip--/t_Resized%20Artwork/c_fit,g_north_west,h_954,w_954/co_ffffff,e_outline:48/co_ffffff,e_outline:inner_fill:48/co_ffffff,e_outline:48/co_ffffff,e_outline:inner_fill:48/co_bbbbbb,e_outline:3:1000/c_mpad,g_center,h_1260,w_1260/b_rgb:eeeeee/c_limit,f_jpg,h_630,q_90,w_630/v1547854732/production/designs/4034003_0.jpg',
-					description: `${item.amount} ${item.measure} в наличии\n${item.description}`,
+					description,
 					input_message_content: {
-						message_text: `<b>${item.name} 🔨</b>\n${item.amount} ${item.measure} в наличии\n${item.description}`,
+						message_text,
 						parse_mode: 'HTML'
 					}
 				});

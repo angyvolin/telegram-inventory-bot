@@ -8,7 +8,8 @@ export default class AdminMessage {
 		.resize()
 		.extra();
 
-	public static async send(ctx: api.ContextMessageUpdate): Promise<void> {
-		await ctx.reply('Добро пожаловать, админ!', this.keyboard);
+	public static async send(ctx: api.ContextMessageUpdate,
+							 message: string = 'Выберите действие'): Promise<void> {
+		await ctx.reply(message, this.keyboard);
 	}
 }

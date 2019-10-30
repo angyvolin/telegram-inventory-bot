@@ -13,9 +13,9 @@ export const FurnitureSchema: Schema = new Schema(
 	{
 		photo: { type: String },
 		name: { type: String, required: true },
-		amount: {type: Number, required: true},
-		measure: {type: String, required: true},
-		description: {type: String}
+		amount: { type: Number, required: true },
+		measure: { type: String, required: true },
+		description: { type: String }
 	},
 	{ collection: 'furniture' }
 );
