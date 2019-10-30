@@ -24,7 +24,10 @@ export default class Worker {
 	 * запрос кладовщикам
 	 */
 	public static async requestGetting(ctx: any,
-									   items: { type: ItemType; id: string; amount: number }[],
+									   items: { type: ItemType;
+									   			id: string;
+									   			amount: number;
+									   			measure: string }[],
 									   days?: number): Promise<void> {
 		if (!items.length) {
 			return;
@@ -181,7 +184,10 @@ export default class Worker {
 	 * (фурнитуры / расходников) работника кладовщику
 	 */
 	public static async requestReturnRemains(ctx: any,
-									   		 items: { type: ItemType; id: string; amount: number }[]): Promise<void> {
+									   		 items: { type: ItemType;
+									   		 		  id: string;
+									   		 		  amount: number;
+									   		 		  measure: string }[]): Promise<void> {
 		if (!items.length) {
 			return;
 		}
@@ -264,7 +270,10 @@ export default class Worker {
 	 * инструментами и количеством
 	 */
 	public static async requestRemoveInstruments(ctx: any,
-												 items: { type: ItemType; id: string; amount: number }[],
+												 items: { type: ItemType;
+												 		  id: string;
+												 		  amount: number;
+												 		  measure: string }[],
 												 gettingId: string): Promise<void> {
 		const admins = await getAdmins();
 

@@ -34,6 +34,10 @@ import getMoveItem from '../scenes/stockman/getMoveItem';
 import getMoveDestination from '../scenes/stockman/getMoveDestination';
 import getAddresses from '../scenes/stockman/getAddresses';
 import getAbsentItems from '../scenes/stockman/getAbsentItems';
+import requestGettingUsername from '../scenes/stockman/1-requestGettingUsername';
+import requestGettingWorkerItems from '../scenes/stockman/2-requestGettingWorkerItems';
+import requestGettingWorkerDate from '../scenes/stockman/3-requestGettingWorkerDate';
+import requestGettingWorkerMore from '../scenes/stockman/4-requestGettingWorkerMore';
 // Chief scenes
 import requestGettingTable from '../scenes/chief/1-requestGettingTable';
 import requestGettingWorker from '../scenes/chief/2-requestGettingWorker';
@@ -94,6 +98,10 @@ export default class Scenes {
 			stage.register(getMoveDestination);
 			stage.register(getAddresses);
 			stage.register(getAbsentItems);
+			stage.register(requestGettingUsername);
+			stage.register(requestGettingWorkerItems);
+			stage.register(requestGettingWorkerDate);
+			stage.register(requestGettingWorkerMore);
 
 			// Сцены Chief
 			stage.register(requestGettingTable); // Сцена запроса выдачи позиций работнику

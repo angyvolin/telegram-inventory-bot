@@ -7,14 +7,150 @@ import Cell from '../models/cell';
 import KeyboardMessage from '../controllers/keyboards';
 import ItemType from '../enums/ItemType';
 import PersonType from '../enums/PersonType';
+import { getChatId } from '../helpers/functions';
 import { getCell } from '../helpers/cells';
-import { getCellsMessage } from '../helpers/messages';
-import { getItem, getOutsideConsumables, getOutsideFurniture, getOutsideInstruments } from '../helpers/items';
+import { getStockmans } from '../helpers/persons';
+import { getItemsMessage,
+		 getCellsMessage,
+		 getGettingMessage,
+		 getGettingWorkerMessage } from '../helpers/messages';
+import { getItem,
+		 getOutsideConsumables,
+		 getOutsideFurniture,
+		 getOutsideInstruments } from '../helpers/items';
 
 const Markup = require('telegraf/markup');
 
 export default class Stockman {
 	// Public
+	/**
+	 * @desc Запрос на выдачу позиций работнику.
+	 * Создаем новый Confirmation в БД и отсылаем
+	 * уведомление работнику
+	 */
+	public static async requestGetting(ctx: any,
+									   items: { type: ItemType;
+									   			id: string;
+									   			amount: number;
+									   			measure: string }[],
+									   username: string,
+									   days?: number): Promise<void> {
+		if (!items.length) {
+			return;
+		}
+
+		// =====================
+		// Взаимодействие с работником
+		
+		const id = await getChatId(username);
+
+		if (!id) {
+			return;
+		}
+
+		/*
+		 * Сообщение, уведомляющее работника
+		 * о выдаче ему позиций
+		 */
+		const gettingWorkerText = await getGettingWorkerMessage(items, days);
+
+		// Отправляем сообщение работнику
+		const message = await ctx.telegram.sendMessage(id, gettingWorkerText, {
+			parse_mode: 'Markdown'
+		});
+
+		// =====================
+		// Взаимодействие с кладовщиком
+
+		const stockmans = await getStockmans();
+		
+		if (!stockmans.length) {
+			return;
+		}
+
+		const gettingText = await getGettingMessage(username, items, days);
+		/*
+		 * Сообщение со списком позиций
+		 * для последующего использования
+		 */
+		const itemsText = await getItemsMessage(items);
+		/*
+		 * Массив с сообщениями, которые
+		 * будут отправлены кладовщикам.
+		 * Будет использоваться для того,
+		 * чтобы модифицировать сообщения
+		 * у всех кладовщиков (не только у
+		 * того, кто взаимодействует)
+		 */
+		const messages = [];
+
+		const confirmation = new Confirmation();
+		const confirmationId = confirmation._id;
+
+		for (let stockman of stockmans) {
+			const id = await getChatId(stockman.username);
+			if (!id) continue;
+
+			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Выдал позиции', `approveGiving>${confirmationId}`)],
+													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+
+			// Отправляем сообщение кладовщику
+			const message = await ctx.telegram.sendMessage(id, gettingText, {
+				reply_markup: keyboard,
+				parse_mode: 'Markdown'
+			});
+			// Добавляем сообщение в массив
+			messages.push({
+				id: message.message_id,
+				chatId: id
+			});
+		}
+
+		const instruments: Map<string, number> = new Map();
+		const furniture: Map<string, number> = new Map();
+		const consumables: Map<string, number> = new Map();
+
+		/*
+		 * Заполняем Map с соответствующими
+		 * позициями (идентификатор - количество)
+		 */
+		items.forEach((item) => {
+			switch (item.type) {
+				case ItemType.INSTRUMENT: {
+					instruments.set(item.id, item.amount);
+					break;
+				}
+				case ItemType.FURNITURE: {
+					furniture.set(item.id, item.amount);
+					break;
+				}
+				case ItemType.CONSUMABLE: {
+					consumables.set(item.id, item.amount);
+					break;
+				}
+			}
+		});
+
+		if (instruments.size > 0) {
+			confirmation.instruments = instruments;
+		}
+		if (furniture.size > 0) {
+			confirmation.furniture = furniture;
+		}
+		if (consumables.size > 0) {
+			confirmation.consumables = consumables;
+		}
+		if (days) {
+			confirmation.days = days;
+		}
+
+		confirmation.messages = messages;
+		confirmation.text = gettingText;
+		confirmation.itemsText = itemsText;
+		confirmation.chatId = id;
+		await confirmation.save();
+	}
+
 	/**
 	 * @desc Подтверждение выдачи позиций работнику
 	 */

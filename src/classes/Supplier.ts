@@ -17,9 +17,11 @@ export default class Supplier {
 	 * @desc Запрос на закупку позиций
 	 * (с ценами на них)
 	 */
-	public static async requestPurchase(ctx: any,
-										items: { type: ItemType; id: string; amount: number, price: string }[]
-									   ): Promise<void> {
+	public static async requestPurchase(ctx: any, items: { type: ItemType;
+														   id: string;
+														   amount: number;
+														   price: string;
+														   measure: string }[]): Promise<void> {
 		if (!items.length) {
 			return;
 		}
@@ -62,9 +64,10 @@ export default class Supplier {
 	/**
 	 * @desc Запрос на поставку позиций в склад
 	 */
-	public static async requestSupply(ctx: any,
-										items: { type: ItemType; id: string; amount: number }[]
-									 ): Promise<void> {
+	public static async requestSupply(ctx: any, items: { type: ItemType;
+														 id: string;
+														 amount: number;
+														 measure: string }[]): Promise<void> {
 		if (!items.length) {
 			return;
 		}

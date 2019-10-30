@@ -1,5 +1,6 @@
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
+import { isWorker } from '../../helpers/persons';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -7,30 +8,35 @@ const Markup = require('telegraf/markup');
 /**
  * Сцена запроса получения
  */
-const requestGettingWorker = new Scene('chief/requestGettingWorker');
+const requestGettingUsername = new Scene('stockman/requestGettingUsername');
 
-requestGettingWorker.command('start', async (ctx: any) => {
+requestGettingUsername.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.CHIEF);
+	await KeyboardMessage.send(ctx, PersonType.STOCKMAN);
 	ctx.session = {};
 });
 
 // Точка входа в сцену
-requestGettingWorker.enter(async (ctx: any) => {
+requestGettingUsername.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
 	await ctx.reply('Введите юзернейм работника, которому нужно выдать позиции', keyboard);
 });
 
-requestGettingWorker.on('text', async (ctx: any) => {
+requestGettingUsername.on('text', async (ctx: any) => {
 	ctx.session.username = ctx.message.text.replace('@', '').toLowerCase();
+
+	if (!(await isWorker(ctx.session.username))) {
+		return ctx.reply('Неверный юзернейм работника.\nПопробуйте снова');
+	}
+
 	await ctx.scene.leave();
-	await ctx.scene.enter('chief/requestGettingTerm');
+	await ctx.scene.enter('stockman/requestGettingWorkerItems');
 });
 
-requestGettingWorker.action('back', async (ctx: any) => {
+requestGettingUsername.action('back', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	await ctx.scene.enter('chief/requestGettingTable');
+	return KeyboardMessage.send(ctx, PersonType.STOCKMAN);
 });
 
-export default requestGettingWorker;
+export default requestGettingUsername;

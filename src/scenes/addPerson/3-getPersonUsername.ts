@@ -22,7 +22,7 @@ getPersonUsername.enter(async (ctx: any) => {
 });
 
 getPersonUsername.on('text', async (ctx: any) => {
-	ctx.session.addPerson.username = ctx.message.text.replace('@', '');
+	ctx.session.addPerson.username = ctx.message.text.replace('@', '').toLowerCase();
 
 	await ctx.scene.leave();
 	await addPerson(ctx.session.addPerson.role, ctx.session.addPerson.username, ctx.session.addPerson.fullName);

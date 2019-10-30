@@ -25,6 +25,13 @@ export default class StockmanHandlers {
 			}
 		});
 
+		bot.hears('Создать выдачу работнику', async (ctx) => {
+			if (await isStockman(ctx.from.username)) {
+				ctx.session.items = [];
+				await ctx.scene.enter('stockman/requestGettingUsername');
+			}
+		});
+
 		// Подтверждение выдачи работнику
 		bot.action(/^approveGiving>/, async (ctx) => {
 			await ctx.answerCbQuery();
