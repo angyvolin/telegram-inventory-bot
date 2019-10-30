@@ -1,5 +1,6 @@
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
+import { sendItem } from '../../helpers/handlers';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -23,34 +24,7 @@ requestRemoveInstruments.enter(async (ctx: any) => {
 });
 
 // Увеличение количества инструментов на списание
-requestRemoveInstruments.action(/^increase>/, async (ctx: any) => {
-	const type = +ctx.callbackQuery.data.split('>')[1];
-	const id = ctx.callbackQuery.data.split('>')[2];
-	const amount = +ctx.callbackQuery.data.split('>')[3];
-	const offset = +ctx.callbackQuery.data.split('>')[4];
-
-	const counter = +ctx.update.callback_query.message.reply_markup.inline_keyboard[0][2].text;
-
-	if (counter + offset >= 1) {
-		const keyboard = Markup.inlineKeyboard([
-			[
-				Markup.callbackButton('➖ 10', `increase>${type}>${id}>${amount}>-10`),
-				Markup.callbackButton('➖', `increase>${type}>${id}>${amount}>-1`),
-				Markup.callbackButton(counter + offset, `itemAmount>${type}>${id}>${amount}`),
-				Markup.callbackButton('➕', `increase>${type}>${id}>${amount}>1`),
-				Markup.callbackButton('➕ 10', `increase>${type}>${id}>${amount}>10`)
-			],
-			[
-				Markup.callbackButton('⏪ Назад', 'back'),
-				Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter + offset}`)
-			]
-		]);
-		await ctx.editMessageReplyMarkup(keyboard);
-		await ctx.answerCbQuery();
-	} else {
-		await ctx.answerCbQuery(`Недопустимое значение`, false);
-	}
-});
+requestRemoveInstruments.action(/^increase>/, sendItem);
 
 // Подтверждение выбора инструментов
 requestRemoveInstruments.action(/^accept>/, async (ctx: any) => {
