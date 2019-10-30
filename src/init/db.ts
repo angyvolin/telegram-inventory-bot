@@ -22,11 +22,11 @@ export default class DB {
 				process.exit(1); // Выход из приложения
 			} else {
 				Logger.trace('>>> База данных подключена');
-				const alphabet = 'ABCD';
+				const alphabet = 'АБВГДЕЖЗИ';
 
 				// Создаём сетку ячеек
 				for (let row of alphabet) {
-					for (let col = 1; col <= 9; col++) {
+					for (let col = 1; col <= 4; col++) {
 						await Cell.findOneAndUpdate({ row, col }, { row, col }, { upsert: true });
 					}
 				}
