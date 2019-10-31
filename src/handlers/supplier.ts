@@ -10,6 +10,7 @@ export default class SupplierHandlers {
 		bot.hears('Запросить закупку', async (ctx: any) => {
 			if (await isSupplier(ctx.from.username)) {
 				ctx.session.items = [];
+				ctx.session.absent = [];
 				await ctx.scene.enter('supplier/requestPurchase');
 			}
 		});

@@ -22,8 +22,9 @@ requestPurchase.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i'),
 											 Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f')],
 											[Markup.switchToCurrentChatButton('Расходники', 'incl_abs c'),
-											 Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
-	await ctx.replyWithMarkdown('Выберите тип объектов, которые Вы хотите закупить', keyboard);
+											 Markup.callbackButton('Позиции нет в базе', 'absent')],
+											[Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
+	await ctx.replyWithMarkdown('Выберите тип позиций, которые Вы хотите закупить', keyboard);
 });
 
 // Увеличение количества позиции на закупку
@@ -62,12 +63,19 @@ requestPurchase.action(/^accept>/, async (ctx: any) => {
 	return ctx.scene.enter('supplier/requestPurchaseMore');
 });
 
+// При запросите позиции, которой нет в базе
+requestPurchase.action('absent', async (ctx: any) => {
+	await ctx.answerCbQuery();
+	await ctx.scene.leave();
+	await ctx.scene.enter('supplier/requestPurchaseName');
+});
+
 requestPurchase.action('back', async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i'),
 											 Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f')],
 											[Markup.switchToCurrentChatButton('Расходники', 'incl_abs c'),
 											 Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
-	await ctx.replyWithMarkdown('Выберите тип объектов, которые Вы хотите поставить', keyboard);
+	await ctx.replyWithMarkdown('Выберите тип позиций, которые Вы хотите поставить', keyboard);
 });
 
 requestPurchase.action('exit', async (ctx: any) => {

@@ -23,13 +23,13 @@ requestGettingUsername.enter(async (ctx: any) => {
 });
 
 requestGettingUsername.on('text', async (ctx: any) => {
+	await ctx.scene.leave();
 	ctx.session.username = ctx.message.text.replace('@', '');
 
 	if (!(await isWorker(ctx.session.username))) {
 		return ctx.reply('Неверный юзернейм работника.\nПопробуйте снова');
 	}
 
-	await ctx.scene.leave();
 	await ctx.scene.enter('stockman/requestGettingWorkerItems');
 });
 

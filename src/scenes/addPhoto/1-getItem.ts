@@ -1,4 +1,6 @@
+import AdminMessage from '../../controllers/admin';
 import KeyboardMessage from '../../controllers/keyboards';
+import { isAdmin } from '../../helpers/functions';
 import { getPerson } from '../../helpers/persons';
 
 const Scene = require('telegraf/scenes/base');
@@ -11,8 +13,12 @@ const getItem = new Scene('addPhoto/getItem');
 
 getItem.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	const { type } = await getPerson(ctx.from.username);
-	await KeyboardMessage.send(ctx, type);
+	const person = await getPerson(ctx.from.username);
+	if (person) {
+		await KeyboardMessage.send(ctx, person.type);
+	} else if (await isAdmin(ctx.from.id)) {
+		await AdminMessage.send(ctx);
+	}
 	ctx.session = {};
 });
 
@@ -43,14 +49,18 @@ getItem.action('back', async (ctx: any) => {
 											 Markup.switchToCurrentChatButton('Фурнитура', 'look f')],
 											[Markup.switchToCurrentChatButton('Расходники', 'look c'),
 											 Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
-	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите получить', keyboard);
+	await ctx.replyWithMarkdown('Выберите тип позиций, которые вы хотите получить', keyboard);
 });
 
 getItem.action('exit', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	const { type } = await getPerson(ctx.from.username);
-	return KeyboardMessage.send(ctx, type);
+	const person = await getPerson(ctx.from.username);
+	if (person) {
+		await KeyboardMessage.send(ctx, person.type);
+	} else if (await isAdmin(ctx.from.id)) {
+		await AdminMessage.send(ctx);
+	}
 });
 
 export default getItem;

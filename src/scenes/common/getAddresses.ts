@@ -1,5 +1,6 @@
+import AdminMessage from '../../controllers/admin';
 import KeyboardMessage from '../../controllers/keyboards';
-import PersonType from '../../enums/PersonType';
+import { isAdmin } from '../../helpers/functions';
 import { getPerson } from '../../helpers/persons';
 import { getCells } from '../../helpers/cells';
 
@@ -13,8 +14,12 @@ const getAddresses = new Scene('getAddresses');
 
 getAddresses.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	const { type } = await getPerson(ctx.from.username);
-	await KeyboardMessage.send(ctx, type);
+	const person = await getPerson(ctx.from.username);
+	if (person) {
+		await KeyboardMessage.send(ctx, person.type);
+	} else if (await isAdmin(ctx.from.id)) {
+		await AdminMessage.send(ctx);
+	}
 	ctx.session = {};
 });
 
@@ -36,8 +41,12 @@ getAddresses.enter(async (ctx: any) => {
 getAddresses.action('back', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	const { type } = await getPerson(ctx.from.username);
-	return KeyboardMessage.send(ctx, type);
+	const person = await getPerson(ctx.from.username);
+	if (person) {
+		await KeyboardMessage.send(ctx, person.type);
+	} else if (await isAdmin(ctx.from.id)) {
+		await AdminMessage.send(ctx);
+	}
 });
 
 export default getAddresses;

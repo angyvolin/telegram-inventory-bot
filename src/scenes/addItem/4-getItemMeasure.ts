@@ -1,4 +1,7 @@
 import AdminMessage from '../../controllers/admin';
+import KeyboardMessage from '../../controllers/keyboards';
+import { isAdmin } from '../../helpers/functions';
+import { getPerson } from '../../helpers/persons';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -10,7 +13,12 @@ const getItemMeasure = new Scene('addItem/getItemMeasure');
 
 getItemMeasure.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await AdminMessage.send(ctx);
+	const person = await getPerson(ctx.from.username);
+	if (person) {
+		await KeyboardMessage.send(ctx, person.type);
+	} else if (await isAdmin(ctx.from.id)) {
+		await AdminMessage.send(ctx);
+	}
 	ctx.session = {};
 });
 

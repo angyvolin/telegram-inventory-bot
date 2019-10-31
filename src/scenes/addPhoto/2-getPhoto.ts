@@ -1,7 +1,8 @@
+import AdminMessage from '../../controllers/admin';
 import KeyboardMessage from '../../controllers/keyboards';
-import ItemType from '../../enums/ItemType';
-import { addPhoto } from '../../helpers/items';
+import { isAdmin } from '../../helpers/functions';
 import { getPerson } from '../../helpers/persons';
+import { addPhoto } from '../../helpers/items';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -13,8 +14,12 @@ const getPhoto = new Scene('addPhoto/getPhoto');
 
 getPhoto.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	const { type } = await getPerson(ctx.from.username);
-	await KeyboardMessage.send(ctx, type);
+	const person = await getPerson(ctx.from.username);
+	if (person) {
+		await KeyboardMessage.send(ctx, person.type);
+	} else if (await isAdmin(ctx.from.id)) {
+		await AdminMessage.send(ctx);
+	}
 	ctx.session = {};
 });
 

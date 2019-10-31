@@ -35,7 +35,6 @@ requestPurchaseMore.action('finish', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	const { items } = ctx.session;
-	//await ctx.reply('Ваша заявка на поставку успешно отправлена!');
 	await Supplier.requestPurchase(ctx, ctx.session.items);
 	return KeyboardMessage.send(ctx, PersonType.SUPPLIER, 'Ваша заявка на закупку успешно отправлена!');
 });

@@ -22,7 +22,7 @@ requestGettingWorkerItems.enter(async (ctx: any) => {
 											 Markup.switchToCurrentChatButton('Фурнитура', 'f')],
 											[Markup.switchToCurrentChatButton('Расходники', 'c'),
 											 Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
-	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите получить', keyboard);
+	await ctx.replyWithMarkdown('Выберите тип позиций, которые вы хотите получить', keyboard);
 });
 
 // Увеличение количества позиции на получение
@@ -73,7 +73,7 @@ requestGettingWorkerItems.action('back', async (ctx: any) => {
 											 Markup.switchToCurrentChatButton('Фурнитура', 'f')],
 											[Markup.switchToCurrentChatButton('Расходники', 'c'),
 											 Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
-	await ctx.replyWithMarkdown('Выберите тип объектов, которые вы хотите получить', keyboard);
+	await ctx.replyWithMarkdown('Выберите тип позиций, которые вы хотите получить', keyboard);
 });
 
 requestGettingWorkerItems.action('exit', async (ctx: any) => {

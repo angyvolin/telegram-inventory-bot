@@ -26,6 +26,8 @@ requestPurchasePrice.on('text', async (ctx: any) => {
 	ctx.session.currentItem.price = ctx.message.text;
 	// Пушим эту позицию
 	ctx.session.items.push(ctx.session.currentItem);
+	// Очищаем текущую позицию в сессии
+	ctx.session.currentItem = {};
 	await ctx.scene.leave();
 	await ctx.scene.enter('supplier/requestPurchaseMore');
 });

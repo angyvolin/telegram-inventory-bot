@@ -41,8 +41,6 @@ export default class Common {
 
 		let message = `В ячейке *${cell.row + cell.col}* находится ${itemsCount} позици${ending}\n\n`;
 
-		console.log('=> LOG');
-
 		if (cell.instruments) {
 			message += '*Инструменты*\n';
 
