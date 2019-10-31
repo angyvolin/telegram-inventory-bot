@@ -114,7 +114,9 @@ export default class InlineQueryHandlers {
 				caption: message,
 				reply_markup: null
 			};
-			options.reply_markup = query.indexOf('look') === -1 ? keyboardWithCounters : keyboard;
+			options.reply_markup = query.indexOf('look') === -1 && query.indexOf('move') ?
+								   keyboardWithCounters :
+								   keyboard;
 			if (item.photo) {
 				return ctx.telegram.sendPhoto(ctx.from.id, item.photo, options);
 			}
