@@ -3,6 +3,8 @@ import Logger from './logger';
 // General scenes
 import gsend from '../scenes/gsend/gsend';
 import addAdmins from '../scenes/addAdmins/addAdmins';
+import addPhotoGetItem from '../scenes/addPhoto/1-getItem';
+import addPhotoGetPhoto from '../scenes/addPhoto/2-getPhoto';
 import getAddresses from '../scenes/common/getAddresses';
 // Worker scenes
 import requestGetting from '../scenes/worker/1-requestGetting';
@@ -57,6 +59,8 @@ export default class Scenes {
 			// Базовые сцены в шаблоне
 			stage.register(gsend); // Сцена рассылки
 			stage.register(addAdmins); // Сцена добавления админа
+			stage.register(addPhotoGetItem); // Сцена добавления админа
+			stage.register(addPhotoGetPhoto); // Сцена добавления админа
 			stage.register(getAddresses);
 
 			// Сцена добавления товара

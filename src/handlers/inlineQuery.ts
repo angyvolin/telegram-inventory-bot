@@ -15,7 +15,7 @@ export default class InlineQueryHandlers {
 			await sendResults(ctx, items);
 		});
 
-		bot.inlineQuery('incl_abs i', async (ctx) => {
+		bot.inlineQuery(['incl_abs i', 'look i'], async (ctx) => {
 			const items = await Instrument.getAllItems();
 			await sendResults(ctx, items, true);
 		});
@@ -25,7 +25,7 @@ export default class InlineQueryHandlers {
 			await sendResults(ctx, items);
 		});
 
-		bot.inlineQuery('incl_abs f', async (ctx) => {
+		bot.inlineQuery(['incl_abs f', 'look f'], async (ctx) => {
 			const items = await Furniture.getAllItems();
 			await sendResults(ctx, items, true);
 		});
@@ -35,7 +35,7 @@ export default class InlineQueryHandlers {
 			await sendResults(ctx, items);
 		});
 
-		bot.inlineQuery('incl_abs c', async (ctx) => {
+		bot.inlineQuery(['incl_abs c', 'look c'], async (ctx) => {
 			const items = await Consumable.getAllItems();
 			await sendResults(ctx, items, true);
 		});
@@ -54,19 +54,22 @@ export default class InlineQueryHandlers {
 			switch (query) {
 				case 'i':
 				case 'move i':
-				case 'incl_abs i': {
+				case 'incl_abs i':
+				case 'look i': {
 					type = ItemType.INSTRUMENT;
 					break;
 				}
 				case 'f':
 				case 'move f':
-				case 'incl_abs f': {
+				case 'incl_abs f':
+				case 'look f': {
 					type = ItemType.FURNITURE;
 					break;
 				}
 				case 'c':
 				case 'move c':
-				case 'incl_abs c': {
+				case 'incl_abs c':
+				case 'look c': {
 					type = ItemType.CONSUMABLE;
 					break;
 				}
@@ -78,7 +81,12 @@ export default class InlineQueryHandlers {
 			if (!item) {
 				return ctx.telegram.sendMessage(ctx.from.id, 'Ошибка на сервере! Позиция не была найдена');
 			}
+
 			let keyboard = Markup.inlineKeyboard([
+				Markup.callbackButton('⏪ Назад', 'back'),
+				Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)
+			]);
+			let keyboardWithCounters = Markup.inlineKeyboard([
 				[
 					Markup.callbackButton('➖ 10', `increase>${type}>${id}>${item.amount}>-10`),
 					Markup.callbackButton('➖', `increase>${type}>${id}>${item.amount}>-1`),
@@ -103,9 +111,10 @@ export default class InlineQueryHandlers {
 			}
 			const options = {
 				parse_mode: 'Markdown',
-				reply_markup: keyboard,
-				caption: message
+				caption: message,
+				reply_markup: null
 			};
+			options.reply_markup = query.indexOf('look') === -1 ? keyboardWithCounters : keyboard;
 			if (item.photo) {
 				return ctx.telegram.sendPhoto(ctx.from.id, item.photo, options);
 			}

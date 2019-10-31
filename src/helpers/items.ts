@@ -168,6 +168,38 @@ export async function addItem(type: ItemType, id: string, amount: number): Promi
 	}
 }
 
+export async function addPhoto(type: ItemType, id: string, fileId: string): Promise<void> {
+	switch (type) {
+		case ItemType.INSTRUMENT: {
+			const instrument = await InstrumentModel.findById(id);
+			if (!instrument) {
+				return;
+			}
+			instrument.photo = fileId;
+			await instrument.save();
+			return;
+		}
+		case ItemType.FURNITURE: {
+			const furniture = await FurnitureModel.findById(id);
+			if (!furniture) {
+				return;
+			}
+			furniture.photo = fileId;
+			await furniture.save();
+			return;
+		}
+		case ItemType.CONSUMABLE: {
+			const consumable = await ConsumableModel.findById(id);
+			if (!consumable) {
+				return;
+			}
+			consumable.photo = fileId;
+			await consumable.save();
+			return;
+		}
+	}
+}
+
 export async function reduceItem(type: ItemType, id: string, amount: number): Promise<void> {
 	switch (type) {
 		case ItemType.INSTRUMENT: {
