@@ -1,6 +1,7 @@
-import AdminMessage from '../../controllers/admin';
+import KeyboardMessage from '../../controllers/keyboards';
 import ItemType from '../../enums/ItemType';
 import Admin from '../../classes/Admin';
+import { getPerson } from '../../helpers/persons';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -12,7 +13,8 @@ const getItemDesc = new Scene('addItem/getItemDesc');
 
 getItemDesc.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await AdminMessage.send(ctx);
+	const { type } = await getPerson(ctx.from.username);
+	await KeyboardMessage.send(ctx, type);
 	ctx.session = {};
 });
 
@@ -31,7 +33,8 @@ getItemDesc.on('text', async (ctx: any) => {
 
 	await addItem(ctx);
 	await ctx.scene.leave();
-	await AdminMessage.send(ctx);
+	const { type } = await getPerson(ctx.from.username);
+	await KeyboardMessage.send(ctx, type);
 });
 
 getItemDesc.action('skip', async (ctx: any) => {
@@ -40,7 +43,8 @@ getItemDesc.action('skip', async (ctx: any) => {
 	const message = await addItem(ctx);
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	await AdminMessage.send(ctx, message);
+	const { type } = await getPerson(ctx.from.username);
+	await KeyboardMessage.send(ctx, type);
 });
 
 getItemDesc.action('back', async (ctx: any) => {

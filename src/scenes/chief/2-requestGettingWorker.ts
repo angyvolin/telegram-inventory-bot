@@ -22,7 +22,7 @@ requestGettingWorker.enter(async (ctx: any) => {
 });
 
 requestGettingWorker.on('text', async (ctx: any) => {
-	ctx.session.username = ctx.message.text.replace('@', '').toLowerCase();
+	ctx.session.username = ctx.message.text.replace('@', '');
 	await ctx.scene.leave();
 	await ctx.scene.enter('chief/requestGettingTerm');
 });

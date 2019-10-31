@@ -23,7 +23,7 @@ requestGettingUsername.enter(async (ctx: any) => {
 });
 
 requestGettingUsername.on('text', async (ctx: any) => {
-	ctx.session.username = ctx.message.text.replace('@', '').toLowerCase();
+	ctx.session.username = ctx.message.text.replace('@', '');
 
 	if (!(await isWorker(ctx.session.username))) {
 		return ctx.reply('Неверный юзернейм работника.\nПопробуйте снова');
