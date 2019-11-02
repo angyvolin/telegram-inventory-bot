@@ -1,7 +1,9 @@
+import Instrument from '../../classes/Instrument';
+import Furniture from '../../classes/Furniture';
+import Consumable from '../../classes/Consumable';
 import AdminMessage from '../../controllers/admin';
 import KeyboardMessage from '../../controllers/keyboards';
 import ItemType from '../../enums/ItemType';
-import Admin from '../../classes/Admin';
 import { isAdmin } from '../../helpers/functions';
 import { getPerson } from '../../helpers/persons';
 
@@ -72,15 +74,15 @@ const addItem = async (ctx: any): Promise<string> => {
 
 	switch (itemType) {
 		case ItemType.INSTRUMENT:
-			await Admin.addInstrument(itemName, itemMeasure, itemPhotoId, itemDesc);
+			await Instrument.add(itemName, itemMeasure, itemPhotoId, itemDesc);
 			return 'Инструмент успешно добавлен';
 			break;
 		case ItemType.FURNITURE:
-			await Admin.addFurniture(itemName, itemMeasure, itemPhotoId, itemDesc);
+			await Furniture.add(itemName, itemMeasure, itemPhotoId, itemDesc);
 			return 'Фурнитура успешно добавлена';
 			break;
 		case ItemType.CONSUMABLE:
-			await Admin.addConsumable(itemName, itemMeasure, itemPhotoId, itemDesc);
+			await Consumable.add(itemName, itemMeasure, itemPhotoId, itemDesc);
 			return 'Расходники успешно добавлены';
 			break;
 	}

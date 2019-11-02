@@ -77,5 +77,12 @@ export default class AdminHandlers {
 				Admin.confirmPurchase(ctx);
 			}
 		});
+
+		bot.action(/^approveChiefPurchase>/, async (ctx: any) => {
+			await ctx.answerCbQuery();
+			if (await isAdmin(ctx.from.id)) {
+				Admin.confirmChiefPurchase(ctx);
+			}
+		});
 	}
 }

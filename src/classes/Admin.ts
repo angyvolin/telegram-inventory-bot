@@ -1,8 +1,8 @@
-import Instrument from './Instrument';
-import Furniture from './Furniture';
-import Consumable from './Consumable';
 import Confirmation from '../models/confirmation';
 import Getting from '../models/getting';
+import { getChatId } from '../helpers/functions';
+import { getSuppliers } from '../helpers/persons';
+import { getRequestSupplyMessage } from '../helpers/messages';
 
 const Markup = require('telegraf/markup');
 
@@ -96,98 +96,44 @@ export default class Admin {
 		await ctx.telegram.sendMessage(confirmation.chatId, text, options);
 	}
 
-	public static confirmRemovingInstrument(username: string, instruments: Map<number, number>): void {
-		//...
-	}
+	public static async confirmChiefPurchase(ctx: any): Promise<void> {
+		const id = ctx.callbackQuery.data.split('>')[1];
+		const confirmation = await Confirmation.findById(id);
 
-	public static confirmSupply(supply: string): void {
-		//...
-	}
+		if (!confirmation) {
+			return;
+		}
 
-	public static getAbsentInstruments(): void {
-		//...
-	}
+		// Получаем все сообщения отправленные админам
+		const messages = confirmation.messages;
 
-	public static getDebtors(): void {
-		//...
-	}
+		// Редактируем эти сообщения
+		for (const message of messages) {
+			const text = confirmation.text + '\n✅ Подтверждено';
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {
+				parse_mode: 'Markdown'
+			});
+		}
 
-	public static getCellContent(cell: string): void {
-		//...
-	}
+		// Удаляем подтверждение с БД
+		await confirmation.remove();
 
-	// Worker methods
-	public static requestGettingInstrument(instruments: Map<number, number>): void {
-		//...
-	}
+		// Получаем всех поставщиков
+		const suppliers = await getSuppliers();
 
-	public static requestGettingFurniture(furniture: Map<number, number>): void {
-		//...
-	}
+		// Текст поставщикам с уведомлением о закупке
+		const requestSupplyText = getRequestSupplyMessage(confirmation.itemsText);
+		
+		for (let supplier of suppliers) {
+			const id = await getChatId(supplier.username);
+			if (!id) continue;
 
-	public static requestGettingConsumable(consumables: Map<number, number>): void {
-		//...
-	}
+			await ctx.telegram.sendMessage(id, requestSupplyText);
+		}
 
-	public static requestReceipt(requestId: number): void {
-		//...
-	}
-
-	public static requestReturnInstrument(requestId: number): void {
-		//...
-	}
-
-	public static requestReturnFurniture(furniture: Map<number, number>): void {
-		//...
-	}
-
-	public static requestRemovingInstrument(items: Map<number, number>): void {
-		//...
-	}
-
-	// Chief methods
-	/**
-	 * @desc Get all items in the stock
-	 */
-	public static getAllItems(): void {
-		//...
-	}
-
-	/**
-	 * @param {number} chatId - chat id of a person to send the table
-	 * @desc Send request to Stockman for getting some items to
-	 * a specified Worker
-	 */
-	public static requestGetting(username: string, items: Map<number, number>): void {
-		//...
-	}
-
-	/**
-	 * @param {string} supply - text with items to supply
-	 * @desc Supply request, it's sent to admin for confirmation
-	 */
-	public static requestSupply(supply: string): void {
-		//...
-	}
-
-	/**
-	 * @desc Add new instrument to the database
-	 */
-	public static addInstrument(name: string, measure: string, photoId?: string, description?: string): void {
-		Instrument.add(name, measure, photoId, description);
-	}
-
-	/**
-	 * @desc Add new furniture to the database
-	 */
-	public static addFurniture(name: string, measure: string, photoId?: string, description?: string): void {
-		Furniture.add(name, measure, photoId, description);
-	}
-
-	/**
-	 * @desc Add new consumable to the database
-	 */
-	public static addConsumable(name: string, measure: string, photoId?: string, description?: string): void {
-		Consumable.add(name, measure, photoId, description);
+		// Отправляем сообщение работнику с уведомлением о списании инструментов
+		const text =
+			'✅ Закупка была согласована:\n' + confirmation.itemsText + '\nЗапрос о закупке был разослан снабженцам';
+		await ctx.telegram.sendMessage(confirmation.chatId, text);
 	}
 }

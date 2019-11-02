@@ -69,10 +69,6 @@ export default class Chief {
 		items: { type: ItemType; id: string; amount: number; measure: string }[],
 		absent?: { name: string; amount: string; measure: string }[]
 	): Promise<void> {
-		console.dir(items);
-		console.dir(absent);
-		console.log('================');
-
 		if (!items.length) {
 			return;
 		}
@@ -93,7 +89,7 @@ export default class Chief {
 			if (!id) continue;
 
 			const keyboard = Markup.inlineKeyboard([
-				[Markup.callbackButton('✅ Подтвердить закупку', `approvePurchase>${confirmationId}`)],
+				[Markup.callbackButton('✅ Согласовать закупку', `approveChiefPurchase>${confirmationId}`)],
 				[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]
 			]);
 

@@ -135,7 +135,7 @@ export async function getPurchaseMessage(
 	items: { type: ItemType; id: string; amount: number; price: string }[],
 	absent?: { name: string; amount: string; measure: string; price: string }[]
 ): Promise<string> {
-	let message = `*Поставщик* @${username} хочет закупить следующие позиции:\n`;
+	let message = `*Снабженец* @${username} хочет закупить следующие позиции:\n`;
 	message += await getItemsPriceMessage(items, absent);
 	return message;
 }
@@ -149,8 +149,9 @@ export async function getPurchaseChiefMessage(
 	items: { type: ItemType; id: string; amount: number }[],
 	absent?: { name: string; amount: string; measure: string }[]
 ): Promise<string> {
-	let message = `*Поставщик* @${username} хочет закупить следующие позиции:\n`;
+	let message = `*Начальник цеха* @${username} хочет согласовать закупку следующих позиций:\n`;
 	message += await getItemsMessage(items, absent);
+	message += `❗️При подтверждении запрос на закупку будет разослан снабженцам\n`;
 	return message;
 }
 
@@ -162,7 +163,7 @@ export async function getSupplyMessage(
 	username: string,
 	items: { type: ItemType; id: string; amount: number }[]
 ): Promise<string> {
-	let message = `*Поставщик* @${username} хочет поставить следующие позиции:\n`;
+	let message = `*Снабженец* @${username} хочет поставить следующие позиции:\n`;
 	message += await getItemsCellsMessage(items);
 	return message;
 }
@@ -186,5 +187,13 @@ export async function getGettingWorkerMessage(
 		message += `*Срок аренды:* ${days} дней\n`; // Добавляем срок к сообщению
 	}
 	message += 'Прийдите на получение!\n';
+	return message;
+}
+
+export function getRequestSupplyMessage(
+	itemsText: string,
+): string {
+	let message = `Поступил запрос на закупку следующих позиций:\n`;
+	message += itemsText;
 	return message;
 }
