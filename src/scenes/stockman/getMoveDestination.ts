@@ -27,8 +27,11 @@ getMoveDestination.enter(async (ctx: any) => {
 	}
 	buttons.push(Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('Вне ячеек', 'outside'));
 
-	const keyboard = Markup.inlineKeyboard(buttons, {columns: 4}).extra();
-	await ctx.replyWithMarkdown(`Выберите, куда Вы хотите переместить ${ctx.session.move.item.name.toLowerCase()}?`, keyboard);
+	const keyboard = Markup.inlineKeyboard(buttons, { columns: 4 }).extra();
+	await ctx.replyWithMarkdown(
+		`Выберите, куда Вы хотите переместить ${ctx.session.move.item.name.toLowerCase()}?`,
+		keyboard
+	);
 });
 
 getMoveDestination.action(/^cell>/, async (ctx: any) => {

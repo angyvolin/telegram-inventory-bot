@@ -17,18 +17,11 @@ export default class Supplier {
 	 * @desc Запрос на закупку позиций
 	 * (с ценами на них)
 	 */
-	public static async requestPurchase(ctx: any,
-										items: { type: ItemType;
-												 id: string;
-												 amount: number;
-												 price: string;
-												 measure: string
-											   }[],
-										absent?: { name: string,
-												   amount: string,
-												   measure: string,
-												   price: string
-												 }[]): Promise<void> {
+	public static async requestPurchase(
+		ctx: any,
+		items: { type: ItemType; id: string; amount: number; price: string; measure: string }[],
+		absent?: { name: string; amount: string; measure: string; price: string }[]
+	): Promise<void> {
 		if (!items.length) {
 			return;
 		}
@@ -48,8 +41,10 @@ export default class Supplier {
 			const id = await getChatId(admin.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить закупку', `approvePurchase>${confirmationId}`)],
-													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+			const keyboard = Markup.inlineKeyboard([
+				[Markup.callbackButton('✅ Подтвердить закупку', `approvePurchase>${confirmationId}`)],
+				[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]
+			]);
 
 			const message = await ctx.telegram.sendMessage(id, purchaseText, {
 				reply_markup: keyboard,
@@ -71,10 +66,10 @@ export default class Supplier {
 	/**
 	 * @desc Запрос на поставку позиций в склад
 	 */
-	public static async requestSupply(ctx: any, items: { type: ItemType;
-														 id: string;
-														 amount: number;
-														 measure: string }[]): Promise<void> {
+	public static async requestSupply(
+		ctx: any,
+		items: { type: ItemType; id: string; amount: number; measure: string }[]
+	): Promise<void> {
 		if (!items.length) {
 			return;
 		}
@@ -94,10 +89,14 @@ export default class Supplier {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить получение', `approveSupply>${confirmationId}`)],
-													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+			const keyboard = Markup.inlineKeyboard([
+				[Markup.callbackButton('✅ Подтвердить получение', `approveSupply>${confirmationId}`)],
+				[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]
+			]);
 
-			const message = await ctx.telegram.sendMessage(id, supplyText + `\n❗️После поставки подтвердите нажатием кнопки ниже\n`,
+			const message = await ctx.telegram.sendMessage(
+				id,
+				supplyText + `\n❗️После поставки подтвердите нажатием кнопки ниже\n`,
 				{
 					reply_markup: keyboard,
 					parse_mode: 'Markdown'
@@ -166,7 +165,9 @@ export default class Supplier {
 		 */
 		for (const message of messages) {
 			const text = confirmation.text + '\n✅ Снабженец закупил позиции';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {
+				parse_mode: 'Markdown'
+			});
 		}
 
 		/**
@@ -175,7 +176,7 @@ export default class Supplier {
 		 * отмечаем как "Подтверждено")
 		 */
 		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
-		await ctx.editMessageText(text, {parse_mode: 'Markdown'});
+		await ctx.editMessageText(text, { parse_mode: 'Markdown' });
 	}
 
 	public static async confirmSupply(ctx: any): Promise<void> {
@@ -197,14 +198,16 @@ export default class Supplier {
 		 */
 		for (const message of messages) {
 			const text = confirmation.text + '\n✅ Снабженец подтвердил поставку';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {
+				parse_mode: 'Markdown'
+			});
 		}
 
 		/*
 		 * Iterate all items, add them to a
 		 * database and relevant cells
 		 */
-		const items: { name: string, cellName: string }[] = [];
+		const items: { name: string; cellName: string }[] = [];
 		if (confirmation.instruments) {
 			for (const [id, amount] of confirmation.instruments) {
 				await addItem(ItemType.INSTRUMENT, id, amount);
@@ -248,6 +251,6 @@ export default class Supplier {
 		 * отмечаем как "Подтверждено")
 		 */
 		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
-		await ctx.editMessageText(text, {parse_mode: 'Markdown'});
+		await ctx.editMessageText(text, { parse_mode: 'Markdown' });
 	}
 }

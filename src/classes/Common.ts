@@ -3,10 +3,7 @@ import KeyboardMessage from '../controllers/keyboards';
 import ItemType from '../enums/ItemType';
 import PersonType from '../enums/PersonType';
 import { getPerson } from '../helpers/persons';
-import { getItem,
-		 getOutsideConsumables,
-		 getOutsideFurniture,
-		 getOutsideInstruments } from '../helpers/items';
+import { getItem, getOutsideConsumables, getOutsideFurniture, getOutsideInstruments } from '../helpers/items';
 
 export default class Common {
 	public static async viewCell(ctx: any): Promise<void> {
@@ -74,7 +71,7 @@ export default class Common {
 			}
 		}
 
-		await ctx.telegram.sendMessage(ctx.from.id, message, {parse_mode: 'Markdown'});
+		await ctx.telegram.sendMessage(ctx.from.id, message, { parse_mode: 'Markdown' });
 
 		await ctx.answerCbQuery();
 		await ctx.scene.leave();
@@ -145,7 +142,7 @@ export default class Common {
 			}
 		}
 
-		await ctx.telegram.sendMessage(ctx.from.id, message, {parse_mode: 'Markdown'});
+		await ctx.telegram.sendMessage(ctx.from.id, message, { parse_mode: 'Markdown' });
 
 		await ctx.answerCbQuery();
 		await ctx.scene.leave();

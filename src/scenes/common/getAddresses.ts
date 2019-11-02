@@ -34,7 +34,7 @@ getAddresses.enter(async (ctx: any) => {
 	}
 	buttons.push(Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('Вне ячеек', 'viewOutside'));
 
-	const keyboard = Markup.inlineKeyboard(buttons, {columns: 4}).extra();
+	const keyboard = Markup.inlineKeyboard(buttons, { columns: 4 }).extra();
 	await ctx.replyWithMarkdown(`Выберите ячейку, которую хотите просмотреть`, keyboard);
 });
 

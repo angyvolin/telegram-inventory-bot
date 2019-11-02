@@ -1,7 +1,9 @@
 import path from 'path';
 
 export default class Logger {
-	public static logger = require('simple-node-logger').createSimpleLogger(path.join(__dirname, '../../', 'logs/logfile.log'));
+	public static logger = require('simple-node-logger').createSimpleLogger(
+		path.join(__dirname, '../../', 'logs/logfile.log')
+	);
 
 	public static trace(data: any): void {
 		this.logger.log('trace', data);

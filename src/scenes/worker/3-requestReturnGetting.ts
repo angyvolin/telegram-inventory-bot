@@ -18,8 +18,10 @@ requestReturnGetting.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestReturnGetting.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить', `approveRequestReturn>${ctx.session.gettingId}`)],
-											[Markup.callbackButton('⏪ Назад', 'back')]]).extra();
+	const keyboard = Markup.inlineKeyboard([
+		[Markup.callbackButton('✅ Подтвердить', `approveRequestReturn>${ctx.session.gettingId}`)],
+		[Markup.callbackButton('⏪ Назад', 'back')]
+	]).extra();
 	await ctx.reply(ctx.session.instrumentMessages[ctx.session.gettingId], keyboard);
 });
 
@@ -32,7 +34,7 @@ requestReturnGetting.action(/^approveRequestReturn/, async (ctx: any) => {
 	 * Убираем клавиатуру с кнопками у последнего сообщения
 	 * для того, чтобы нельзя было повторно подтвердить
 	 */
-	await ctx.editMessageText(ctx.update.callback_query.message.text, {parse_mode: 'Markdown'});
+	await ctx.editMessageText(ctx.update.callback_query.message.text, { parse_mode: 'Markdown' });
 	//await ctx.reply('Ваша заявка успешно отправлена! Отправляйтесь на возврат');
 	await Worker.requestReturnInstruments(ctx, gettingId);
 	return KeyboardMessage.send(ctx, PersonType.WORKER, 'Ваша заявка успешно отправлена! Отправляйтесь на возврат');

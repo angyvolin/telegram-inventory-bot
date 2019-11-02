@@ -107,16 +107,18 @@ export default class InlineQueryHandlers {
 			if (isMoving) {
 				const currCell = await getCell(type, item._id.toString());
 				message += currCell ? `\nАдрес: *${currCell.row + currCell.col}*` : `\nНаходится вне ячейки`;
-				keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back'), Markup.callbackButton('✅ Выбрать', `selectMoveItem>${type}>${id}`)]);
+				keyboard = Markup.inlineKeyboard([
+					Markup.callbackButton('⏪ Назад', 'back'),
+					Markup.callbackButton('✅ Выбрать', `selectMoveItem>${type}>${id}`)
+				]);
 			}
 			const options = {
 				parse_mode: 'Markdown',
 				caption: message,
 				reply_markup: null
 			};
-			options.reply_markup = query.indexOf('look') === -1 && query.indexOf('move') ?
-								   keyboardWithCounters :
-								   keyboard;
+			options.reply_markup =
+				query.indexOf('look') === -1 && query.indexOf('move') ? keyboardWithCounters : keyboard;
 			if (item.photo) {
 				return ctx.telegram.sendPhoto(ctx.from.id, item.photo, options);
 			}
@@ -150,17 +152,18 @@ export default class InlineQueryHandlers {
 					continue;
 				}
 
-				const description = item.description ?
-									`${item.amount} ${item.measure} в наличии\n${item.description}` :
-									`${item.amount} ${item.measure} в наличии`;
-				const message_text = item.description ?
-									`<b>${item.name} 🔨</b>\n${item.amount} ${item.measure} в наличии\n${item.description}` :
-									`<b>${item.name} 🔨</b>\n${item.amount} ${item.measure} в наличии`;
+				const description = item.description
+					? `${item.amount} ${item.measure} в наличии\n${item.description}`
+					: `${item.amount} ${item.measure} в наличии`;
+				const message_text = item.description
+					? `<b>${item.name} 🔨</b>\n${item.amount} ${item.measure} в наличии\n${item.description}`
+					: `<b>${item.name} 🔨</b>\n${item.amount} ${item.measure} в наличии`;
 				results.push({
 					id: item._id,
 					type: 'article',
 					title: item.name,
-					thumb_url: 'https://res.cloudinary.com/teepublic/image/private/s--Ctrqwzip--/t_Resized%20Artwork/c_fit,g_north_west,h_954,w_954/co_ffffff,e_outline:48/co_ffffff,e_outline:inner_fill:48/co_ffffff,e_outline:48/co_ffffff,e_outline:inner_fill:48/co_bbbbbb,e_outline:3:1000/c_mpad,g_center,h_1260,w_1260/b_rgb:eeeeee/c_limit,f_jpg,h_630,q_90,w_630/v1547854732/production/designs/4034003_0.jpg',
+					thumb_url:
+						'https://res.cloudinary.com/teepublic/image/private/s--Ctrqwzip--/t_Resized%20Artwork/c_fit,g_north_west,h_954,w_954/co_ffffff,e_outline:48/co_ffffff,e_outline:inner_fill:48/co_ffffff,e_outline:48/co_ffffff,e_outline:inner_fill:48/co_bbbbbb,e_outline:3:1000/c_mpad,g_center,h_1260,w_1260/b_rgb:eeeeee/c_limit,f_jpg,h_630,q_90,w_630/v1547854732/production/designs/4034003_0.jpg',
 					description,
 					input_message_content: {
 						message_text,

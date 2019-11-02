@@ -34,7 +34,7 @@ requestChiefPurchaseName.on('text', async (ctx: any) => {
 	// Такая позиция уже есть в запросе,
 	// переходим сразу к количеству
 	if (!isPresent) {
-		return ctx.scene.enter('chief/requestChiefPurchaseMeasure');	
+		return ctx.scene.enter('chief/requestChiefPurchaseMeasure');
 	}
 	await ctx.scene.enter('chief/requestChiefPurchaseAmount');
 });

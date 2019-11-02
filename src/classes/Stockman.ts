@@ -10,14 +10,8 @@ import PersonType from '../enums/PersonType';
 import { getChatId } from '../helpers/functions';
 import { getCell } from '../helpers/cells';
 import { getStockmans } from '../helpers/persons';
-import { getItemsMessage,
-		 getCellsMessage,
-		 getGettingMessage,
-		 getGettingWorkerMessage } from '../helpers/messages';
-import { getItem,
-		 getOutsideConsumables,
-		 getOutsideFurniture,
-		 getOutsideInstruments } from '../helpers/items';
+import { getItemsMessage, getCellsMessage, getGettingMessage, getGettingWorkerMessage } from '../helpers/messages';
+import { getItem, getOutsideConsumables, getOutsideFurniture, getOutsideInstruments } from '../helpers/items';
 
 const Markup = require('telegraf/markup');
 
@@ -28,20 +22,19 @@ export default class Stockman {
 	 * Создаем новый Confirmation в БД и отсылаем
 	 * уведомление работнику
 	 */
-	public static async requestGetting(ctx: any,
-									   items: { type: ItemType;
-									   			id: string;
-									   			amount: number;
-									   			measure: string }[],
-									   username: string,
-									   days?: number): Promise<void> {
+	public static async requestGetting(
+		ctx: any,
+		items: { type: ItemType; id: string; amount: number; measure: string }[],
+		username: string,
+		days?: number
+	): Promise<void> {
 		if (!items.length) {
 			return;
 		}
 
 		// =====================
 		// Взаимодействие с работником
-		
+
 		const id = await getChatId(username);
 
 		if (!id) {
@@ -63,7 +56,7 @@ export default class Stockman {
 		// Взаимодействие с кладовщиком
 
 		const stockmans = await getStockmans();
-		
+
 		if (!stockmans.length) {
 			return;
 		}
@@ -91,8 +84,10 @@ export default class Stockman {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Выдал позиции', `approveGiving>${confirmationId}`)],
-													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+			const keyboard = Markup.inlineKeyboard([
+				[Markup.callbackButton('✅ Выдал позиции', `approveGiving>${confirmationId}`)],
+				[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]
+			]);
 
 			// Отправляем сообщение кладовщику
 			const message = await ctx.telegram.sendMessage(id, gettingText, {
@@ -168,7 +163,9 @@ export default class Stockman {
 		// Edit these messages
 		for (const message of messages) {
 			const text = confirmation.text + '\n❗️Ожидание подтверждения получения работника';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {
+				parse_mode: 'Markdown'
+			});
 		}
 
 		/*
@@ -176,9 +173,10 @@ export default class Stockman {
 		 * a button to confirm the getting
 		 */
 		const keyboard = Markup.inlineKeyboard([Markup.callbackButton('✅ Получил', `confirmGetting>${id}`)]);
-		const text = '✅ Вам были выданы следующие позиции:\n' +
-					 confirmation.itemsText +
-					 '\n❗️Подтвердите получение нажатием кнопки ниже:';
+		const text =
+			'✅ Вам были выданы следующие позиции:\n' +
+			confirmation.itemsText +
+			'\n❗️Подтвердите получение нажатием кнопки ниже:';
 		const options = {
 			reply_markup: keyboard
 		};
@@ -202,7 +200,9 @@ export default class Stockman {
 		// Edit these messages
 		for (const message of messages) {
 			const text = confirmation.text + '\n❗️Ожидание подтверждения поставки снабженца';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {
+				parse_mode: 'Markdown'
+			});
 		}
 
 		/*
@@ -210,9 +210,10 @@ export default class Stockman {
 		 * a button to confirm the supply
 		 */
 		const keyboard = Markup.inlineKeyboard([Markup.callbackButton('✅ Поставил', `confirmSupply>${id}`)]);
-		const text = '✅ Вы поставили следующие позиции:\n' +
-					 confirmation.itemsText +
-					 '\n❗️Подтвердите поставку нажатием кнопки ниже:';
+		const text =
+			'✅ Вы поставили следующие позиции:\n' +
+			confirmation.itemsText +
+			'\n❗️Подтвердите поставку нажатием кнопки ниже:';
 		const options = {
 			reply_markup: keyboard
 		};
@@ -241,23 +242,28 @@ export default class Stockman {
 
 		for (const message of messages) {
 			const text = confirmation.text + '\n❗️Ожидание подтверждения возврата работника';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {
+				parse_mode: 'Markdown'
+			});
 		}
 
 		/*
 		 * Send message to worker with
 		 * buttons to confirm the return
 		 */
-		const keyboard = Markup.inlineKeyboard([Markup.callbackButton('✅ Вернул инструменты', `confirmReturn>${id}>${gettingId}`)]);
-		const text = '✅ Инструменты были успешно возвращены:\n' +
-					 confirmation.itemsText +
-					 '\n❗️Подтвердите получение нажатием кнопки ниже:';
+		const keyboard = Markup.inlineKeyboard([
+			Markup.callbackButton('✅ Вернул инструменты', `confirmReturn>${id}>${gettingId}`)
+		]);
+		const text =
+			'✅ Инструменты были успешно возвращены:\n' +
+			confirmation.itemsText +
+			'\n❗️Подтвердите получение нажатием кнопки ниже:';
 		const options = {
 			reply_markup: keyboard
 		};
 		await ctx.telegram.sendMessage(confirmation.chatId, text, options);
 
-		const items: { name: string, cellName: string }[] = [];
+		const items: { name: string; cellName: string }[] = [];
 		for (const [id, amount] of getting.instruments) {
 			const cell = await getCell(ItemType.INSTRUMENT, id);
 			const cellName = cell ? cell.row + cell.col : null;
@@ -285,19 +291,24 @@ export default class Stockman {
 
 		for (const message of messages) {
 			const text = confirmation.text + '\n❗️Ожидание подтверждения возврата работника';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {
+				parse_mode: 'Markdown'
+			});
 		}
 
-		const keyboard = Markup.inlineKeyboard([Markup.callbackButton('✅ Вернул остатки', `confirmReturnRemains>${id}`)]);
-		const text = '✅ Остатки были успешно возвращены:\n' +
-					 confirmation.itemsText +
-					 '\n❗️Подтвердите получение нажатием кнопки ниже:';
+		const keyboard = Markup.inlineKeyboard([
+			Markup.callbackButton('✅ Вернул остатки', `confirmReturnRemains>${id}`)
+		]);
+		const text =
+			'✅ Остатки были успешно возвращены:\n' +
+			confirmation.itemsText +
+			'\n❗️Подтвердите получение нажатием кнопки ниже:';
 		const options = {
 			reply_markup: keyboard
 		};
 		await ctx.telegram.sendMessage(confirmation.chatId, text, options);
 
-		const items: { name: string, cellName: string }[] = [];
+		const items: { name: string; cellName: string }[] = [];
 		if (confirmation.furniture) {
 			for (const [id, amount] of confirmation.furniture.entries()) {
 				const cell = await getCell(ItemType.FURNITURE, id);

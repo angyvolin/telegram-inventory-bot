@@ -19,9 +19,10 @@ requestSupplyMore.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestSupplyMore.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Добавить еще', 'more'),
-											 Markup.callbackButton('Отправить запрос', 'finish')],
-											[Markup.callbackButton('⏪ Назад', 'back')]]).extra();
+	const keyboard = Markup.inlineKeyboard([
+		[Markup.callbackButton('Добавить еще', 'more'), Markup.callbackButton('Отправить запрос', 'finish')],
+		[Markup.callbackButton('⏪ Назад', 'back')]
+	]).extra();
 	await ctx.replyWithMarkdown('Желаете добавить еще позиции в запрос?', keyboard);
 });
 

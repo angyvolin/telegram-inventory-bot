@@ -37,7 +37,7 @@ getPhoto.on('document', async (ctx: any) => {
 getPhoto.on('photo', async (ctx: any) => {
 	const { photo } = ctx.message;
 	const fileId = (await photo[photo.length - 1]).file_id;
-	
+
 	await ctx.scene.leave();
 	await addPhoto(ctx.session.item.type, ctx.session.item.id, fileId);
 	await ctx.reply('Фотография была успешно добавлена');
@@ -47,6 +47,6 @@ getPhoto.action('back', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	await ctx.scene.enter('addPhoto/getItem');
-})
+});
 
 export default getPhoto;

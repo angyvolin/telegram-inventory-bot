@@ -4,15 +4,20 @@ import PersonType from '../enums/PersonType';
 const Markup = require('telegraf/markup');
 
 const buttons: any = {
-	worker: [['Запросить получение', 'Запросить возврат инструментов'],
-			 ['Запросить возврат фурнитуры / расходников', 'Запросить списание инструментов']],
-	supplier: [['Запросить закупку товара', 'Запросить поставку в склад'],
-			   ['Добавить позицию в базу', 'Добавить фото к позиции']],
-	stockman: [['Просмотреть ячейки', 'Отсутствующие позиции'],
-			   ['Переместить позиции по складу', 'Создать выдачу работнику'],
-			   ['Добавить фото к позиции']],
-	chief: [['Просмотреть ячейки', 'Запросить выдачу позиций работнику'],
-			['Согласовать закупку товара']]
+	worker: [
+		['Запросить получение', 'Запросить возврат инструментов'],
+		['Запросить возврат фурнитуры / расходников', 'Запросить списание инструментов']
+	],
+	supplier: [
+		['Запросить закупку товара', 'Запросить поставку в склад'],
+		['Добавить позицию в базу', 'Добавить фото к позиции']
+	],
+	stockman: [
+		['Просмотреть ячейки', 'Отсутствующие позиции'],
+		['Переместить позиции по складу', 'Создать выдачу работнику'],
+		['Добавить фото к позиции']
+	],
+	chief: [['Просмотреть ячейки', 'Запросить выдачу позиций работнику'], ['Согласовать закупку товара']]
 };
 
 export default class KeyboardMessage {
@@ -32,9 +37,11 @@ export default class KeyboardMessage {
 		.oneTime()
 		.resize()
 		.extra();
-	public static async send(ctx: api.ContextMessageUpdate,
-							 type: PersonType,
-							 message: string = 'Выберите действие'): Promise<void> {
+	public static async send(
+		ctx: api.ContextMessageUpdate,
+		type: PersonType,
+		message: string = 'Выберите действие'
+	): Promise<void> {
 		switch (type) {
 			case PersonType.WORKER: {
 				await ctx.replyWithMarkdown(message, this.worker);

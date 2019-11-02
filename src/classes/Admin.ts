@@ -25,15 +25,16 @@ export default class Admin {
 		// Редактируем эти сообщения
 		for (const message of messages) {
 			const text = confirmation.text + '\n✅ Подтверждено';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {
+				parse_mode: 'Markdown'
+			});
 		}
 
 		// Удаляем подтверждение с БД
 		await confirmation.remove();
 
 		// Отправляем сообщение работнику с уведомлением о списании инструментов
-		const text = '✅ Списание инструментов было подтверждено:\n' +
-					 confirmation.itemsText;
+		const text = '✅ Списание инструментов было подтверждено:\n' + confirmation.itemsText;
 		await ctx.telegram.sendMessage(confirmation.chatId, text);
 
 		// Создаем Мар со списанными инструментами
@@ -45,8 +46,7 @@ export default class Admin {
 			removed.set(id, amount);
 			// Удаляем эти инструменты с получения
 			// (чтобы позднее не требовать их возврата)
-			const newAmount = getting.instruments.has(id) ?
-							  getting.instruments.get(id) - amount : 0;
+			const newAmount = getting.instruments.has(id) ? getting.instruments.get(id) - amount : 0;
 			if (newAmount === 0) {
 				getting.instruments.delete(id);
 			} else {
@@ -79,21 +79,22 @@ export default class Admin {
 		// Редактируем эти сообщения
 		for (const message of messages) {
 			const text = confirmation.text + '\n❗️Ожидание подтверждения закупки снабженца';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {
+				parse_mode: 'Markdown'
+			});
 		}
 
 		// Отправляем сообщение работнику с уведомлением о списании инструментов
 		const keyboard = Markup.inlineKeyboard([Markup.callbackButton('✅ Закупил', `confirmPurchase>${id}`)]);
-		const text = '✅ Закупка была подтверждено:\n' +
-					 confirmation.itemsText +
-					 '\n❗️Подтвердите закупку нажатием кнопки ниже:';
+		const text =
+			'✅ Закупка была подтверждено:\n' +
+			confirmation.itemsText +
+			'\n❗️Подтвердите закупку нажатием кнопки ниже:';
 		const options = {
 			reply_markup: keyboard
 		};
 		await ctx.telegram.sendMessage(confirmation.chatId, text, options);
 	}
-
-
 
 	public static confirmRemovingInstrument(username: string, instruments: Map<number, number>): void {
 		//...

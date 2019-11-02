@@ -28,7 +28,7 @@ export default class CallbackQueryHandlers {
 		// Отклонение запроса
 		bot.action(/^declineRequest>/, async (ctx) => {
 			await ctx.answerCbQuery();
-			if (await isStockman(ctx.from.username) || await isAdmin(ctx.from.id)) {
+			if ((await isStockman(ctx.from.username)) || (await isAdmin(ctx.from.id))) {
 				const id = ctx.callbackQuery.data.split('>')[1];
 				const confirmation = await Confirmation.findById(id);
 
@@ -40,7 +40,9 @@ export default class CallbackQueryHandlers {
 
 				for (const message of messages) {
 					const text = confirmation.text + '\n' + '❌ Отклонено';
-					await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
+					await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {
+						parse_mode: 'Markdown'
+					});
 				}
 
 				const message = confirmation.itemsText ? confirmation.itemsText : confirmation.text;
@@ -53,14 +55,14 @@ export default class CallbackQueryHandlers {
 
 		bot.action(/^viewCell>/, async (ctx: any) => {
 			await ctx.answerCbQuery();
-			if (await isStockman(ctx.from.username) || await isChief(ctx.from.username)) {
+			if ((await isStockman(ctx.from.username)) || (await isChief(ctx.from.username))) {
 				Common.viewCell(ctx);
 			}
 		});
 
 		bot.action('viewOutside', async (ctx: any) => {
 			await ctx.answerCbQuery();
-			if (await isStockman(ctx.from.username) || await isChief(ctx.from.username)) {
+			if ((await isStockman(ctx.from.username)) || (await isChief(ctx.from.username))) {
 				Common.viewOutside(ctx);
 			}
 		});

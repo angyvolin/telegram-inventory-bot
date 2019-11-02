@@ -3,7 +3,7 @@ import ItemType from '../enums/ItemType';
 import PersonType from '../enums/PersonType';
 import { getAdmins, getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
-import { getItemsMessage, getChiefGettingMessage, getPurchaseChiefMessage } from '../helpers/messages'
+import { getItemsMessage, getChiefGettingMessage, getPurchaseChiefMessage } from '../helpers/messages';
 
 const Markup = require('telegraf/markup');
 
@@ -39,15 +39,17 @@ export default class Chief {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Выдал позиции', `approveGivingChief>${confirmationId}`)],
-													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+			const keyboard = Markup.inlineKeyboard([
+				[Markup.callbackButton('✅ Выдал позиции', `approveGivingChief>${confirmationId}`)],
+				[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]
+			]);
 
 			// Отправляем сообщение кладовщику
 			const message = await ctx.telegram.sendDocument(id, table, {
 				caption: chiefGettingText + '\n❗️После выдачи подтвердите нажатием кнопки ниже\n',
 				reply_markup: keyboard,
 				parse_mode: 'Markdown'
-			});		
+			});
 
 			// Добавляем сообщение в массив
 			messages.push({
@@ -62,16 +64,11 @@ export default class Chief {
 		await confirmation.save();
 	}
 
-	public static async requestPurchase(ctx: any,
-										items: { type: ItemType;
-												 id: string;
-												 amount: number;
-												 measure: string
-											   }[],
-										absent?: { name: string,
-												   amount: string,
-												   measure: string,
-												 }[]): Promise<void> {
+	public static async requestPurchase(
+		ctx: any,
+		items: { type: ItemType; id: string; amount: number; measure: string }[],
+		absent?: { name: string; amount: string; measure: string }[]
+	): Promise<void> {
 		console.dir(items);
 		console.dir(absent);
 		console.log('================');
@@ -95,8 +92,10 @@ export default class Chief {
 			const id = await getChatId(admin.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить закупку', `approvePurchase>${confirmationId}`)],
-													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+			const keyboard = Markup.inlineKeyboard([
+				[Markup.callbackButton('✅ Подтвердить закупку', `approvePurchase>${confirmationId}`)],
+				[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]
+			]);
 
 			const message = await ctx.telegram.sendMessage(id, purchaseText, {
 				reply_markup: keyboard,

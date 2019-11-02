@@ -19,11 +19,17 @@ requestPurchase.command('start', async (ctx: any) => {
 // Точка входа в сцену
 requestPurchase.enter(async (ctx: any) => {
 	ctx.session.currentItem = {};
-	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i'),
-											 Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f')],
-											[Markup.switchToCurrentChatButton('Расходники', 'incl_abs c'),
-											 Markup.callbackButton('Позиции нет в базе', 'absent')],
-											[Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
+	const keyboard = Markup.inlineKeyboard([
+		[
+			Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i'),
+			Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f')
+		],
+		[
+			Markup.switchToCurrentChatButton('Расходники', 'incl_abs c'),
+			Markup.callbackButton('Позиции нет в базе', 'absent')
+		],
+		[Markup.callbackButton('⏪ Назад', 'exit')]
+	]).extra();
 	await ctx.replyWithMarkdown('Выберите тип позиций, которые Вы хотите закупить', keyboard);
 });
 
@@ -71,10 +77,13 @@ requestPurchase.action('absent', async (ctx: any) => {
 });
 
 requestPurchase.action('back', async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i'),
-											 Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f')],
-											[Markup.switchToCurrentChatButton('Расходники', 'incl_abs c'),
-											 Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
+	const keyboard = Markup.inlineKeyboard([
+		[
+			Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i'),
+			Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f')
+		],
+		[Markup.switchToCurrentChatButton('Расходники', 'incl_abs c'), Markup.callbackButton('⏪ Назад', 'exit')]
+	]).extra();
 	await ctx.replyWithMarkdown('Выберите тип позиций, которые Вы хотите закупить', keyboard);
 });
 

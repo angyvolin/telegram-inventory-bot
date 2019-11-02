@@ -23,12 +23,11 @@ export default class Worker {
 	 * Создаем новый Confirmation в БД и рассылаем
 	 * запрос кладовщикам
 	 */
-	public static async requestGetting(ctx: any,
-									   items: { type: ItemType;
-									   			id: string;
-									   			amount: number;
-									   			measure: string }[],
-									   days?: number): Promise<void> {
+	public static async requestGetting(
+		ctx: any,
+		items: { type: ItemType; id: string; amount: number; measure: string }[],
+		days?: number
+	): Promise<void> {
 		if (!items.length) {
 			return;
 		}
@@ -63,8 +62,10 @@ export default class Worker {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Выдал позиции', `approveGiving>${confirmationId}`)],
-													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+			const keyboard = Markup.inlineKeyboard([
+				[Markup.callbackButton('✅ Выдал позиции', `approveGiving>${confirmationId}`)],
+				[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]
+			]);
 
 			// Отправляем сообщение кладовщику
 			const message = await ctx.telegram.sendMessage(id, gettingText, {
@@ -154,11 +155,15 @@ export default class Worker {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Получил позиции обратно', `approveReturn>${confirmationId}>${gettingId}`)],
-													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+			const keyboard = Markup.inlineKeyboard([
+				[Markup.callbackButton('✅ Получил позиции обратно', `approveReturn>${confirmationId}>${gettingId}`)],
+				[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]
+			]);
 
 			// Отправляем сообщение кладовщику
-			const message = await ctx.telegram.sendMessage(id, returnText + '\n❗️После возврата подтвердите нажатием кнопки ниже\n',
+			const message = await ctx.telegram.sendMessage(
+				id,
+				returnText + '\n❗️После возврата подтвердите нажатием кнопки ниже\n',
 				{
 					reply_markup: keyboard,
 					parse_mode: 'Markdown'
@@ -183,11 +188,10 @@ export default class Worker {
 	 * @desc Запрос на возврат остатков
 	 * (фурнитуры / расходников) работника кладовщику
 	 */
-	public static async requestReturnRemains(ctx: any,
-									   		 items: { type: ItemType;
-									   		 		  id: string;
-									   		 		  amount: number;
-									   		 		  measure: string }[]): Promise<void> {
+	public static async requestReturnRemains(
+		ctx: any,
+		items: { type: ItemType; id: string; amount: number; measure: string }[]
+	): Promise<void> {
 		if (!items.length) {
 			return;
 		}
@@ -207,11 +211,15 @@ export default class Worker {
 			const id = await getChatId(stockman.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Получил позиции обратно', `approveReturnRemains>${confirmationId}`)],
-													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+			const keyboard = Markup.inlineKeyboard([
+				[Markup.callbackButton('✅ Получил позиции обратно', `approveReturnRemains>${confirmationId}`)],
+				[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]
+			]);
 
 			// Отправляем сообщение кладовщику
-			const message = await ctx.telegram.sendMessage(id, returnText + '\n❗️После возврата подтвердите нажатием кнопки ниже\n',
+			const message = await ctx.telegram.sendMessage(
+				id,
+				returnText + '\n❗️После возврата подтвердите нажатием кнопки ниже\n',
 				{
 					reply_markup: keyboard,
 					parse_mode: 'Markdown'
@@ -269,12 +277,11 @@ export default class Worker {
 	 * возвращения в будущем). Вторым аргументом передаем пары с
 	 * инструментами и количеством
 	 */
-	public static async requestRemoveInstruments(ctx: any,
-												 items: { type: ItemType;
-												 		  id: string;
-												 		  amount: number;
-												 		  measure: string }[],
-												 gettingId: string): Promise<void> {
+	public static async requestRemoveInstruments(
+		ctx: any,
+		items: { type: ItemType; id: string; amount: number; measure: string }[],
+		gettingId: string
+	): Promise<void> {
 		const admins = await getAdmins();
 
 		if (!admins.length) {
@@ -292,16 +299,16 @@ export default class Worker {
 			const id = await getChatId(admin.username);
 			if (!id) continue;
 
-			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить списание', `approveRemove>${confirmationId}>${gettingId}`)],
-													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+			const keyboard = Markup.inlineKeyboard([
+				[Markup.callbackButton('✅ Подтвердить списание', `approveRemove>${confirmationId}>${gettingId}`)],
+				[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]
+			]);
 
 			// Отправляем сообщение кладовщику
-			const message = await ctx.telegram.sendMessage(id, removeText,
-				{
-					reply_markup: keyboard,
-					parse_mode: 'Markdown'
-				}
-			);
+			const message = await ctx.telegram.sendMessage(id, removeText, {
+				reply_markup: keyboard,
+				parse_mode: 'Markdown'
+			});
 			// Добавление сообщения в массив
 			messages.push({
 				id: message.message_id,
@@ -369,7 +376,8 @@ export default class Worker {
 				await reduceItem(ItemType.INSTRUMENT, id, amount);
 				// Получаем ячейку, в которой находится инструмент
 				const cell = await getCell(ItemType.INSTRUMENT, id);
-				if (cell) { // Инструмент находится в ячейке
+				if (cell) {
+					// Инструмент находится в ячейке
 					// Уменьшаем количество инструмента в ячейке
 					await reduceFromCell(cell._id, ItemType.INSTRUMENT, id, amount);
 				}
@@ -385,7 +393,8 @@ export default class Worker {
 				await reduceItem(ItemType.FURNITURE, id, amount);
 				// Получаем ячейку, в которой находится фурнитура
 				const cell = await getCell(ItemType.FURNITURE, id);
-				if (cell) { // Фурнитура находится в ячейке
+				if (cell) {
+					// Фурнитура находится в ячейке
 					// Уменьшаем количество фурнитуры в ячейке
 					await reduceFromCell(cell._id, ItemType.FURNITURE, id, amount);
 				}
@@ -401,13 +410,15 @@ export default class Worker {
 				await reduceItem(ItemType.CONSUMABLE, id, amount);
 				// Получаем ячейку, в которой находится расходник
 				const cell = await getCell(ItemType.CONSUMABLE, id);
-				if (cell) { // Расходник находится в ячейке
+				if (cell) {
+					// Расходник находится в ячейке
 					// Уменьшаем количество расходников в ячейке
 					await reduceFromCell(cell._id, ItemType.CONSUMABLE, id, amount);
 				}
 			}
 		}
-		if (confirmation.days) { // У подтверждения есть срок
+		if (confirmation.days) {
+			// У подтверждения есть срок
 			// Вычисляем дату возврата инструментов
 			insertDoc.expires = new Date(Date.now() + confirmation.days * 24 * 60 * 60 * 1000);
 		}
@@ -426,7 +437,9 @@ export default class Worker {
 		 */
 		for (const message of messages) {
 			const text = confirmation.text + '\n✅ Работник подтвердил получение';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {
+				parse_mode: 'Markdown'
+			});
 		}
 
 		/**
@@ -435,7 +448,7 @@ export default class Worker {
 		 * отмечаем как "Подтверждено")
 		 */
 		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
-		await ctx.editMessageText(text, {parse_mode: 'Markdown'});
+		await ctx.editMessageText(text, { parse_mode: 'Markdown' });
 	}
 
 	public static async confirmReturnInstruments(ctx: any): Promise<void> {
@@ -453,7 +466,9 @@ export default class Worker {
 
 		for (const message of messages) {
 			const text = confirmation.text + '\n✅ Работник подтвердил возврат';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {
+				parse_mode: 'Markdown'
+			});
 		}
 
 		getting.active = false;
@@ -470,7 +485,7 @@ export default class Worker {
 		}
 
 		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
-		await ctx.editMessageText(text, {parse_mode: 'Markdown'});
+		await ctx.editMessageText(text, { parse_mode: 'Markdown' });
 	}
 
 	public static async confirmReturnRemains(ctx: any): Promise<void> {
@@ -488,7 +503,9 @@ export default class Worker {
 
 		for (const message of messages) {
 			const text = confirmation.text + '\n✅ Работник подтвердил возврат';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {parse_mode: 'Markdown'});
+			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {
+				parse_mode: 'Markdown'
+			});
 		}
 
 		await confirmation.remove();
@@ -528,6 +545,6 @@ export default class Worker {
 		}
 
 		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
-		await ctx.editMessageText(text, {parse_mode: 'Markdown'});
+		await ctx.editMessageText(text, { parse_mode: 'Markdown' });
 	}
 }

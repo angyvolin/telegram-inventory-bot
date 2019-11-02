@@ -6,7 +6,7 @@
  "scripts": {
   "prettier": "prettier --config prettier-config.json --write 'src/**/*.ts'",
   "clean": "rm -rf dist",
-  "build": "npm run clean && tsc --watch false",
+  "build": "npm run prettier && npm run clean && tsc --watch false",
   "start": "npm run build && node dist/index.js",
   "dev": "nodemon dist/"
  },

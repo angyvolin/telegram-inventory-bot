@@ -37,7 +37,7 @@ requestPurchaseAmount.on('text', async (ctx: any) => {
 		// Такой позиции еще не было в запросе
 		if (!isPresent) {
 			// Переходим к запросу цены
-			return ctx.scene.enter('supplier/requestPurchasePrice');			
+			return ctx.scene.enter('supplier/requestPurchasePrice');
 		}
 		// Т.к. такая позиция уже была, переходим к
 		// сцене запроса следующих позиций

@@ -18,10 +18,13 @@ getMoveItem.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 getMoveItem.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'move i'),
-											 Markup.switchToCurrentChatButton('Фурнитура', 'move f')],
-											[Markup.switchToCurrentChatButton('Расходники', 'move c'),
-											 Markup.callbackButton('⏪ Назад', 'back')]]).extra();
+	const keyboard = Markup.inlineKeyboard([
+		[
+			Markup.switchToCurrentChatButton('Инструменты', 'move i'),
+			Markup.switchToCurrentChatButton('Фурнитура', 'move f')
+		],
+		[Markup.switchToCurrentChatButton('Расходники', 'move c'), Markup.callbackButton('⏪ Назад', 'back')]
+	]).extra();
 	await ctx.replyWithMarkdown('Что Вы хотите переместить?', keyboard);
 });
 

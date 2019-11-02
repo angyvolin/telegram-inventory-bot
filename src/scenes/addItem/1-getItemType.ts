@@ -25,10 +25,11 @@ getItemType.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 getItemType.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('Инструмент', 'instrument'),
-											 Markup.callbackButton('Фурнитура', 'furniture')],
-											[Markup.callbackButton('Расходники', 'consumables')],
-											[Markup.callbackButton('⏪ Назад', 'back')]]).extra();
+	const keyboard = Markup.inlineKeyboard([
+		[Markup.callbackButton('Инструмент', 'instrument'), Markup.callbackButton('Фурнитура', 'furniture')],
+		[Markup.callbackButton('Расходники', 'consumables')],
+		[Markup.callbackButton('⏪ Назад', 'back')]
+	]).extra();
 
 	ctx.session.addItem = {};
 

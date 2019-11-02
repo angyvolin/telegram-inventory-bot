@@ -48,7 +48,7 @@ export default class WorkerHandlers {
 				await confirmation.remove();
 
 				const text = ctx.update.callback_query.message.text + '\n\n❌ Отклонено';
-				await ctx.editMessageText(text, {parse_mode: 'Markdown'});
+				await ctx.editMessageText(text, { parse_mode: 'Markdown' });
 			}
 		});
 

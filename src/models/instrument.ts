@@ -1,11 +1,11 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IInstrument extends Document {
-	photo?: string
-	name: string
-	amount: number
-	measure: string
-	description?: string
+	photo?: string;
+	name: string;
+	amount: number;
+	measure: string;
+	description?: string;
 }
 
 // Схема инструмента

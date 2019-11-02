@@ -26,7 +26,9 @@ requestChiefPurchaseMeasure.enter(async (ctx: any) => {
 		Markup.button('⏪ Назад')
 	], {columns: 2}).extra();*/
 
-	await ctx.replyWithMarkdown('Какая величина измерения?\nЕсли нужной единицы нет в списке, введите ее с клавиатуры 👇'/*, keyboard*/);
+	await ctx.replyWithMarkdown(
+		'Какая величина измерения?\nЕсли нужной единицы нет в списке, введите ее с клавиатуры 👇' /*, keyboard*/
+	);
 });
 
 requestChiefPurchaseMeasure.on('text', async (ctx: any) => {

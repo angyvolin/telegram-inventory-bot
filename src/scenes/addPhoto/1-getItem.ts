@@ -24,10 +24,13 @@ getItem.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 getItem.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'look i'),
-											 Markup.switchToCurrentChatButton('Фурнитура', 'look f')],
-											[Markup.switchToCurrentChatButton('Расходники', 'look c'),
-											 Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
+	const keyboard = Markup.inlineKeyboard([
+		[
+			Markup.switchToCurrentChatButton('Инструменты', 'look i'),
+			Markup.switchToCurrentChatButton('Фурнитура', 'look f')
+		],
+		[Markup.switchToCurrentChatButton('Расходники', 'look c'), Markup.callbackButton('⏪ Назад', 'exit')]
+	]).extra();
 	await ctx.replyWithMarkdown('Выберите позицию, фото которой хотите изменить', keyboard);
 });
 
@@ -45,10 +48,13 @@ getItem.action(/^accept>/, async (ctx: any) => {
 });
 
 getItem.action('back', async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'look i'),
-											 Markup.switchToCurrentChatButton('Фурнитура', 'look f')],
-											[Markup.switchToCurrentChatButton('Расходники', 'look c'),
-											 Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
+	const keyboard = Markup.inlineKeyboard([
+		[
+			Markup.switchToCurrentChatButton('Инструменты', 'look i'),
+			Markup.switchToCurrentChatButton('Фурнитура', 'look f')
+		],
+		[Markup.switchToCurrentChatButton('Расходники', 'look c'), Markup.callbackButton('⏪ Назад', 'exit')]
+	]).extra();
 	await ctx.replyWithMarkdown('Выберите тип позиций, которые вы хотите получить', keyboard);
 });
 

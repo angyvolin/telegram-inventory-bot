@@ -5,6 +5,9 @@ import { getAllUsersCount } from '../helpers/stats';
 export default class StatsMessage {
 	public static async send(ctx: api.ContextMessageUpdate): Promise<void> {
 		let allUsersCount = await getAllUsersCount();
-		await ctx.replyWithMarkdown(`*Статистика 📊*\n\nКол-во пользователей: *${allUsersCount}*`, AdminMessage.keyboard);
+		await ctx.replyWithMarkdown(
+			`*Статистика 📊*\n\nКол-во пользователей: *${allUsersCount}*`,
+			AdminMessage.keyboard
+		);
 	}
 }

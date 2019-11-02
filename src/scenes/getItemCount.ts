@@ -24,7 +24,7 @@ getItemCount.on('text', async (ctx: any) => {
 	const nums = ctx.message.text.match(/^[0-9]*[.,]?[0-9]+$/);
 	if (nums && nums.length) {
 		const amount = nums[0].replace(',', '.');
-		const {type, id, itemAmount} = ctx.session.selectedItem;
+		const { type, id, itemAmount } = ctx.session.selectedItem;
 
 		if (amount > 0 && amount <= itemAmount) {
 			let isPresent = false;
@@ -44,8 +44,8 @@ getItemCount.on('text', async (ctx: any) => {
 				ctx.session.items.push(item);
 			}
 			/*
-			* Добавить переход на следующую сцену в зависимости от контекста и роли
-			* */
+			 * Добавить переход на следующую сцену в зависимости от контекста и роли
+			 * */
 			await ctx.scene.enter('worker/requestMoreItems');
 		} else {
 			await ctx.reply('Недопустимое значение.\nПопробуйте снова');

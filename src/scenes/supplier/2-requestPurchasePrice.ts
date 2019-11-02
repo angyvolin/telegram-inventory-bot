@@ -28,7 +28,7 @@ requestPurchasePrice.on('text', async (ctx: any) => {
 	// Пушим эту позицию
 	if (ctx.session.currentItem.id) {
 		ctx.session.items.push(ctx.session.currentItem);
-	} else {	
+	} else {
 		ctx.session.absent.push(ctx.session.currentItem);
 	}
 	// Очищаем текущую позицию в сессии

@@ -34,7 +34,9 @@ getItemMeasure.enter(async (ctx: any) => {
 		Markup.button('⏪ Назад')
 	], {columns: 2}).extra();*/
 
-	await ctx.replyWithMarkdown('Какая величина измерения?\nЕсли нужной единицы нет в списке, введите ее с клавиатуры 👇'/*, keyboard*/);
+	await ctx.replyWithMarkdown(
+		'Какая величина измерения?\nЕсли нужной единицы нет в списке, введите ее с клавиатуры 👇' /*, keyboard*/
+	);
 });
 
 getItemMeasure.on('text', async (ctx: any) => {
@@ -48,7 +50,7 @@ getItemMeasure.on('text', async (ctx: any) => {
 	} else if (await isAdmin(ctx.from.id)) {
 		await AdminMessage.send(ctx);
 	}*/
-	
+
 	await ctx.scene.enter('addItem/getItemDesc');
 });
 

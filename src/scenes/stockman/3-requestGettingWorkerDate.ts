@@ -39,5 +39,4 @@ requestGettingWorkerDate.action('back', async (ctx: any) => {
 	await ctx.scene.enter('stockman/requestGettingWorkerMore');
 });
 
-
 export default requestGettingWorkerDate;

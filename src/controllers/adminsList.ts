@@ -13,7 +13,9 @@ export default class AdminsListMessage {
 			let chatId = admin.chatId;
 			let username = admin.username !== undefined ? admin.username : 'не указано';
 
-			let keyboard = Markup.inlineKeyboard([Markup.callbackButton('Отстранить ❌ ', `dismiss>${chatId}`)]).extra();
+			let keyboard = Markup.inlineKeyboard([
+				Markup.callbackButton('Отстранить ❌ ', `dismiss>${chatId}`)
+			]).extra();
 
 			await ctx.replyWithMarkdown(`*Имя*: ${name}\n*Юзернейм*: @${username}\n*ChatId*: ${chatId}`, keyboard);
 		}

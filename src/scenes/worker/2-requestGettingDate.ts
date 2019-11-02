@@ -40,5 +40,4 @@ requestGettingDate.action('back', async (ctx: any) => {
 	await ctx.scene.enter('worker/requestMoreItems');
 });
 
-
 export default requestGettingDate;

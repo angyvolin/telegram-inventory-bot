@@ -38,7 +38,8 @@ requestReturnDate.enter(async (ctx: any) => {
 	for (const getting of gettings) {
 		// Получаем дату в читаемом формате
 		const date = getDateFormat(getting.created);
-		if (dates.has(date)) { // Данная дата уже содержится в Map
+		if (dates.has(date)) {
+			// Данная дата уже содержится в Map
 			// Текущий массив получений по этой дате
 			const currentGettings = dates.get(date);
 			// Добавляем в него текущее получение

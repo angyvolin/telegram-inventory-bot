@@ -18,10 +18,10 @@ requestGetting.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestGetting.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'),
-											 Markup.switchToCurrentChatButton('Фурнитура', 'f')],
-											[Markup.switchToCurrentChatButton('Расходники', 'c'),
-											 Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
+	const keyboard = Markup.inlineKeyboard([
+		[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')],
+		[Markup.switchToCurrentChatButton('Расходники', 'c'), Markup.callbackButton('⏪ Назад', 'exit')]
+	]).extra();
 	await ctx.replyWithMarkdown('Выберите тип позиций, которые вы хотите получить', keyboard);
 });
 
@@ -62,17 +62,17 @@ requestGetting.action(/^itemAmount>/, async (ctx: any) => {
 	const id = ctx.callbackQuery.data.split('>')[2];
 	const amount = +ctx.callbackQuery.data.split('>')[3];
 
-	ctx.session.selectedItem = {type, id, itemAmount: amount};
+	ctx.session.selectedItem = { type, id, itemAmount: amount };
 
 	await ctx.answerCbQuery();
 	await ctx.scene.enter('getItemCount');
 });
 
 requestGetting.action('back', async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'i'),
-											 Markup.switchToCurrentChatButton('Фурнитура', 'f')],
-											[Markup.switchToCurrentChatButton('Расходники', 'c'),
-											 Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
+	const keyboard = Markup.inlineKeyboard([
+		[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')],
+		[Markup.switchToCurrentChatButton('Расходники', 'c'), Markup.callbackButton('⏪ Назад', 'exit')]
+	]).extra();
 	await ctx.replyWithMarkdown('Выберите тип позиций, которые вы хотите получить', keyboard);
 });
 

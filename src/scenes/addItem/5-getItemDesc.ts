@@ -49,7 +49,7 @@ getItemDesc.on('text', async (ctx: any) => {
 
 getItemDesc.action('skip', async (ctx: any) => {
 	ctx.session.addItem.itemDesc = null;
-	
+
 	const message = await addItem(ctx);
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
@@ -68,7 +68,7 @@ getItemDesc.action('back', async (ctx: any) => {
 });
 
 const addItem = async (ctx: any): Promise<string> => {
-	const {itemType, itemName, itemPhotoId, itemMeasure, itemDesc} = ctx.session.addItem;
+	const { itemType, itemName, itemPhotoId, itemMeasure, itemDesc } = ctx.session.addItem;
 
 	switch (itemType) {
 		case ItemType.INSTRUMENT:

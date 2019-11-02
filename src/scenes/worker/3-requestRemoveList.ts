@@ -23,7 +23,7 @@ requestRemoveList.command('start', async (ctx: any) => {
 requestRemoveList.enter(async (ctx: any) => {
 	const { items } = ctx.session;
 	const gettings = await getActiveGettingsByInstruments(ctx.from.id, items);
-	
+
 	if (!gettings.length) {
 		await ctx.scene.leave();
 		await ctx.reply('Активные получения с такими инструментами отсутствуют!');
@@ -61,7 +61,6 @@ requestRemoveList.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard(buttons, { columns: 1 }).extra();
 	await ctx.replyWithMarkdown('Выберите инструменты, которые вы хотите вернуть', keyboard);
 });
-
 
 requestRemoveList.action(/^removeList>/, async (ctx: any) => {
 	await ctx.answerCbQuery();

@@ -19,7 +19,10 @@ addAdmins.command('start', async (ctx: any) => {
 // Точка входа в сцену
 addAdmins.enter(async (ctx: any) => {
 	let keyboard = Markup.inlineKeyboard([Markup.callbackButton('Назад', 'back')]).extra();
-	await ctx.replyWithMarkdown('Перешлите мне сообщение от будущего админа ⏩\n*Он должен быть пользователем бота!*', keyboard);
+	await ctx.replyWithMarkdown(
+		'Перешлите мне сообщение от будущего админа ⏩\n*Он должен быть пользователем бота!*',
+		keyboard
+	);
 });
 
 addAdmins.on('message', async (ctx: any) => {
@@ -39,7 +42,10 @@ addAdmins.on('message', async (ctx: any) => {
 		await ctx.reply('Операция прошла успешно! 🎉', AdminMessage.keyboard);
 		Logger.notify(`Новый админ(${chatId}) добавлен! 🎉 Админ: @${ctx.message.forward_from.username}`);
 	} catch (err) {
-		await ctx.reply('Не удалось добавить новых админов, приносим извинения.\nВозможно, Вы ввели некорректные данные', AdminMessage.keyboard);
+		await ctx.reply(
+			'Не удалось добавить новых админов, приносим извинения.\nВозможно, Вы ввели некорректные данные',
+			AdminMessage.keyboard
+		);
 		Logger.error(err.message);
 	}
 });
