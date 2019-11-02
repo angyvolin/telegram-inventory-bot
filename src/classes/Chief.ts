@@ -1,8 +1,9 @@
 import Confirmation from '../models/confirmation';
+import ItemType from '../enums/ItemType';
 import PersonType from '../enums/PersonType';
-import { getChatId } from '../helpers/functions';
+import { getAdmins, getChatId } from '../helpers/functions';
 import { getStockmans } from '../helpers/persons';
-import { getChiefGettingMessage } from '../helpers/messages'
+import { getItemsMessage, getChiefGettingMessage, getPurchaseChiefMessage } from '../helpers/messages'
 
 const Markup = require('telegraf/markup');
 
@@ -61,29 +62,56 @@ export default class Chief {
 		await confirmation.save();
 	}
 
+	public static async requestPurchase(ctx: any,
+										items: { type: ItemType;
+												 id: string;
+												 amount: number;
+												 measure: string
+											   }[],
+										absent?: { name: string,
+												   amount: string,
+												   measure: string,
+												 }[]): Promise<void> {
+		console.dir(items);
+		console.dir(absent);
+		console.log('================');
 
+		if (!items.length) {
+			return;
+		}
+		const admins = await getAdmins();
+		if (!admins.length) {
+			return;
+		}
 
-	/**
-	 * @desc Get all items in the stock
-	 */
-	public static getAllItems(): void {
-		//...
-	}
+		const purchaseText = await getPurchaseChiefMessage(ctx.from.username, items, absent);
+		const itemsText = await getItemsMessage(items, absent);
+		const messages = [];
 
-	/**
-	 * @param {number} chatId - chat id of a person to send the table
-	 * @desc Send request to Stockman for getting some items to
-	 * a specified Worker
-	 */
-	/*public static requestGetting(username: string, items: Map<number, number>): void {
-		//...
-	}*/
+		const confirmation = new Confirmation();
+		const confirmationId = confirmation._id;
 
-	/**
-	 * @param {string} supply - text with items to supply
-	 * @desc Supply request, it's sent to admin for confirmation
-	 */
-	public static requestSupply(supply: string): void {
-		//...
+		for (let admin of admins) {
+			const id = await getChatId(admin.username);
+			if (!id) continue;
+
+			const keyboard = Markup.inlineKeyboard([[Markup.callbackButton('✅ Подтвердить закупку', `approvePurchase>${confirmationId}`)],
+													[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]]);
+
+			const message = await ctx.telegram.sendMessage(id, purchaseText, {
+				reply_markup: keyboard,
+				parse_mode: 'Markdown'
+			});
+			messages.push({
+				id: message.message_id,
+				chatId: id
+			});
+		}
+
+		confirmation.messages = messages;
+		confirmation.text = purchaseText;
+		confirmation.itemsText = itemsText;
+		confirmation.chatId = ctx.from.id;
+		await confirmation.save();
 	}
 }

@@ -27,7 +27,7 @@ requestPurchasePrice.on('text', async (ctx: any) => {
 	ctx.session.currentItem.price = ctx.message.text;
 	// Пушим эту позицию
 	if (ctx.session.currentItem.id) {
-		ctx.session.items.push(ctx.session.currentItem);		
+		ctx.session.items.push(ctx.session.currentItem);
 	} else {	
 		ctx.session.absent.push(ctx.session.currentItem);
 	}

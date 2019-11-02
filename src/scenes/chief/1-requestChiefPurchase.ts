@@ -8,29 +8,29 @@ const Markup = require('telegraf/markup');
 /**
  * Сцена запроса получения
  */
-const requestSupply = new Scene('supplier/requestSupply');
+const requestChiefPurchase = new Scene('chief/requestChiefPurchase');
 
-requestSupply.command('start', async (ctx: any) => {
+requestChiefPurchase.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.SUPPLIER);
+	await KeyboardMessage.send(ctx, PersonType.CHIEF);
 	ctx.session = {};
 });
 
 // Точка входа в сцену
-requestSupply.enter(async (ctx: any) => {
+requestChiefPurchase.enter(async (ctx: any) => {
 	ctx.session.currentItem = {};
 	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i'),
 											 Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f')],
 											[Markup.switchToCurrentChatButton('Расходники', 'incl_abs c'),
-											 Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
-	await ctx.replyWithMarkdown('Выберите тип позиций, которые Вы хотите поставить', keyboard);
+											 Markup.callbackButton('Позиции нет в базе', 'absent')],
+											[Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
+	await ctx.replyWithMarkdown('Выберите тип позиций, которые Вы хотите закупить', keyboard);
 });
 
 // Увеличение количества позиции на закупку
-requestSupply.action(/^increase>/, sendItem);
+requestChiefPurchase.action(/^increase>/, sendItem);
 
-
-requestSupply.action(/^accept>/, async (ctx: any) => {
+requestChiefPurchase.action(/^accept>/, async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 
@@ -46,19 +46,29 @@ requestSupply.action(/^accept>/, async (ctx: any) => {
 		}
 	});
 
+	// Такой позиции еще не было в запросе
 	if (!isPresent) {
-		const item = {
+		ctx.session.currentItem = {
 			type,
 			id,
 			amount
 		};
-		ctx.session.items.push(item);
+		// Добавляем позицию в массив
+		ctx.session.items.push(ctx.session.currentItem);
 	}
-
-	await ctx.scene.enter('supplier/requestSupplyMore');
+	// Переходим на сцену запроса других
+	// позиций для закупки
+	return ctx.scene.enter('chief/requestChiefPurchaseMore');
 });
 
-requestSupply.action('back', async (ctx: any) => {
+// При запросите позиции, которой нет в базе
+requestChiefPurchase.action('absent', async (ctx: any) => {
+	await ctx.answerCbQuery();
+	await ctx.scene.leave();
+	await ctx.scene.enter('chief/requestChiefPurchaseName');
+});
+
+requestChiefPurchase.action('back', async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([[Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i'),
 											 Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f')],
 											[Markup.switchToCurrentChatButton('Расходники', 'incl_abs c'),
@@ -66,10 +76,10 @@ requestSupply.action('back', async (ctx: any) => {
 	await ctx.replyWithMarkdown('Выберите тип позиций, которые Вы хотите поставить', keyboard);
 });
 
-requestSupply.action('exit', async (ctx: any) => {
+requestChiefPurchase.action('exit', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	return KeyboardMessage.send(ctx, PersonType.SUPPLIER);
+	return KeyboardMessage.send(ctx, PersonType.CHIEF);
 });
 
-export default requestSupply;
+export default requestChiefPurchase;

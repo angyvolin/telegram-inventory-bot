@@ -24,7 +24,11 @@ export async function getCellsMessage(items: { name: string, cellName: string }[
  */
 export async function getItemsMessage(items: { type: ItemType;
 											   id: string;
-											   amount: number }[]): Promise<string> {
+											   amount: number }[],
+									  absent?: { name: string,
+												 amount: string,
+												 measure: string
+											   }[]): Promise<string> {
 	let message = '';
 	for (let item of items) {
 		const { id, type, amount } = item;
@@ -32,6 +36,15 @@ export async function getItemsMessage(items: { type: ItemType;
 
 		message += `🔹 ${name} -> ${amount} ${measure}\n`;
 	}
+	if (!absent) {
+		return message;
+	}
+	for (let item of absent) {
+		const { name, amount, measure } = item; // Поля отсутствующей позиции
+		// Добавляем позицию как строку к сообщению
+		message += `🔹 ${name} -> ${amount} ${measure}\n`;
+	}
+
 	return message;
 }
 
@@ -138,6 +151,24 @@ export async function getPurchaseMessage(username: string,
 												  }[]): Promise<string> {
 	let message = `*Поставщик* @${username} хочет закупить следующие позиции:\n`;
 	message += await getItemsPriceMessage(items, absent);
+	return message;
+}
+
+/**
+ * @desc Составляет сообщение админу для
+ * запроса на закупку позиций начальником цеха
+ */
+export async function getPurchaseChiefMessage(username: string,
+										 items: { type: ItemType;
+												  id: string;
+												  amount: number;
+												}[],
+										 absent?: { name: string,
+													amount: string,
+													measure: string
+												  }[]): Promise<string> {
+	let message = `*Поставщик* @${username} хочет закупить следующие позиции:\n`;
+	message += await getItemsMessage(items, absent);
 	return message;
 }
 

@@ -7,15 +7,15 @@ const Markup = require('telegraf/markup');
 /**
  * Сцена запроса получения
  */
-const requestPurchaseMeasure = new Scene('supplier/requestPurchaseMeasure');
+const requestChiefPurchaseMeasure = new Scene('chief/requestChiefPurchaseMeasure');
 
-requestPurchaseMeasure.command('start', async (ctx: any) => {
+requestChiefPurchaseMeasure.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.SUPPLIER);
+	await KeyboardMessage.send(ctx, PersonType.CHIEF);
 	ctx.session = {};
 });
 
-requestPurchaseMeasure.enter(async (ctx: any) => {
+requestChiefPurchaseMeasure.enter(async (ctx: any) => {
 	/*const keyboard = Markup.keyboard([
 		Markup.button('шт.'),
 		Markup.button('г.'),
@@ -29,17 +29,17 @@ requestPurchaseMeasure.enter(async (ctx: any) => {
 	await ctx.replyWithMarkdown('Какая величина измерения?\nЕсли нужной единицы нет в списке, введите ее с клавиатуры 👇'/*, keyboard*/);
 });
 
-requestPurchaseMeasure.on('text', async (ctx: any) => {
+requestChiefPurchaseMeasure.on('text', async (ctx: any) => {
 	ctx.session.currentItem.measure = ctx.message.text;
 	await ctx.scene.leave();
-	// await KeyboardMessage.send(ctx, PersonType.SUPPLIER);
-	await ctx.scene.enter('supplier/requestPurchaseAmount');
+	// await KeyboardMessage.send(ctx, PersonType.CHIEF);
+	await ctx.scene.enter('chief/requestChiefPurchaseAmount');
 });
 
-requestPurchaseMeasure.action('back', async (ctx: any) => {
+requestChiefPurchaseMeasure.action('back', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	await ctx.scene.enter('supplier/requestPurchaseName');
+	await ctx.scene.enter('chief/requestChiefPurchaseName');
 });
 
-export default requestPurchaseMeasure;
+export default requestChiefPurchaseMeasure;

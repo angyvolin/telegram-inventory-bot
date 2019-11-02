@@ -75,7 +75,7 @@ requestPurchase.action('back', async (ctx: any) => {
 											 Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f')],
 											[Markup.switchToCurrentChatButton('Расходники', 'incl_abs c'),
 											 Markup.callbackButton('⏪ Назад', 'exit')]]).extra();
-	await ctx.replyWithMarkdown('Выберите тип позиций, которые Вы хотите поставить', keyboard);
+	await ctx.replyWithMarkdown('Выберите тип позиций, которые Вы хотите закупить', keyboard);
 });
 
 requestPurchase.action('exit', async (ctx: any) => {

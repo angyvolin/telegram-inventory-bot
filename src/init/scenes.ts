@@ -47,6 +47,11 @@ import requestGettingWorkerMore from '../scenes/stockman/4-requestGettingWorkerM
 import requestGettingTable from '../scenes/chief/1-requestGettingTable';
 import requestGettingWorker from '../scenes/chief/2-requestGettingWorker';
 import requestGettingTerm from '../scenes/chief/3-requestGettingTerm';
+import requestChiefPurchase from '../scenes/chief/1-requestChiefPurchase';
+import requestChiefPurchaseMore from '../scenes/chief/2-requestChiefPurchaseMore';
+import requestChiefPurchaseName from '../scenes/chief/3-requestChiefPurchaseName';
+import requestChiefPurchaseMeasure from '../scenes/chief/4-requestChiefPurchaseMeasure';
+import requestChiefPurchaseAmount from '../scenes/chief/5-requestChiefPurchaseAmount';
 import getItemMeasure from '../scenes/addItem/4-getItemMeasure';
 import getItemDesc from '../scenes/addItem/5-getItemDesc';
 
@@ -116,6 +121,11 @@ export default class Scenes {
 			stage.register(requestGettingTable); // Сцена запроса выдачи позиций работнику
 			stage.register(requestGettingWorker); // Сцена запроса выдачи позиций работнику
 			stage.register(requestGettingTerm); // Сцена запроса срока выдачи инструментов
+			stage.register(requestChiefPurchase); // Сцена запроса на закупку админу
+			stage.register(requestChiefPurchaseMore); // Сцена запроса на закупку админу еще позиций
+			stage.register(requestChiefPurchaseName); // Сцена запроса на закупку админу названия
+			stage.register(requestChiefPurchaseMeasure); // Сцена запроса на закупку админу единицы измерения
+			stage.register(requestChiefPurchaseAmount); // Сцена запроса на закупку админу количества
 
 			bot.use(stage.middleware());
 
