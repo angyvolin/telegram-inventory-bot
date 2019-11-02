@@ -54,7 +54,13 @@ export async function getItemsCellsMessage(items: { type: ItemType;
 export async function getItemsPriceMessage(items: { type: ItemType;
 													id: string;
 													amount: number;
-													price: string }[]): Promise<string> {
+													price: string
+												  }[],
+										   absent?: { name: string,
+													  amount: string,
+													  measure: string,
+													  price: string
+													}[]): Promise<string> {
 	let message = '';
 	for (let item of items) {
 		const { id, type, amount, price } = item; // Берем поля текущей позиции
@@ -62,6 +68,15 @@ export async function getItemsPriceMessage(items: { type: ItemType;
 		// Добавляем позицию как строку к сообщению
 		message += `🔹 ${name} -> ${amount} ${measure} (${price}/${measure})\n`;
 	}
+	if (!absent) {
+		return message;
+	}
+	for (let item of absent) {
+		const { name, amount, measure, price } = item; // Поля отсутствующей позиции
+		// Добавляем позицию как строку к сообщению
+		message += `🔹 ${name} -> ${amount} ${measure} (${price}/${measure})\n`;
+	}
+
 	return message;
 }
 
@@ -110,12 +125,19 @@ export async function getRemoveMessage(username: string, items: { type: ItemType
  * @desc Составляет сообщение админу для
  * запроса на закупку позиций снабженцем
  */
-export async function getPurchaseMessage(username: string, items: { type: ItemType;
-																	id: string;
-																	amount: number;
-																	price: string }[]): Promise<string> {
+export async function getPurchaseMessage(username: string,
+										 items: { type: ItemType;
+												  id: string;
+												  amount: number;
+												  price: string
+												}[],
+										 absent?: { name: string,
+													amount: string,
+													measure: string,
+													price: string
+												  }[]): Promise<string> {
 	let message = `*Поставщик* @${username} хочет закупить следующие позиции:\n`;
-	message += await getItemsPriceMessage(items);
+	message += await getItemsPriceMessage(items, absent);
 	return message;
 }
 

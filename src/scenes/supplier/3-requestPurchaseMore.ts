@@ -34,8 +34,7 @@ requestPurchaseMore.action('more', async (ctx: any) => {
 requestPurchaseMore.action('finish', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	const { items } = ctx.session;
-	await Supplier.requestPurchase(ctx, ctx.session.items);
+	await Supplier.requestPurchase(ctx, ctx.session.items, ctx.session.absent);
 	return KeyboardMessage.send(ctx, PersonType.SUPPLIER, 'Ваша заявка на закупку успешно отправлена!');
 });
 

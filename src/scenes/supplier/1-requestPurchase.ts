@@ -38,16 +38,16 @@ requestPurchase.action(/^accept>/, async (ctx: any) => {
 	const id = ctx.callbackQuery.data.split('>')[2];
 	const amount = +ctx.callbackQuery.data.split('>')[3];
 
-	let flag = false;
+	let isPresent = false;
 	ctx.session.items.forEach((item, index) => {
 		if (item.type === type && item.id === id) {
 			ctx.session.items[index].amount += amount;
-			flag = true;
+			isPresent = true;
 		}
 	});
 
 	// Такой позиции еще не было в запросе
-	if (!flag) {
+	if (!isPresent) {
 		ctx.session.currentItem = {
 			type,
 			id,

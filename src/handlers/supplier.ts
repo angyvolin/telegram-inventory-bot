@@ -6,8 +6,8 @@ const Markup = require('telegraf/markup');
 
 export default class SupplierHandlers {
 	public static init(bot: api.Telegraf<api.ContextMessageUpdate>) {
-		// Обработчик для "Запросить закупку"
-		bot.hears('Запросить закупку', async (ctx: any) => {
+		// Обработчик для "Запросить закупку товара"
+		bot.hears('Запросить закупку товара', async (ctx: any) => {
 			if (await isSupplier(ctx.from.username)) {
 				ctx.session.items = [];
 				ctx.session.absent = [];

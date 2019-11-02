@@ -27,15 +27,15 @@ getItemCount.on('text', async (ctx: any) => {
 		const {type, id, itemAmount} = ctx.session.selectedItem;
 
 		if (amount > 0 && amount <= itemAmount) {
-			let flag = false;
+			let isPresent = false;
 			ctx.session.items.forEach((item, index) => {
 				if (item.type === type && item.id === id) {
 					ctx.session.items[index].amount += amount;
-					flag = true;
+					isPresent = true;
 				}
 			});
 
-			if (!flag) {
+			if (!isPresent) {
 				const item = {
 					type,
 					id,

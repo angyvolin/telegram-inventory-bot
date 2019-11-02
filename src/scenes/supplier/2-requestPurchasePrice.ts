@@ -1,4 +1,5 @@
-import AdminMessage from '../../controllers/admin';
+import KeyboardMessage from '../../controllers/keyboards';
+import PersonType from '../../enums/PersonType';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -10,7 +11,7 @@ const requestPurchasePrice = new Scene('supplier/requestPurchasePrice');
 
 requestPurchasePrice.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await AdminMessage.send(ctx);
+	await KeyboardMessage.send(ctx, PersonType.SUPPLIER);
 	ctx.session = {};
 });
 
@@ -25,7 +26,11 @@ requestPurchasePrice.on('text', async (ctx: any) => {
 	// объект с текущей позицией
 	ctx.session.currentItem.price = ctx.message.text;
 	// Пушим эту позицию
-	ctx.session.items.push(ctx.session.currentItem);
+	if (ctx.session.currentItem.id) {
+		ctx.session.items.push(ctx.session.currentItem);		
+	} else {	
+		ctx.session.absent.push(ctx.session.currentItem);
+	}
 	// Очищаем текущую позицию в сессии
 	ctx.session.currentItem = {};
 	await ctx.scene.leave();

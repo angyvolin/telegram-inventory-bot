@@ -13,8 +13,8 @@ export default class ChiefHandlers {
 			}
 		});
 
-		// Обработчик для "Запросить закупку товара"
-		bot.hears('Запросить закупку товара', async (ctx: any) => {
+		// Обработчик для "Согласовать закупку товара"
+		bot.hears('Согласовать закупку товара', async (ctx: any) => {
 			if (await isChief(ctx.from.username)) {
 				//await ctx.scene.enter('chief/requestGettingTable');
 			}

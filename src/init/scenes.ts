@@ -30,6 +30,9 @@ import getPersonUsername from '../scenes/addPerson/3-getPersonUsername';
 import requestPurchase from '../scenes/supplier/1-requestPurchase';
 import requestPurchasePrice from '../scenes/supplier/2-requestPurchasePrice';
 import requestPurchaseMore from '../scenes/supplier/3-requestPurchaseMore';
+import requestPurchaseName from '../scenes/supplier/4-requestPurchaseName';
+import requestPurchaseMeasure from '../scenes/supplier/5-requestPurchaseMeasure';
+import requestPurchaseAmount from '../scenes/supplier/6-requestPurchaseAmount';
 import requestSupply from '../scenes/supplier/1-requestSupply';
 import requestSupplyMore from '../scenes/supplier/2-requestSupplyMore';
 // Stockman scenes
@@ -94,6 +97,9 @@ export default class Scenes {
 			stage.register(requestPurchase);
 			stage.register(requestPurchasePrice);
 			stage.register(requestPurchaseMore);
+			stage.register(requestPurchaseName);
+			stage.register(requestPurchaseMeasure);
+			stage.register(requestPurchaseAmount);
 			stage.register(requestSupply);
 			stage.register(requestSupplyMore);
 

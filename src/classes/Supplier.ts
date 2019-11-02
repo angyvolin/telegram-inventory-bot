@@ -17,11 +17,18 @@ export default class Supplier {
 	 * @desc Запрос на закупку позиций
 	 * (с ценами на них)
 	 */
-	public static async requestPurchase(ctx: any, items: { type: ItemType;
-														   id: string;
-														   amount: number;
-														   price: string;
-														   measure: string }[]): Promise<void> {
+	public static async requestPurchase(ctx: any,
+										items: { type: ItemType;
+												 id: string;
+												 amount: number;
+												 price: string;
+												 measure: string
+											   }[],
+										absent?: { name: string,
+												   amount: string,
+												   measure: string,
+												   price: string
+												 }[]): Promise<void> {
 		if (!items.length) {
 			return;
 		}
@@ -30,8 +37,8 @@ export default class Supplier {
 			return;
 		}
 
-		const purchaseText = await getPurchaseMessage(ctx.from.username, items);
-		const itemsText = await getItemsPriceMessage(items);
+		const purchaseText = await getPurchaseMessage(ctx.from.username, items, absent);
+		const itemsText = await getItemsPriceMessage(items, absent);
 		const messages = [];
 
 		const confirmation = new Confirmation();
