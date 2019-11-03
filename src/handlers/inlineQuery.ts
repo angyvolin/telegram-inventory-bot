@@ -95,6 +95,9 @@ export default class InlineQueryHandlers {
 					Markup.callbackButton('➕ 10', `increase>${type}>${id}>${item.amount}>10`)
 				],
 				[
+					Markup.callbackButton('⌨️ Ввести с клавиатуры', `manualCount>${type}>${id}>${item.amount}`)
+				],
+				[
 					Markup.callbackButton('⏪ Назад', 'back'),
 					Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)
 				]

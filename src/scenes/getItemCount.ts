@@ -17,16 +17,19 @@ getItemCount.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 getItemCount.enter(async (ctx: any) => {
-	await ctx.replyWithMarkdown('Введите необходимое значение (просто число)');
+	const keyboard = Markup.inlineKeyboard([
+		Markup.callbackButton('⏪ Назад', 'back')
+	]).extra();
+	await ctx.replyWithMarkdown('Введите необходимое значение (просто число)', keyboard);
 });
 
 getItemCount.on('text', async (ctx: any) => {
 	const nums = ctx.message.text.match(/^[0-9]*[.,]?[0-9]+$/);
 	if (nums && nums.length) {
-		const amount = nums[0].replace(',', '.');
+		const amount = +nums[0].replace(',', '.');
 		const { type, id, itemAmount } = ctx.session.selectedItem;
 
-		if (amount > 0 && amount <= itemAmount) {
+		if (amount > 0 && (amount <= itemAmount || !ctx.session.hasLimits)) {
 			let isPresent = false;
 			ctx.session.items.forEach((item, index) => {
 				if (item.type === type && item.id === id) {
@@ -46,7 +49,7 @@ getItemCount.on('text', async (ctx: any) => {
 			/*
 			 * Добавить переход на следующую сцену в зависимости от контекста и роли
 			 * */
-			await ctx.scene.enter('worker/requestMoreItems');
+			await ctx.scene.enter(ctx.session.nextScene);
 		} else {
 			await ctx.reply('Недопустимое значение.\nПопробуйте снова');
 			await ctx.scene.reenter();
@@ -58,7 +61,7 @@ getItemCount.on('text', async (ctx: any) => {
 });
 
 getItemCount.action('back', async (ctx: any) => {
-	await ctx.scene.reenter();
+	await ctx.scene.enter(ctx.session.baseScene);
 });
 
 getItemCount.action('exit', async (ctx: any) => {

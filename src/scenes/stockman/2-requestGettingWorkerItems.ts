@@ -57,12 +57,15 @@ requestGettingWorkerItems.action(/^accept>/, async (ctx: any) => {
 	await ctx.scene.enter('stockman/requestGettingWorkerMore');
 });
 
-requestGettingWorkerItems.action(/^itemAmount>/, async (ctx: any) => {
+requestGettingWorkerItems.action(/^manualCount>/, async (ctx: any) => {
 	const type = +ctx.callbackQuery.data.split('>')[1];
 	const id = ctx.callbackQuery.data.split('>')[2];
 	const amount = +ctx.callbackQuery.data.split('>')[3];
 
 	ctx.session.selectedItem = { type, id, itemAmount: amount };
+	ctx.session.baseScene = ctx.scene.current.id;
+	ctx.session.nextScene = 'stockman/requestGettingWorkerMore';
+	ctx.session.hasLimits = true;
 
 	await ctx.answerCbQuery();
 	await ctx.scene.enter('getItemCount');

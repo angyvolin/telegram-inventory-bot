@@ -58,15 +58,22 @@ requestReturnRemains.action(/^accept>/, async (ctx: any) => {
 	await ctx.scene.enter('worker/requestMoreRemains');
 });
 
+requestReturnRemains.action(/^manualCount>/, async (ctx: any) => {
+	const type = +ctx.callbackQuery.data.split('>')[1];
+	const id = ctx.callbackQuery.data.split('>')[2];
+	const amount = +ctx.callbackQuery.data.split('>')[3];
+
+	ctx.session.selectedItem = {type, id, itemAmount: amount};
+	ctx.session.baseScene = ctx.scene.current.id;
+	ctx.session.nextScene = 'worker/requestMoreRemains';
+	ctx.session.hasLimits = false;
+
+	await ctx.answerCbQuery();
+	await ctx.scene.enter('getItemCount');
+});
+
 requestReturnRemains.action('back', async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([
-		[
-			Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f'),
-			Markup.switchToCurrentChatButton('Расходники', 'incl_abs c')
-		],
-		[Markup.callbackButton('⏪ Назад', 'exit')]
-	]).extra();
-	await ctx.replyWithMarkdown('Выберите тип предметов, которые вы хотите вернуть', keyboard);
+	await ctx.scene.reenter();
 });
 
 requestReturnRemains.action('exit', async (ctx: any) => {
