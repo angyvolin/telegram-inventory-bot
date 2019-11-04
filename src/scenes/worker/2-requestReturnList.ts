@@ -1,9 +1,9 @@
 import KeyboardMessage from '../../controllers/keyboards';
+import AdminMessage from '../../controllers/admin';
 import ItemType from '../../enums/ItemType';
 import PersonType from '../../enums/PersonType';
 import { getItemsMessage } from '../../helpers/messages';
 import { isAdmin } from '../../helpers/functions';
-import AdminMessage from '../../controllers/admin';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -39,8 +39,7 @@ requestReturnList.enter(async (ctx: any) => {
 	if (!gettings) {
 		await ctx.scene.leave();
 		if (await isAdmin(ctx.from.id)) {
-			await ctx.reply('Активные получения отсутствуют!');
-			return AdminMessage.send(ctx);
+			return AdminMessage.send(ctx, 'Активные получения отсутствуют!');
 		} else {
 			return KeyboardMessage.send(ctx, PersonType.WORKER, 'Активные получения отсутствуют!');
 		}

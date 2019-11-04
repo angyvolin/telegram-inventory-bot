@@ -1,3 +1,4 @@
+import Admin from '../../classes/Admin';
 import Worker from '../../classes/Worker';
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
@@ -30,12 +31,12 @@ requestRemoveOrder.enter(async (ctx: any) => {
 requestRemoveOrder.on('text', async (ctx: any) => {
 	const order = ctx.message.text;
 	await ctx.scene.leave();
-	await Worker.requestRemove(ctx, ctx.session.items, ctx.session.gettingId, `заказ №${order}`);
 
 	if (await isAdmin(ctx.from.id)) {
-		await ctx.reply('Ваша заявка успешно отправлена! Ожидайте подтверждения админа');
-		return AdminMessage.send(ctx);
+		await Admin.requestRemove(ctx, ctx.session.items, ctx.session.gettingId, `заказ №${order}`);
+		return AdminMessage.send(ctx, 'Ваша заявка успешно отправлена! Ожидайте подтверждения админа');
 	} else {
+		await Worker.requestRemove(ctx, ctx.session.items, ctx.session.gettingId, `заказ №${order}`);
 		return KeyboardMessage.send(
 			ctx,
 			PersonType.WORKER,

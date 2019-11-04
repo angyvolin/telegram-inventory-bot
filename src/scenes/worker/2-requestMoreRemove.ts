@@ -45,8 +45,7 @@ requestMoreRemove.action('finish', async (ctx: any) => {
 	if (!ctx.session.gettingId) {
 		await ctx.scene.leave();
 		if (await isAdmin(ctx.from.id)) {
-			await ctx.reply('Активные получения с такими позициями отсутствуют!');
-			return AdminMessage.send(ctx);
+			return AdminMessage.send(ctx, 'Активные получения с такими позициями отсутствуют!');
 		} else {
 			return KeyboardMessage.send(ctx, PersonType.WORKER, 'Активные получения с такими позициями отсутствуют!');
 		}

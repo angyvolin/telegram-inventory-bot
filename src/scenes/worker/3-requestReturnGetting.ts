@@ -43,8 +43,7 @@ requestReturnGetting.action(/^approveRequestReturn/, async (ctx: any) => {
 	await ctx.editMessageText(ctx.update.callback_query.message.text, { parse_mode: 'Markdown' });
 	await Worker.requestReturn(ctx, gettingId);
 	if (await isAdmin(ctx.from.id)) {
-		await ctx.reply('Ваша заявка успешно отправлена! Отправляйтесь на возврат');
-		return AdminMessage.send(ctx);
+		return AdminMessage.send(ctx, 'Ваша заявка успешно отправлена! Отправляйтесь на возврат');
 	} else {
 		return KeyboardMessage.send(ctx, PersonType.WORKER, 'Ваша заявка успешно отправлена! Отправляйтесь на возврат');
 	}

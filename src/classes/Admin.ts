@@ -1,13 +1,121 @@
 import Confirmation from '../models/confirmation';
 import Getting from '../models/getting';
+import ItemType from '../enums/ItemType';
 import { getChatId } from '../helpers/functions';
 import { getSuppliers } from '../helpers/persons';
-import { getRequestSupplyMessage } from '../helpers/messages';
+import { getItemsMessage, getRequestSupplyMessage } from '../helpers/messages';
 
 const Markup = require('telegraf/markup');
 
 export default class Admin {
 	// Public
+	public static async requestRemove(
+		ctx: any,
+		items: { type: ItemType; id: string; amount: number; measure: string }[],
+		gettingId: string,
+		reason: string
+	): Promise<void> {
+		const getting = await Getting.findById(gettingId);
+
+		if (!getting) {
+			return;
+		}
+
+		// Создаем Мар со списанными позициями
+		const removedInstruments: Map<string, number> = new Map();
+		const removedFurniture: Map<string, number> = new Map();
+		const removedConsumables: Map<string, number> = new Map();
+
+		items.forEach((item) => {
+			const { type, id, amount } = item;
+			switch (type) {
+				case ItemType.INSTRUMENT: {
+					// Добавляем инструмент в Мар со списанными инструментами
+					removedInstruments.set(id, amount);
+					// Удаляем эти инструменты с получения
+					// (чтобы позднее не требовать их возврата)
+					const newAmount = getting.instruments.has(id) ? getting.instruments.get(id) - amount : 0;
+					if (newAmount <= 0) {
+						getting.instruments.delete(id);
+					} else {
+						getting.instruments.set(id, newAmount);
+					}
+					break;
+				}
+				case ItemType.FURNITURE: {
+					// Добавляем инструмент в Мар со списанными инструментами
+					removedFurniture.set(id, amount);
+					// Удаляем эти инструменты с получения
+					// (чтобы позднее не требовать их возврата)
+					const newAmount = getting.furniture.has(id) ? getting.furniture.get(id) - amount : 0;
+					if (newAmount <= 0) {
+						getting.furniture.delete(id);
+					} else {
+						getting.furniture.set(id, newAmount);
+					}
+					break;
+				}
+				case ItemType.CONSUMABLE: {
+					// Добавляем инструмент в Мар со списанными инструментами
+					removedFurniture.set(id, amount);
+					// Удаляем эти инструменты с получения
+					// (чтобы позднее не требовать их возврата)
+					const newAmount = getting.furniture.has(id) ? getting.furniture.get(id) - amount : 0;
+					if (newAmount <= 0) {
+						getting.furniture.delete(id);
+					} else {
+						getting.furniture.set(id, newAmount);
+					}
+					break;
+				}
+			}
+		});
+
+		/*
+		 * Флаг, который укажет, стало
+		 * ли получение пустым
+		 */
+		let isEmpty = true;
+
+		/*
+		 * Проверяем получение на актуальность
+		 * (остались ли позиции для возврата)
+		 */
+		if (getting.instruments) {
+			isEmpty = getting.instruments.size === 0;
+		}
+		if (getting.furniture) {
+			isEmpty = getting.furniture.size === 0;
+		}
+		if (getting.consumables) {
+			isEmpty = getting.consumables.size === 0;
+		}
+
+		/*
+		 * Получение стало пустым - делаем
+		 * его неактивным (за ним не остается
+		 * долга)
+		 */
+		getting.active = !isEmpty;
+
+		// Добавляем эти Мар в получение в БД
+		if (removedInstruments.size > 0) {
+			getting.removedInstruments = removedInstruments;
+		}
+		if (removedFurniture.size > 0) {
+			getting.removedFurniture = removedFurniture;
+		}
+		if (removedConsumables.size > 0) {
+			getting.removedConsumables = removedConsumables;
+		}
+
+		// Сохраняем получение
+		await getting.save();
+
+		const text = 'Списание было подтверждено:\n' + (await getItemsMessage(items));
+		await ctx.reply(text);
+	}
+
 	public static async confirmRemove(ctx: any): Promise<void> {
 		const id = ctx.callbackQuery.data.split('>')[1];
 		const gettingId = ctx.callbackQuery.data.split('>')[2];
@@ -50,7 +158,7 @@ export default class Admin {
 				// Удаляем эти инструменты с получения
 				// (чтобы позднее не требовать их возврата)
 				const newAmount = getting.instruments.has(id) ? getting.instruments.get(id) - amount : 0;
-				if (newAmount === 0) {
+				if (newAmount <= 0) {
 					getting.instruments.delete(id);
 				} else {
 					getting.instruments.set(id, newAmount);
@@ -64,7 +172,7 @@ export default class Admin {
 				// Удаляем эти инструменты с получения
 				// (чтобы позднее не требовать их возврата)
 				const newAmount = getting.furniture.has(id) ? getting.furniture.get(id) - amount : 0;
-				if (newAmount === 0) {
+				if (newAmount <= 0) {
 					getting.furniture.delete(id);
 				} else {
 					getting.furniture.set(id, newAmount);
@@ -78,7 +186,7 @@ export default class Admin {
 				// Удаляем эти инструменты с получения
 				// (чтобы позднее не требовать их возврата)
 				const newAmount = getting.consumables.has(id) ? getting.consumables.get(id) - amount : 0;
-				if (newAmount === 0) {
+				if (newAmount <= 0) {
 					getting.consumables.delete(id);
 				} else {
 					getting.consumables.set(id, newAmount);
