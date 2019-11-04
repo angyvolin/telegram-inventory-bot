@@ -38,7 +38,7 @@ requestGettingDate.on('text', async (ctx) => {
 	await Worker.requestGetting(ctx, ctx.session.items, days);
 
 	if (await isAdmin(ctx.from.id))
-		return AdminMessage.send(ctx);
+		return AdminMessage.send(ctx, 'Ваша заявка успешно отправлена! Отправляйтесь на получение');
 	else
 		return KeyboardMessage.send(ctx, PersonType.WORKER, 'Ваша заявка успешно отправлена! Отправляйтесь на получение');
 });

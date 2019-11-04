@@ -1,3 +1,4 @@
+import Admin from '../../classes/Admin';
 import Worker from '../../classes/Worker';
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
@@ -34,12 +35,13 @@ requestRemoveReason.enter(async (ctx: any) => {
 requestRemoveReason.action('reasonCrash', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	await Worker.requestRemove(ctx, ctx.session.items, ctx.session.gettingId, 'поломка');
+	
 
 	if (await isAdmin(ctx.from.id)) {
-		await ctx.reply('Ваша заявка успешно отправлена! Ожидайте подтверждения админа');
-		return AdminMessage.send(ctx);
+		await Admin.requestRemove(ctx, ctx.session.items, ctx.session.gettingId, 'поломка');
+		return AdminMessage.send(ctx, 'Ваша заявка успешно отправлена! Ожидайте подтверждения админа');
 	} else {
+		await Worker.requestRemove(ctx, ctx.session.items, ctx.session.gettingId, 'поломка');
 		return KeyboardMessage.send(
 			ctx,
 			PersonType.WORKER,
