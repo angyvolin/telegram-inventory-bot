@@ -69,12 +69,15 @@ export default class AdminHandlers {
 					return ctx.reply('На данный момент должников нет');
 				}
 				let message = '*Список должников:*\n\n';
+				let prevPerson = null;
+
 				for (let getting of gettings) {
 					let person = await Person.findOne({
 						username: await getUsernameByChatId(getting.chatId)
 					});
 
-					message += `🔹 ${person.fullName}:\n`;
+					if (prevPerson !== person.username)
+						message += `🔹 ${person.fullName}:\n`;
 
 					if (getting.instruments) {
 						for (let item of getting.instruments) {
@@ -97,7 +100,9 @@ export default class AdminHandlers {
 						}
 					}
 
-					message += '\n';
+					if (prevPerson !== person.username)
+						message += '\n';
+					prevPerson = person.username;
 				}
 				await ctx.replyWithMarkdown(message);
 			}
