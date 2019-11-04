@@ -60,6 +60,26 @@ export async function sendItemWithLimits(ctx: any): Promise<void> {
 		await ctx.editMessageReplyMarkup(keyboard);
 		await ctx.answerCbQuery();
 	} else {
+		const keyboard = Markup.inlineKeyboard([
+			[
+				Markup.callbackButton('➖ 10', `increase>${type}>${id}>${amount}>-10`),
+				Markup.callbackButton('➖', `increase>${type}>${id}>${amount}>-1`),
+				Markup.callbackButton(amount, `itemAmount>${type}>${id}>${amount}`),
+				Markup.callbackButton('➕', `increase>${type}>${id}>${amount}>1`),
+				Markup.callbackButton('➕ 10', `increase>${type}>${id}>${amount}>10`)
+			],
+			[
+				Markup.callbackButton('⌨️ Ввести с клавиатуры', `manualCount>${type}>${id}>${amount}`)
+			],
+			[
+				Markup.callbackButton('⏪ Назад', 'back'),
+				Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${amount}`)
+			]
+		]);
+		try {
+			await ctx.editMessageReplyMarkup(keyboard);
+		} catch {
+		}
 		await ctx.answerCbQuery(`Недопустимое значение`, false);
 	}
 }
