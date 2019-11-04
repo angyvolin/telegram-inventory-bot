@@ -1,7 +1,7 @@
-import Worker from '../../classes/Worker';
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
-import ItemType from '../../enums/ItemType';
+import { isAdmin } from '../../helpers/functions';
+import AdminMessage from '../../controllers/admin';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -13,8 +13,12 @@ const requestMoreItems = new Scene('worker/requestMoreItems');
 
 requestMoreItems.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.WORKER);
 	ctx.session = {};
+	if (await isAdmin(ctx.from.id)) {
+		return AdminMessage.send(ctx);
+	} else {
+		return KeyboardMessage.send(ctx, PersonType.WORKER);
+	}
 });
 
 // Точка входа в сцену

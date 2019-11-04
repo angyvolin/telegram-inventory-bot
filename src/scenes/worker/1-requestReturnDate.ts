@@ -1,7 +1,8 @@
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
-import { getDateFormat, getActiveGettings } from '../../helpers/gettings';
-import { sendItem } from '../../helpers/handlers';
+import { getActiveGettings, getDateFormat } from '../../helpers/gettings';
+import { isAdmin } from '../../helpers/functions';
+import AdminMessage from '../../controllers/admin';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -13,8 +14,12 @@ const requestReturnDate = new Scene('worker/requestReturnDate');
 
 requestReturnDate.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.WORKER);
 	ctx.session = {};
+	if (await isAdmin(ctx.from.id)) {
+		return AdminMessage.send(ctx);
+	} else {
+		return KeyboardMessage.send(ctx, PersonType.WORKER);
+	}
 });
 
 // Точка входа в сцену
@@ -22,7 +27,12 @@ requestReturnDate.enter(async (ctx: any) => {
 	const gettings = await getActiveGettings(ctx.from.id);
 	if (!gettings.length) {
 		await ctx.scene.leave();
-		return KeyboardMessage.send(ctx, PersonType.WORKER, 'Активные получения отсутствуют!');
+		if (await isAdmin(ctx.from.id)) {
+			await ctx.reply('Активные получения отсутствуют!');
+			return AdminMessage.send(ctx);
+		} else {
+			return KeyboardMessage.send(ctx, PersonType.WORKER, 'Активные получения отсутствуют!');
+		}
 	}
 	/* Создаем Map с датами для того,
 	 * чтобы избежать дублирования дат
@@ -73,7 +83,11 @@ requestReturnDate.action(/^returnDay>/, async (ctx: any) => {
 requestReturnDate.action('back', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	return KeyboardMessage.send(ctx, PersonType.WORKER);
+	if (await isAdmin(ctx.from.id)) {
+		return AdminMessage.send(ctx);
+	} else {
+		return KeyboardMessage.send(ctx, PersonType.WORKER);
+	}
 });
 
 export default requestReturnDate;

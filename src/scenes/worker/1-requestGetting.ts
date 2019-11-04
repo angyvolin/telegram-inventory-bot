@@ -1,6 +1,8 @@
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
 import { sendItemWithLimits } from '../../helpers/handlers';
+import { isAdmin } from '../../helpers/functions';
+import AdminMessage from '../../controllers/admin';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -12,8 +14,12 @@ const requestGetting = new Scene('worker/requestGetting');
 
 requestGetting.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.WORKER);
 	ctx.session = {};
+	if (await isAdmin(ctx.from.id)) {
+		return AdminMessage.send(ctx);
+	} else {
+		return KeyboardMessage.send(ctx, PersonType.WORKER);
+	}
 });
 
 // Точка входа в сцену
@@ -82,7 +88,11 @@ requestGetting.action('back', async (ctx: any) => {
 requestGetting.action('exit', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	return KeyboardMessage.send(ctx, PersonType.WORKER);
+	if (await isAdmin(ctx.from.id)) {
+		return AdminMessage.send(ctx);
+	} else {
+		return KeyboardMessage.send(ctx, PersonType.WORKER);
+	}
 });
 
 export default requestGetting;

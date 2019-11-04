@@ -2,6 +2,7 @@ import * as api from 'telegraf';
 import Worker from '../classes/Worker';
 import Confirmation from '../models/confirmation';
 import { isWorker } from '../helpers/persons';
+import { isAdmin } from '../helpers/functions';
 
 const Markup = require('telegraf/markup');
 
@@ -9,7 +10,7 @@ export default class WorkerHandlers {
 	public static init(bot: api.Telegraf<api.ContextMessageUpdate>) {
 		// Обработчик для "Запросить получение"
 		bot.hears('Запросить получение', async (ctx: any) => {
-			if (await isWorker(ctx.from.username)) {
+			if (await isWorker(ctx.from.username) || await isAdmin(ctx.from.id)) {
 				ctx.session.items = [];
 				await ctx.scene.enter('worker/requestGetting');
 			}
@@ -17,7 +18,7 @@ export default class WorkerHandlers {
 
 		// Обработчик для "Запросить возврат"
 		bot.hears('Запросить возврат', async (ctx: any) => {
-			if (await isWorker(ctx.from.username)) {
+			if (await isWorker(ctx.from.username) || await isAdmin(ctx.from.id)) {
 				ctx.session.items = [];
 				await ctx.scene.enter('worker/requestReturnDate');
 			}
@@ -25,7 +26,7 @@ export default class WorkerHandlers {
 
 		// Обработчик для "Запросить списание"
 		bot.hears('Запросить списание', async (ctx: any) => {
-			if (await isWorker(ctx.from.username)) {
+			if (await isWorker(ctx.from.username) || await isAdmin(ctx.from.id)) {
 				ctx.session.items = [];
 				await ctx.scene.enter('worker/requestRemove');
 			}
@@ -33,7 +34,7 @@ export default class WorkerHandlers {
 
 		bot.action(/^declineGetting>/, async (ctx: any) => {
 			await ctx.answerCbQuery();
-			if (await isWorker(ctx.from.username)) {
+			if (await isWorker(ctx.from.username) || await isAdmin(ctx.from.id)) {
 				const id = ctx.callbackQuery.data.split('>')[1];
 				const confirmation = await Confirmation.findById(id);
 
@@ -46,14 +47,14 @@ export default class WorkerHandlers {
 
 		bot.action(/^confirmGetting>/, async (ctx: any) => {
 			await ctx.answerCbQuery();
-			if (await isWorker(ctx.from.username)) {
+			if (await isWorker(ctx.from.username) || await isAdmin(ctx.from.id)) {
 				await Worker.confirmGetting(ctx);
 			}
 		});
 
 		bot.action(/^confirmReturn>/, async (ctx: any) => {
 			await ctx.answerCbQuery();
-			if (await isWorker(ctx.from.username)) {
+			if (await isWorker(ctx.from.username) || await isAdmin(ctx.from.id)) {
 				await Worker.confirmReturn(ctx);
 			}
 		});

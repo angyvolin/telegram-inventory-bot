@@ -1,6 +1,8 @@
 import Worker from '../../classes/Worker';
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
+import { isAdmin } from '../../helpers/functions';
+import AdminMessage from '../../controllers/admin';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -12,8 +14,12 @@ const requestRemoveOrder = new Scene('worker/requestRemoveOrder');
 
 requestRemoveOrder.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.WORKER);
 	ctx.session = {};
+	if (await isAdmin(ctx.from.id)) {
+		return AdminMessage.send(ctx);
+	} else {
+		return KeyboardMessage.send(ctx, PersonType.WORKER);
+	}
 });
 
 // Точка входа в сцену
@@ -25,11 +31,17 @@ requestRemoveOrder.on('text', async (ctx: any) => {
 	const order = ctx.message.text;
 	await ctx.scene.leave();
 	await Worker.requestRemove(ctx, ctx.session.items, ctx.session.gettingId, `заказ №${order}`);
-	return KeyboardMessage.send(
-		ctx,
-		PersonType.WORKER,
-		'Ваша заявка успешно отправлена! Ожидайте подтверждения админа'
-	);
+
+	if (await isAdmin(ctx.from.id)) {
+		await ctx.reply('Ваша заявка успешно отправлена! Ожидайте подтверждения админа');
+		return AdminMessage.send(ctx);
+	} else {
+		return KeyboardMessage.send(
+			ctx,
+			PersonType.WORKER,
+			'Ваша заявка успешно отправлена! Ожидайте подтверждения админа'
+		);
+	}
 });
 
 requestRemoveOrder.action('back', async (ctx: any) => {

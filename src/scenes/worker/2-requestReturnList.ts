@@ -2,6 +2,8 @@ import KeyboardMessage from '../../controllers/keyboards';
 import ItemType from '../../enums/ItemType';
 import PersonType from '../../enums/PersonType';
 import { getItemsMessage } from '../../helpers/messages';
+import { isAdmin } from '../../helpers/functions';
+import AdminMessage from '../../controllers/admin';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -13,22 +15,35 @@ const requestReturnList = new Scene('worker/requestReturnList');
 
 requestReturnList.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.WORKER);
 	ctx.session = {};
+	if (await isAdmin(ctx.from.id)) {
+		return AdminMessage.send(ctx);
+	} else {
+		return KeyboardMessage.send(ctx, PersonType.WORKER);
+	}
 });
 
 // Точка входа в сцену
 requestReturnList.enter(async (ctx: any) => {
 	if (!ctx.session.date) {
 		await ctx.scene.leave();
-		return KeyboardMessage.send(ctx, PersonType.WORKER);
+		if (await isAdmin(ctx.from.id)) {
+			return AdminMessage.send(ctx);
+		} else {
+			return KeyboardMessage.send(ctx, PersonType.WORKER);
+		}
 	}
 	// Массив получений по выбранной дате
 	const gettings = ctx.session.dates[ctx.session.date];
 
 	if (!gettings) {
 		await ctx.scene.leave();
-		return KeyboardMessage.send(ctx, PersonType.WORKER, 'Активные получения отсутствуют!');
+		if (await isAdmin(ctx.from.id)) {
+			await ctx.reply('Активные получения отсутствуют!');
+			return AdminMessage.send(ctx);
+		} else {
+			return KeyboardMessage.send(ctx, PersonType.WORKER, 'Активные получения отсутствуют!');
+		}
 	}
 	/*
 	 * Создаем Map с сообщениями для каждого

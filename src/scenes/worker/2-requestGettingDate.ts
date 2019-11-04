@@ -1,6 +1,8 @@
 import Worker from '../../classes/Worker';
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
+import { isAdmin } from '../../helpers/functions';
+import AdminMessage from '../../controllers/admin';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -12,8 +14,12 @@ const requestGettingDate = new Scene('worker/requestGettingDate');
 
 requestGettingDate.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.WORKER);
 	ctx.session = {};
+	if (await isAdmin(ctx.from.id)) {
+		return AdminMessage.send(ctx);
+	} else {
+		return KeyboardMessage.send(ctx, PersonType.WORKER);
+	}
 });
 
 // Точка входа в сцену
@@ -30,7 +36,11 @@ requestGettingDate.on('text', async (ctx) => {
 	const days = term[0];
 	await ctx.scene.leave();
 	await Worker.requestGetting(ctx, ctx.session.items, days);
-	return KeyboardMessage.send(ctx, PersonType.WORKER, 'Ваша заявка успешно отправлена! Отправляйтесь на получение');
+
+	if (await isAdmin(ctx.from.id))
+		return AdminMessage.send(ctx);
+	else
+		return KeyboardMessage.send(ctx, PersonType.WORKER, 'Ваша заявка успешно отправлена! Отправляйтесь на получение');
 });
 
 requestGettingDate.action('back', async (ctx: any) => {
