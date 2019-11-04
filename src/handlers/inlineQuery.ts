@@ -95,6 +95,9 @@ export default class InlineQueryHandlers {
 					Markup.callbackButton('➕ 10', `increase>${type}>${id}>${item.amount}>10`)
 				],
 				[
+					Markup.callbackButton('⌨️ Ввести с клавиатуры', `manualCount>${type}>${id}>${item.amount}`)
+				],
+				[
 					Markup.callbackButton('⏪ Назад', 'back'),
 					Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)
 				]
@@ -118,7 +121,7 @@ export default class InlineQueryHandlers {
 				reply_markup: null
 			};
 			options.reply_markup =
-				query.indexOf('look') === -1 && query.indexOf('move') ? keyboardWithCounters : keyboard;
+				query.indexOf('look') === -1 && query.indexOf('move') === -1 ? keyboardWithCounters : keyboard;
 			if (item.photo) {
 				return ctx.telegram.sendPhoto(ctx.from.id, item.photo, options);
 			}

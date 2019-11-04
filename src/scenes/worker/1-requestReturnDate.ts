@@ -60,7 +60,7 @@ requestReturnDate.enter(async (ctx: any) => {
 	// Записываем этот Map в сессию
 	ctx.session.dates = dates;
 	const keyboard = Markup.inlineKeyboard([buttons, [Markup.callbackButton('⏪ Назад', 'back')]]).extra();
-	await ctx.replyWithMarkdown('Выберите дату получения инструментов, которые вы хотите вернуть', keyboard);
+	await ctx.replyWithMarkdown('Выберите дату получения позиций, которые вы хотите вернуть', keyboard);
 });
 
 requestReturnDate.action(/^returnDay>/, async (ctx: any) => {

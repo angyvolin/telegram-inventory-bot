@@ -67,6 +67,20 @@ requestChiefPurchase.action(/^accept>/, async (ctx: any) => {
 	return ctx.scene.enter('chief/requestChiefPurchaseMore');
 });
 
+requestChiefPurchase.action(/^manualCount>/, async (ctx: any) => {
+	const type = +ctx.callbackQuery.data.split('>')[1];
+	const id = ctx.callbackQuery.data.split('>')[2];
+	const amount = +ctx.callbackQuery.data.split('>')[3];
+
+	ctx.session.selectedItem = {type, id, itemAmount: amount};
+	ctx.session.baseScene = ctx.scene.current.id;
+	ctx.session.nextScene = 'chief/requestChiefPurchaseMore';
+	ctx.session.hasLimits = false;
+
+	await ctx.answerCbQuery();
+	await ctx.scene.enter('getItemCount');
+});
+
 // При запросите позиции, которой нет в базе
 requestChiefPurchase.action('absent', async (ctx: any) => {
 	await ctx.answerCbQuery();

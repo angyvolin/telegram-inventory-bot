@@ -81,7 +81,7 @@ requestReturnList.enter(async (ctx: any) => {
 	}
 	buttons.push(Markup.callbackButton('⏪ Назад', 'back'));
 	const keyboard = Markup.inlineKeyboard(buttons, { columns: 1 }).extra();
-	await ctx.replyWithMarkdown('Выберите инструменты, которые вы хотите вернуть', keyboard);
+	await ctx.replyWithMarkdown('Выберите позиции, которые вы хотите вернуть', keyboard);
 });
 
 requestReturnList.action(/^returnList>/, async (ctx: any) => {

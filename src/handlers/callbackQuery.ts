@@ -3,7 +3,7 @@ import Common from '../classes/Common';
 import Confirmation from '../models/confirmation';
 import AdminMessage from '../controllers/admin';
 import Logger from '../init/logger';
-import { isStockman, isChief } from '../helpers/persons';
+import { isChief, isStockman } from '../helpers/persons';
 import { dismissAdmin, isAdmin } from '../helpers/functions';
 
 const Markup = require('telegraf/markup');
@@ -23,6 +23,10 @@ export default class CallbackQueryHandlers {
 					await ctx.reply('Не удалось отстранить админа, приносим извинения', AdminMessage.keyboard1);
 				}
 			}
+		});
+
+		bot.action(/^itemAmount>/, async ctx => {
+			await ctx.answerCbQuery();
 		});
 
 		// Отклонение запроса
