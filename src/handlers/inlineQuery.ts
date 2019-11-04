@@ -82,6 +82,8 @@ export default class InlineQueryHandlers {
 				return ctx.telegram.sendMessage(ctx.from.id, 'Ошибка на сервере! Позиция не была найдена');
 			}
 
+			const primaryAmount = item.amount >= 1 ? 1 : item.amount;
+
 			let keyboard = Markup.inlineKeyboard([
 				Markup.callbackButton('⏪ Назад', 'back'),
 				Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>1`)
@@ -90,7 +92,7 @@ export default class InlineQueryHandlers {
 				[
 					Markup.callbackButton('➖ 10', `increase>${type}>${id}>${item.amount}>-10`),
 					Markup.callbackButton('➖', `increase>${type}>${id}>${item.amount}>-1`),
-					Markup.callbackButton('1', `itemAmount>${type}>${id}>${item.amount}`),
+					Markup.callbackButton(primaryAmount, `itemAmount>${type}>${id}>${item.amount}`),
 					Markup.callbackButton('➕', `increase>${type}>${id}>${item.amount}>1`),
 					Markup.callbackButton('➕ 10', `increase>${type}>${id}>${item.amount}>10`)
 				],

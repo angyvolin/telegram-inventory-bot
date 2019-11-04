@@ -35,15 +35,7 @@ requestGettingWorkerMore.action('more', async (ctx: any) => {
 requestGettingWorkerMore.action('finish', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	const { items } = ctx.session;
-
-	for (let item of items) {
-		if (item.type === ItemType.INSTRUMENT) {
-			return ctx.scene.enter('stockman/requestGettingWorkerDate');
-		}
-	}
-	await KeyboardMessage.send(ctx, PersonType.STOCKMAN, 'Получение успешно создано! Ожидайте работника');
-	return Stockman.requestGetting(ctx, ctx.session.items, ctx.session.username);
+	await ctx.scene.enter('stockman/requestGettingWorkerDate');
 });
 
 requestGettingWorkerMore.action('back', async (ctx: any) => {

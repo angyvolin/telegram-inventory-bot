@@ -26,7 +26,7 @@ export default class Stockman {
 		ctx: any,
 		items: { type: ItemType; id: string; amount: number; measure: string }[],
 		username: string,
-		days?: number
+		days: number
 	): Promise<void> {
 		if (!items.length) {
 			return;
@@ -135,14 +135,12 @@ export default class Stockman {
 		if (consumables.size > 0) {
 			confirmation.consumables = consumables;
 		}
-		if (days) {
-			confirmation.days = days;
-		}
 
 		confirmation.messages = messages;
 		confirmation.text = gettingText;
 		confirmation.itemsText = itemsText;
 		confirmation.chatId = id;
+		confirmation.days = days;
 		await confirmation.save();
 	}
 

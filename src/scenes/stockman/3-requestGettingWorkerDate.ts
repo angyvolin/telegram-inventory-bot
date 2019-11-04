@@ -19,7 +19,7 @@ requestGettingWorkerDate.command('start', async (ctx: any) => {
 // Точка входа в сцену
 requestGettingWorkerDate.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
-	await ctx.replyWithMarkdown('На сколько дней Вы хотите выдать инструмент(ы)?', keyboard);
+	await ctx.replyWithMarkdown('На сколько дней Вы хотите выдать позиции?', keyboard);
 });
 
 requestGettingWorkerDate.on('text', async (ctx) => {
