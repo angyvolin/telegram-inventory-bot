@@ -40,7 +40,12 @@ getPhoto.on('photo', async (ctx: any) => {
 
 	await ctx.scene.leave();
 	await addPhoto(ctx.session.item.type, ctx.session.item.id, fileId);
-	await ctx.reply('Фотография была успешно добавлена');
+	const person = await getPerson(ctx.from.username);
+	if (person) {
+		await KeyboardMessage.send(ctx, person.type, 'Фотография была успешно добавлена');
+	} else if (await isAdmin(ctx.from.id)) {
+		await AdminMessage.send(ctx, 'Фотография была успешно добавлена');
+	}
 });
 
 getPhoto.action('back', async (ctx: any) => {

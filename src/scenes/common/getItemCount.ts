@@ -17,9 +17,7 @@ getItemCount.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 getItemCount.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([
-		Markup.callbackButton('⏪ Назад', 'back')
-	]).extra();
+	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
 	await ctx.replyWithMarkdown('Введите необходимое значение (просто число)', keyboard);
 });
 

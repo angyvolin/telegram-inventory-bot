@@ -37,7 +37,7 @@ import requestSupplyMore from '../scenes/supplier/2-requestSupplyMore';
 // Stockman scenes
 import getMoveItem from '../scenes/stockman/getMoveItem';
 import getMoveDestination from '../scenes/stockman/getMoveDestination';
-import getAbsentItems from '../scenes/stockman/getAbsentItems';
+import getAbsentItems from '../scenes/common/getAbsentItems';
 import requestGettingUsername from '../scenes/stockman/1-requestGettingUsername';
 import requestGettingWorkerItems from '../scenes/stockman/2-requestGettingWorkerItems';
 import requestGettingWorkerDate from '../scenes/stockman/3-requestGettingWorkerDate';

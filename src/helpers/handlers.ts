@@ -21,9 +21,7 @@ export async function sendItem(ctx: any): Promise<void> {
 				Markup.callbackButton('➕', `increase>${type}>${id}>${amount}>1`),
 				Markup.callbackButton('➕ 10', `increase>${type}>${id}>${amount}>10`)
 			],
-			[
-				Markup.callbackButton('⌨️ Ввести с клавиатуры', `manualCount>${type}>${id}>${amount}`)
-			],
+			[Markup.callbackButton('⌨️ Ввести с клавиатуры', `manualCount>${type}>${id}>${amount}`)],
 			[
 				Markup.callbackButton('⏪ Назад', 'back'),
 				Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter + offset}`)
@@ -53,9 +51,7 @@ export async function sendItemWithLimits(ctx: any): Promise<void> {
 				Markup.callbackButton('➕', `increase>${type}>${id}>${amount}>1`),
 				Markup.callbackButton('➕ 10', `increase>${type}>${id}>${amount}>10`)
 			],
-			[
-				Markup.callbackButton('⌨️ Ввести с клавиатуры', `manualCount>${type}>${id}>${amount}`)
-			],
+			[Markup.callbackButton('⌨️ Ввести с клавиатуры', `manualCount>${type}>${id}>${amount}`)],
 			[
 				Markup.callbackButton('⏪ Назад', 'back'),
 				Markup.callbackButton('✅ Подтвердить', `accept>${type}>${id}>${counter + offset}`)

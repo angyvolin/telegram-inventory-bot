@@ -19,7 +19,10 @@ requestRemove.command('start', async (ctx: any) => {
 // Точка входа в сцену
 requestRemove.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([
-		[Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i'), Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f')],
+		[
+			Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i'),
+			Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f')
+		],
 		[Markup.switchToCurrentChatButton('Расходники', 'incl_abs c'), Markup.callbackButton('⏪ Назад', 'exit')]
 	]).extra();
 	await ctx.reply('Выберите позиции, которые вы хотите списать', keyboard);
@@ -62,7 +65,7 @@ requestRemove.action(/^manualCount>/, async (ctx: any) => {
 	const id = ctx.callbackQuery.data.split('>')[2];
 	const amount = +ctx.callbackQuery.data.split('>')[3];
 
-	ctx.session.selectedItem = {type, id, itemAmount: amount};
+	ctx.session.selectedItem = { type, id, itemAmount: amount };
 	ctx.session.baseScene = ctx.scene.current.id;
 	ctx.session.nextScene = 'worker/requestMoreRemove';
 	ctx.session.hasLimits = false;
@@ -73,7 +76,10 @@ requestRemove.action(/^manualCount>/, async (ctx: any) => {
 
 requestRemove.action('back', async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([
-		[Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i'), Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f')],
+		[
+			Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i'),
+			Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f')
+		],
 		[Markup.switchToCurrentChatButton('Расходники', 'incl_abs c'), Markup.callbackButton('⏪ Назад', 'exit')]
 	]).extra();
 	await ctx.reply('Выберите позиции, которые вы хотите списать', keyboard);

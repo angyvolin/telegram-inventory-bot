@@ -37,7 +37,7 @@ requestMoreRemove.action('finish', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	ctx.session.gettingId = await getEarliestActiveGetting(ctx.from.id, ctx.session.items);
-	
+
 	if (!ctx.session.gettingId) {
 		await ctx.scene.leave();
 		return KeyboardMessage.send(ctx, PersonType.WORKER, 'Активные получения с такими позициями отсутствуют!');

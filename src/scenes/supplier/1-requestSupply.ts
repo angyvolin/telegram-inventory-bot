@@ -65,7 +65,7 @@ requestSupply.action(/^manualCount>/, async (ctx: any) => {
 	const id = ctx.callbackQuery.data.split('>')[2];
 	const amount = +ctx.callbackQuery.data.split('>')[3];
 
-	ctx.session.selectedItem = {type, id, itemAmount: amount};
+	ctx.session.selectedItem = { type, id, itemAmount: amount };
 	ctx.session.baseScene = ctx.scene.current.id;
 	ctx.session.nextScene = 'supplier/requestSupplyMore';
 	ctx.session.hasLimits = false;

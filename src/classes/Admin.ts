@@ -86,7 +86,7 @@ export default class Admin {
 			}
 		}
 
-		/* 
+		/*
 		 * Флаг, который укажет, стало
 		 * ли получение пустым
 		 */
@@ -115,15 +115,15 @@ export default class Admin {
 
 		// Добавляем эти Мар в получение в БД
 		if (removedInstruments.size > 0) {
-			getting.removedInstruments = removedInstruments;			
+			getting.removedInstruments = removedInstruments;
 		}
 		if (removedFurniture.size > 0) {
-			getting.removedFurniture = removedFurniture;			
+			getting.removedFurniture = removedFurniture;
 		}
 		if (removedConsumables.size > 0) {
-			getting.removedConsumables = removedConsumables;			
+			getting.removedConsumables = removedConsumables;
 		}
-		
+
 		// Сохраняем получение
 		await getting.save();
 	}
@@ -186,7 +186,7 @@ export default class Admin {
 
 		// Текст поставщикам с уведомлением о закупке
 		const requestSupplyText = getRequestSupplyMessage(confirmation.itemsText);
-		
+
 		for (let supplier of suppliers) {
 			const id = await getChatId(supplier.username);
 			if (!id) continue;

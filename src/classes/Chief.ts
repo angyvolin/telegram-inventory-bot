@@ -12,7 +12,7 @@ export default class Chief {
 	/**
 	 * @desc Запрос на выдачу позиций работнику
 	 */
-	public static async requestGetting(ctx: any, table: string, username: string, days?: number): Promise<void> {
+	public static async requestGetting(ctx: any, table: string, username: string, days: number): Promise<void> {
 		const stockmans = await getStockmans();
 		if (!stockmans.length) {
 			return;

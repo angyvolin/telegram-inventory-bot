@@ -25,7 +25,7 @@ export default class CallbackQueryHandlers {
 			}
 		});
 
-		bot.action(/^itemAmount>/, async ctx => {
+		bot.action(/^itemAmount>/, async (ctx) => {
 			await ctx.answerCbQuery();
 		});
 
@@ -59,14 +59,22 @@ export default class CallbackQueryHandlers {
 
 		bot.action(/^viewCell>/, async (ctx: any) => {
 			await ctx.answerCbQuery();
-			if ((await isStockman(ctx.from.username)) || (await isChief(ctx.from.username))) {
+			if (
+				(await isStockman(ctx.from.username)) ||
+				(await isChief(ctx.from.username)) ||
+				(await isAdmin(ctx.from.id))
+			) {
 				Common.viewCell(ctx);
 			}
 		});
 
 		bot.action('viewOutside', async (ctx: any) => {
 			await ctx.answerCbQuery();
-			if ((await isStockman(ctx.from.username)) || (await isChief(ctx.from.username))) {
+			if (
+				(await isStockman(ctx.from.username)) ||
+				(await isChief(ctx.from.username)) ||
+				(await isAdmin(ctx.from.id))
+			) {
 				Common.viewOutside(ctx);
 			}
 		});

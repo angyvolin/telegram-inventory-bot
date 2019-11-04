@@ -32,9 +32,11 @@ export default class AdminMessage {
 		.resize()
 		.extra();
 
-	public static async send(ctx: api.ContextMessageUpdate,
-							 message: string = 'Выберите действие',
-							 page: number = 1): Promise<void> {
+	public static async send(
+		ctx: api.ContextMessageUpdate,
+		message: string = 'Выберите действие',
+		page: number = 1
+	): Promise<void> {
 		switch (page) {
 			case 1: {
 				await ctx.reply(message, this.keyboard1);

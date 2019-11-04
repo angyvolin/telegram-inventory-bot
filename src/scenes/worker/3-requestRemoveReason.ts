@@ -42,7 +42,6 @@ requestRemoveReason.action('reasonOrder', async (ctx: any) => {
 	await ctx.scene.enter('worker/requestRemoveOrder');
 });
 
-
 requestRemoveReason.action('back', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();

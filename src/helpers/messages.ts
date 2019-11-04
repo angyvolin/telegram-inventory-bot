@@ -192,9 +192,7 @@ export async function getGettingWorkerMessage(
 	return message;
 }
 
-export function getRequestSupplyMessage(
-	itemsText: string,
-): string {
+export function getRequestSupplyMessage(itemsText: string): string {
 	let message = `Поступил запрос на закупку следующих позиций:\n`;
 	message += itemsText;
 	return message;

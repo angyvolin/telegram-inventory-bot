@@ -26,7 +26,10 @@ export async function getActiveGettings(chatId: number) {
 	});
 }
 
-export async function getActiveGettingsByItems(chatId: number, items: { type: ItemType; id: string; amount: number }[]) {
+export async function getActiveGettingsByItems(
+	chatId: number,
+	items: { type: ItemType; id: string; amount: number }[]
+) {
 	const gettings = await Getting.find({
 		chatId,
 		active: true
@@ -38,17 +41,23 @@ export async function getActiveGettingsByItems(chatId: number, items: { type: It
 			const { type, id, amount } = item;
 			switch (type) {
 				case ItemType.INSTRUMENT: {
-					if (!getting.instruments) { break; }
+					if (!getting.instruments) {
+						break;
+					}
 					isAbsent = !getting.instruments.has(id) || getting.instruments.get(id) < amount;
 					break;
 				}
 				case ItemType.FURNITURE: {
-					if (!getting.furniture) { break; }
+					if (!getting.furniture) {
+						break;
+					}
 					isAbsent = !getting.furniture.has(id) || getting.furniture.get(id) < amount;
 					break;
 				}
 				case ItemType.CONSUMABLE: {
-					if (!getting.instruments) { break; }
+					if (!getting.instruments) {
+						break;
+					}
 					isAbsent = !getting.consumables.has(id) || getting.consumables.get(id) < amount;
 					break;
 				}
@@ -67,7 +76,10 @@ export async function getActiveGettingsByItems(chatId: number, items: { type: It
  * юзера с указанными позициями, которое имеет
  * наименьший срок для возврата
  */
-export async function getEarliestActiveGetting(chatId: number, items: { type: ItemType; id: string; amount: number }[]) {
+export async function getEarliestActiveGetting(
+	chatId: number,
+	items: { type: ItemType; id: string; amount: number }[]
+) {
 	const gettings = await Getting.find({
 		chatId,
 		active: true
@@ -76,7 +88,7 @@ export async function getEarliestActiveGetting(chatId: number, items: { type: It
 	let minDate; // Наименьший срок
 	for (const getting of gettings) {
 		const expires = +getting.expires;
-		
+
 		if (minDate && expires >= minDate) {
 			continue;
 		}

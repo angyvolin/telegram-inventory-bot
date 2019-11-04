@@ -1,5 +1,8 @@
+import AdminMessage from '../../controllers/admin';
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
+import { isAdmin } from '../../helpers/functions';
+import { getPerson } from '../../helpers/persons';
 import { getAbsentConsumables, getAbsentFurniture, getAbsentInstruments } from '../../helpers/items';
 
 const Scene = require('telegraf/scenes/base');
@@ -8,11 +11,16 @@ const Markup = require('telegraf/markup');
 /**
  * Сцена запроса отсутствующих товаров
  */
-const getAbsentItemsScene = new Scene('stockman/getAbsentItems');
+const getAbsentItemsScene = new Scene('getAbsentItems');
 
 getAbsentItemsScene.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.STOCKMAN);
+	const person = await getPerson(ctx.from.username);
+	if (person) {
+		await KeyboardMessage.send(ctx, person.type);
+	} else if (await isAdmin(ctx.from.id)) {
+		await AdminMessage.send(ctx);
+	}
 	ctx.session = {};
 });
 
@@ -25,7 +33,12 @@ getAbsentItemsScene.enter(async (ctx: any) => {
 	if (instruments.length && furniture.length && consumables.length) {
 		await ctx.answerCbQuery();
 		await ctx.scene.leave();
-		return KeyboardMessage.send(ctx, PersonType.STOCKMAN, 'Отсутствующих позиций не найдено');
+		const person = await getPerson(ctx.from.username);
+		if (person) {
+			return KeyboardMessage.send(ctx, person.type, 'Отсутствующих позиций не найдено');
+		} else if (await isAdmin(ctx.from.id)) {
+			return AdminMessage.send(ctx, 'Отсутствующих позиций не найдено');
+		}
 	}
 
 	let itemsCount = 0;
@@ -76,9 +89,13 @@ getAbsentItemsScene.enter(async (ctx: any) => {
 		}
 	}
 
-	//await ctx.telegram.sendMessage(ctx.from.id, message, { parse_mode: 'Markdown' });
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.STOCKMAN, message);
+	const person = await getPerson(ctx.from.username);
+	if (person) {
+		return KeyboardMessage.send(ctx, person.type, message);
+	} else if (await isAdmin(ctx.from.id)) {
+		return AdminMessage.send(ctx, message);
+	}
 });
 
 export default getAbsentItemsScene;

@@ -12,12 +12,6 @@ export default class StockmanHandlers {
 			}
 		});
 
-		bot.hears('Отсутствующие позиции', async (ctx) => {
-			if (await isStockman(ctx.from.username)) {
-				await ctx.scene.enter('stockman/getAbsentItems');
-			}
-		});
-
 		bot.hears('Создать выдачу работнику', async (ctx) => {
 			if (await isStockman(ctx.from.username)) {
 				ctx.session.items = [];

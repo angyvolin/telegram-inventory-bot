@@ -1,7 +1,9 @@
 import Cell from '../models/cell';
+import AdminMessage from '../controllers/admin';
 import KeyboardMessage from '../controllers/keyboards';
 import ItemType from '../enums/ItemType';
 import PersonType from '../enums/PersonType';
+import { isAdmin } from '../helpers/functions';
 import { getPerson } from '../helpers/persons';
 import { getItem, getOutsideConsumables, getOutsideFurniture, getOutsideInstruments } from '../helpers/items';
 
@@ -13,8 +15,12 @@ export default class Common {
 		if (!cell.instruments && !cell.furniture && !cell.consumables) {
 			await ctx.answerCbQuery();
 			await ctx.scene.leave();
-			const { type } = await getPerson(ctx.from.username);
-			return KeyboardMessage.send(ctx, type, 'Позиций в этой ячейке не найдено');
+			const person = await getPerson(ctx.from.username);
+			if (person) {
+				return KeyboardMessage.send(ctx, person.type, 'Позиций в этой ячейке не найдено');
+			} else if (await isAdmin(ctx.from.id)) {
+				return AdminMessage.send(ctx, 'Позиций в этой ячейке не найдено');
+			}
 		}
 
 		let itemsCount = 0;
@@ -71,12 +77,16 @@ export default class Common {
 			}
 		}
 
-		await ctx.telegram.sendMessage(ctx.from.id, message, { parse_mode: 'Markdown' });
+		// await ctx.telegram.sendMessage(ctx.from.id, message, { parse_mode: 'Markdown' });
 
 		await ctx.answerCbQuery();
 		await ctx.scene.leave();
-		const { type } = await getPerson(ctx.from.username);
-		return KeyboardMessage.send(ctx, type);
+		const person = await getPerson(ctx.from.username);
+		if (person) {
+			await KeyboardMessage.send(ctx, person.type, message);
+		} else if (await isAdmin(ctx.from.id)) {
+			await AdminMessage.send(ctx, message);
+		}
 	}
 
 	public static async viewOutside(ctx: any): Promise<void> {
@@ -87,8 +97,12 @@ export default class Common {
 		if (!instruments && !furniture && !consumables) {
 			await ctx.answerCbQuery();
 			await ctx.scene.leave();
-			const { type } = await getPerson(ctx.from.username);
-			return KeyboardMessage.send(ctx, type, 'Позиций вне ячеек не найдено');
+			const person = await getPerson(ctx.from.username);
+			if (person) {
+				await KeyboardMessage.send(ctx, person.type, 'Позиций вне ячеек не найдено');
+			} else if (await isAdmin(ctx.from.id)) {
+				await AdminMessage.send(ctx, 'Позиций вне ячеек не найдено');
+			}
 		}
 
 		let itemsCount = 0;
@@ -142,11 +156,15 @@ export default class Common {
 			}
 		}
 
-		await ctx.telegram.sendMessage(ctx.from.id, message, { parse_mode: 'Markdown' });
+		// await ctx.telegram.sendMessage(ctx.from.id, message, { parse_mode: 'Markdown' });
 
 		await ctx.answerCbQuery();
 		await ctx.scene.leave();
-		const { type } = await getPerson(ctx.from.username);
-		return KeyboardMessage.send(ctx, type);
+		const person = await getPerson(ctx.from.username);
+		if (person) {
+			await KeyboardMessage.send(ctx, person.type, message);
+		} else if (await isAdmin(ctx.from.id)) {
+			await AdminMessage.send(ctx, message);
+		}
 	}
 }
