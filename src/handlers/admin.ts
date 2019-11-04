@@ -100,8 +100,9 @@ export default class AdminHandlers {
 						}
 					}
 
-					if (prevPerson !== person.username)
+					if (prevPerson !== person.username && prevPerson)
 						message += '\n';
+
 					prevPerson = person.username;
 				}
 				await ctx.replyWithMarkdown(message);
