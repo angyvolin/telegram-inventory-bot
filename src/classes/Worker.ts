@@ -214,10 +214,11 @@ export default class Worker {
 	 * возвращения в будущем). Вторым аргументом передаем пары с
 	 * инструментами и количеством
 	 */
-	public static async requestRemoveInstruments(
+	public static async requestRemove(
 		ctx: any,
 		items: { type: ItemType; id: string; amount: number; measure: string }[],
-		gettingId: string
+		gettingId: string,
+		reason: string
 	): Promise<void> {
 		const admins = await getAdmins();
 
@@ -225,7 +226,7 @@ export default class Worker {
 			return;
 		}
 
-		const removeText = await getRemoveMessage(ctx.from.username, items);
+		const removeText = await getRemoveMessage(ctx.from.username, items, reason);
 		const itemsText = await getItemsMessage(items);
 		const messages = [];
 
@@ -253,16 +254,39 @@ export default class Worker {
 			});
 
 			const instruments: Map<string, number> = new Map();
+			const furniture: Map<string, number> = new Map();
+			const consumables: Map<string, number> = new Map();
 
 			/*
-			 * Заполняем Map с инструментами
+			 * Заполняем Map с соответствующими
 			 * позициями (идентификатор - количество)
 			 */
 			items.forEach((item) => {
-				instruments.set(item.id, item.amount);
+				switch (item.type) {
+					case ItemType.INSTRUMENT: {
+						instruments.set(item.id, item.amount);
+						break;
+					}
+					case ItemType.FURNITURE: {
+						furniture.set(item.id, item.amount);
+						break;
+					}
+					case ItemType.CONSUMABLE: {
+						consumables.set(item.id, item.amount);
+						break;
+					}
+				}
 			});
 
-			confirmation.instruments = instruments;
+			if (instruments.size > 0) {
+				confirmation.instruments = instruments;
+			}
+			if (furniture.size > 0) {
+				confirmation.furniture = furniture;
+			}
+			if (consumables.size > 0) {
+				confirmation.consumables = consumables;
+			}
 
 			confirmation.messages = messages;
 			confirmation.text = removeText;

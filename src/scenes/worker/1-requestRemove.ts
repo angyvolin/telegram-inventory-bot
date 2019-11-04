@@ -8,28 +8,28 @@ const Markup = require('telegraf/markup');
 /**
  * Сцена запроса получения
  */
-const requestRemoveInstruments = new Scene('worker/requestRemoveInstruments');
+const requestRemove = new Scene('worker/requestRemove');
 
-requestRemoveInstruments.command('start', async (ctx: any) => {
+requestRemove.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
 	await KeyboardMessage.send(ctx, PersonType.WORKER);
 	ctx.session = {};
 });
 
 // Точка входа в сцену
-requestRemoveInstruments.enter(async (ctx: any) => {
+requestRemove.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([
-		[Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i')],
-		[Markup.callbackButton('⏪ Назад', 'exit')]
+		[Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i'), Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f')],
+		[Markup.switchToCurrentChatButton('Расходники', 'incl_abs c'), Markup.callbackButton('⏪ Назад', 'exit')]
 	]).extra();
-	await ctx.reply('Выберите инструменты, которые вы хотите списать', keyboard);
+	await ctx.reply('Выберите позиции, которые вы хотите списать', keyboard);
 });
 
 // Увеличение количества инструментов на списание
-requestRemoveInstruments.action(/^increase>/, sendItem);
+requestRemove.action(/^increase>/, sendItem);
 
 // Подтверждение выбора инструментов
-requestRemoveInstruments.action(/^accept>/, async (ctx: any) => {
+requestRemove.action(/^accept>/, async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 
@@ -57,7 +57,7 @@ requestRemoveInstruments.action(/^accept>/, async (ctx: any) => {
 	await ctx.scene.enter('worker/requestMoreRemove');
 });
 
-requestRemoveInstruments.action(/^manualCount>/, async (ctx: any) => {
+requestRemove.action(/^manualCount>/, async (ctx: any) => {
 	const type = +ctx.callbackQuery.data.split('>')[1];
 	const id = ctx.callbackQuery.data.split('>')[2];
 	const amount = +ctx.callbackQuery.data.split('>')[3];
@@ -71,18 +71,18 @@ requestRemoveInstruments.action(/^manualCount>/, async (ctx: any) => {
 	await ctx.scene.enter('getItemCount');
 });
 
-requestRemoveInstruments.action('back', async (ctx: any) => {
+requestRemove.action('back', async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([
-		[Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i')],
-		[Markup.callbackButton('⏪ Назад', 'exit')]
-	]);
-	await ctx.reply('Выберите инструменты, которые вы хотите списать', keyboard);
+		[Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i'), Markup.switchToCurrentChatButton('Фурнитура', 'incl_abs f')],
+		[Markup.switchToCurrentChatButton('Расходники', 'incl_abs c'), Markup.callbackButton('⏪ Назад', 'exit')]
+	]).extra();
+	await ctx.reply('Выберите позиции, которые вы хотите списать', keyboard);
 });
 
-requestRemoveInstruments.action('exit', async (ctx: any) => {
+requestRemove.action('exit', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	return KeyboardMessage.send(ctx, PersonType.WORKER);
 });
 
-export default requestRemoveInstruments;
+export default requestRemove;

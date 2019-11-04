@@ -22,8 +22,7 @@ requestReturnDate.enter(async (ctx: any) => {
 	const gettings = await getActiveGettings(ctx.from.id);
 	if (!gettings.length) {
 		await ctx.scene.leave();
-		await ctx.reply('Активные получения отсутствуют!');
-		return KeyboardMessage.send(ctx, PersonType.WORKER);
+		return KeyboardMessage.send(ctx, PersonType.WORKER, 'Активные получения отсутствуют!');
 	}
 	/* Создаем Map с датами для того,
 	 * чтобы избежать дублирования дат

@@ -119,10 +119,12 @@ export async function getReturnMessage(
  */
 export async function getRemoveMessage(
 	username: string,
-	items: { type: ItemType; id: string; amount: number }[]
+	items: { type: ItemType; id: string; amount: number }[],
+	reason: string
 ): Promise<string> {
-	let message = `*Работник* @${username} желает списать инструменты:\n`;
+	let message = `*Работник* @${username} желает списать позиции:\n`;
 	message += await getItemsMessage(items);
+	message += `*Причина:* ${reason}`;
 	return message;
 }
 

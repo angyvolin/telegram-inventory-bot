@@ -26,24 +26,97 @@ export async function getActiveGettings(chatId: number) {
 	});
 }
 
-export async function getActiveGettingsByInstruments(chatId: number, instruments: { id: string; amount: number }[]) {
+export async function getActiveGettingsByItems(chatId: number, items: { type: ItemType; id: string; amount: number }[]) {
 	const gettings = await Getting.find({
 		chatId,
 		active: true
 	});
 	const arr = [];
 	for (const getting of gettings) {
-		let flag = false;
-		for (const instrument of instruments) {
-			const { id, amount } = instrument;
-			if (!getting.instruments.has(id) || getting.instruments.get(id) < amount) {
-				flag = true;
+		let isAbsent = false;
+		for (const item of items) {
+			const { type, id, amount } = item;
+			switch (type) {
+				case ItemType.INSTRUMENT: {
+					if (!getting.instruments) { break; }
+					isAbsent = !getting.instruments.has(id) || getting.instruments.get(id) < amount;
+					break;
+				}
+				case ItemType.FURNITURE: {
+					if (!getting.furniture) { break; }
+					isAbsent = !getting.furniture.has(id) || getting.furniture.get(id) < amount;
+					break;
+				}
+				case ItemType.CONSUMABLE: {
+					if (!getting.instruments) { break; }
+					isAbsent = !getting.consumables.has(id) || getting.consumables.get(id) < amount;
+					break;
+				}
 			}
 		}
-		if (flag) {
+		if (isAbsent) {
 			continue;
 		}
 		arr.push(getting);
 	}
 	return arr;
+}
+
+/**
+ * @desc Возвращает активное получение указанного
+ * юзера с указанными позициями, которое имеет
+ * наименьший срок для возврата
+ */
+export async function getEarliestActiveGetting(chatId: number, items: { type: ItemType; id: string; amount: number }[]) {
+	const gettings = await Getting.find({
+		chatId,
+		active: true
+	});
+	let earliestGetting; // Получение с ближайшим истечением срока
+	let minDate; // Наименьший срок
+	for (const getting of gettings) {
+		const expires = +getting.expires;
+		
+		if (minDate && expires >= minDate) {
+			continue;
+		}
+
+		let isAbsent = false;
+		for (const item of items) {
+			const { type, id, amount } = item;
+			switch (type) {
+				case ItemType.INSTRUMENT: {
+					if (!getting.instruments) {
+						isAbsent = true;
+					} else {
+						isAbsent = !getting.instruments.has(id) || getting.instruments.get(id) < amount;
+					}
+					break;
+				}
+				case ItemType.FURNITURE: {
+					if (!getting.furniture) {
+						isAbsent = true;
+					} else {
+						isAbsent = !getting.furniture.has(id) || getting.furniture.get(id) < amount;
+					}
+					break;
+				}
+				case ItemType.CONSUMABLE: {
+					if (!getting.consumables) {
+						isAbsent = true;
+					} else {
+						isAbsent = !getting.consumables.has(id) || getting.consumables.get(id) < amount;
+					}
+					break;
+				}
+			}
+		}
+		if (isAbsent) {
+			continue;
+		}
+
+		minDate = expires; // Переприсваиваем наименьший срок
+		earliestGetting = getting; // Запоминаем текущее получение
+	}
+	return earliestGetting ? earliestGetting._id : null;
 }

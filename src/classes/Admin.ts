@@ -8,7 +8,7 @@ const Markup = require('telegraf/markup');
 
 export default class Admin {
 	// Public
-	public static async confirmRemoveInstruments(ctx: any): Promise<void> {
+	public static async confirmRemove(ctx: any): Promise<void> {
 		const id = ctx.callbackQuery.data.split('>')[1];
 		const gettingId = ctx.callbackQuery.data.split('>')[2];
 
@@ -33,34 +33,97 @@ export default class Admin {
 		// Удаляем подтверждение с БД
 		await confirmation.remove();
 
-		// Отправляем сообщение работнику с уведомлением о списании инструментов
-		const text = '✅ Списание инструментов было подтверждено:\n' + confirmation.itemsText;
+		// Отправляем сообщение работнику с уведомлением о списании позиций
+		const text = '✅ Списание позиций было подтверждено:\n' + confirmation.itemsText;
 		await ctx.telegram.sendMessage(confirmation.chatId, text);
 
-		// Создаем Мар со списанными инструментами
-		const removed: Map<string, number> = new Map();
+		// Создаем Мар со списанными позициями
+		const removedInstruments: Map<string, number> = new Map();
+		const removedFurniture: Map<string, number> = new Map();
+		const removedConsumables: Map<string, number> = new Map();
 
-		// Заполняем этот Мар
-		for (const [id, amount] of confirmation.instruments) {
-			// Добавляем инструмент в Мар со списанными инструментами
-			removed.set(id, amount);
-			// Удаляем эти инструменты с получения
-			// (чтобы позднее не требовать их возврата)
-			const newAmount = getting.instruments.has(id) ? getting.instruments.get(id) - amount : 0;
-			if (newAmount === 0) {
-				getting.instruments.delete(id);
-			} else {
-				getting.instruments.set(id, newAmount);
+		// Заполняем эти Мар
+		if (confirmation.instruments) {
+			for (const [id, amount] of confirmation.instruments) {
+				// Добавляем инструмент в Мар со списанными инструментами
+				removedInstruments.set(id, amount);
+				// Удаляем эти инструменты с получения
+				// (чтобы позднее не требовать их возврата)
+				const newAmount = getting.instruments.has(id) ? getting.instruments.get(id) - amount : 0;
+				if (newAmount === 0) {
+					getting.instruments.delete(id);
+				} else {
+					getting.instruments.set(id, newAmount);
+				}
+			}
+		}
+		if (confirmation.furniture) {
+			for (const [id, amount] of confirmation.furniture) {
+				// Добавляем инструмент в Мар со списанными инструментами
+				removedFurniture.set(id, amount);
+				// Удаляем эти инструменты с получения
+				// (чтобы позднее не требовать их возврата)
+				const newAmount = getting.furniture.has(id) ? getting.furniture.get(id) - amount : 0;
+				if (newAmount === 0) {
+					getting.furniture.delete(id);
+				} else {
+					getting.furniture.set(id, newAmount);
+				}
+			}
+		}
+		if (confirmation.consumables) {
+			for (const [id, amount] of confirmation.consumables) {
+				// Добавляем инструмент в Мар со списанными инструментами
+				removedConsumables.set(id, amount);
+				// Удаляем эти инструменты с получения
+				// (чтобы позднее не требовать их возврата)
+				const newAmount = getting.consumables.has(id) ? getting.consumables.get(id) - amount : 0;
+				if (newAmount === 0) {
+					getting.consumables.delete(id);
+				} else {
+					getting.consumables.set(id, newAmount);
+				}
 			}
 		}
 
-		if (getting.instruments.size === 0) {
-			getting.active = false;
+		/* 
+		 * Флаг, который укажет, стало
+		 * ли получение пустым
+		 */
+		let isEmpty = true;
+
+		/*
+		 * Проверяем получение на актуальность
+		 * (остались ли позиции для возврата)
+		 */
+		if (getting.instruments) {
+			isEmpty = getting.instruments.size === 0;
+		}
+		if (getting.furniture) {
+			isEmpty = getting.furniture.size === 0;
+		}
+		if (getting.consumables) {
+			isEmpty = getting.consumables.size === 0;
 		}
 
-		// Добавляем этот Мар в получение в БД
-		getting.removed = removed;
+		/*
+		 * Получение стало пустым - делаем
+		 * его неактивным (за ним не остается
+		 * долга)
+		 */
+		getting.active = !isEmpty;
 
+		// Добавляем эти Мар в получение в БД
+		if (removedInstruments.size > 0) {
+			getting.removedInstruments = removedInstruments;			
+		}
+		if (removedFurniture.size > 0) {
+			getting.removedFurniture = removedFurniture;			
+		}
+		if (removedConsumables.size > 0) {
+			getting.removedConsumables = removedConsumables;			
+		}
+		
 		// Сохраняем получение
 		await getting.save();
 	}

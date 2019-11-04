@@ -28,8 +28,7 @@ requestReturnList.enter(async (ctx: any) => {
 
 	if (!gettings) {
 		await ctx.scene.leave();
-		await ctx.reply('Активные получения отсутствуют!');
-		return KeyboardMessage.send(ctx, PersonType.WORKER);
+		return KeyboardMessage.send(ctx, PersonType.WORKER, 'Активные получения отсутствуют!');
 	}
 	/*
 	 * Создаем Map с сообщениями для каждого

@@ -6,6 +6,7 @@ import addAdmins from '../scenes/addAdmins/addAdmins';
 import addPhotoGetItem from '../scenes/addPhoto/1-getItem';
 import addPhotoGetPhoto from '../scenes/addPhoto/2-getPhoto';
 import getAddresses from '../scenes/common/getAddresses';
+import getItemCount from '../scenes/common/getItemCount';
 // Worker scenes
 import requestGetting from '../scenes/worker/1-requestGetting';
 import requestGettingDate from '../scenes/worker/2-requestGettingDate';
@@ -13,10 +14,10 @@ import requestMoreItems from '../scenes/worker/3-requestMoreItems';
 import requestReturnDate from '../scenes/worker/1-requestReturnDate';
 import requestReturnList from '../scenes/worker/2-requestReturnList';
 import requestReturnGetting from '../scenes/worker/3-requestReturnGetting';
-import requestRemoveInstruments from '../scenes/worker/1-requestRemoveInstruments';
+import requestRemove from '../scenes/worker/1-requestRemove';
 import requestMoreRemove from '../scenes/worker/2-requestMoreRemove';
-import requestRemoveList from '../scenes/worker/3-requestRemoveList';
-import requestRemoveConfirm from '../scenes/worker/4-requestRemoveConfirm';
+import requestRemoveReason from '../scenes/worker/3-requestRemoveReason';
+import requestRemoveOrder from '../scenes/worker/4-requestRemoveOrder';
 // Admin scenes
 import getItemType from '../scenes/addItem/1-getItemType';
 import getItemName from '../scenes/addItem/2-getItemName';
@@ -53,8 +54,6 @@ import requestChiefPurchaseAmount from '../scenes/chief/5-requestChiefPurchaseAm
 import getItemMeasure from '../scenes/addItem/4-getItemMeasure';
 import getItemDesc from '../scenes/addItem/5-getItemDesc';
 
-import getItemCount from '../scenes/getItemCount';
-
 const Stage = require('telegraf/stage');
 
 export default class Scenes {
@@ -89,10 +88,10 @@ export default class Scenes {
 			stage.register(requestReturnDate); // Сцена запроса на возврат, выбор даты получения
 			stage.register(requestReturnList); // Сцена запроса на возврат, выбор конкретного получения
 			stage.register(requestReturnGetting); // Сцена запроса на возврат, подтверждение конкретного получения
-			stage.register(requestRemoveInstruments); // Сцена запроса на списание инструментов
+			stage.register(requestRemove); // Сцена запроса на списание инструментов
 			stage.register(requestMoreRemove); // Сцена запроса на выбор еще инструментов при списании
-			stage.register(requestRemoveList); // Сцена запроса на выдачу списов активных получений при списании инструментов
-			stage.register(requestRemoveConfirm); // Сцена запроса на подтверждение списания
+			stage.register(requestRemoveReason); // Сцена запроса на причину списания
+			stage.register(requestRemoveOrder); // Сцена запроса на номер заказа для списания
 
 			// Сцены Supplier
 			stage.register(requestPurchase);

@@ -81,7 +81,7 @@ export default class AdminHandlers {
 		bot.action(/^approveRemove>/, async (ctx: any) => {
 			await ctx.answerCbQuery();
 			if (await isAdmin(ctx.from.id)) {
-				Admin.confirmRemoveInstruments(ctx);
+				Admin.confirmRemove(ctx);
 			}
 		});
 
