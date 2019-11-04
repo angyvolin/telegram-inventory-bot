@@ -1,8 +1,8 @@
+import AdminMessage from '../../controllers/admin';
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
 import { sendItemWithLimits } from '../../helpers/handlers';
 import { isAdmin } from '../../helpers/functions';
-import AdminMessage from '../../controllers/admin';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');

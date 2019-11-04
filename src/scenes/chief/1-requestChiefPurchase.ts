@@ -1,5 +1,7 @@
+import AdminMessage from '../../controllers/admin';
 import KeyboardMessage from '../../controllers/keyboards';
 import PersonType from '../../enums/PersonType';
+import { isAdmin } from '../../helpers/functions';
 import { sendItem } from '../../helpers/handlers';
 
 const Scene = require('telegraf/scenes/base');
@@ -12,7 +14,11 @@ const requestChiefPurchase = new Scene('chief/requestChiefPurchase');
 
 requestChiefPurchase.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.CHIEF);
+	if (await isAdmin(ctx.from.id)) {
+		return AdminMessage.send(ctx);
+	} else {
+		return KeyboardMessage.send(ctx, PersonType.CHIEF);
+	}
 	ctx.session = {};
 });
 
@@ -102,7 +108,11 @@ requestChiefPurchase.action('back', async (ctx: any) => {
 requestChiefPurchase.action('exit', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	return KeyboardMessage.send(ctx, PersonType.CHIEF);
+	if (await isAdmin(ctx.from.id)) {
+		return AdminMessage.send(ctx);
+	} else {
+		return KeyboardMessage.send(ctx, PersonType.CHIEF);
+	}
 });
 
 export default requestChiefPurchase;
