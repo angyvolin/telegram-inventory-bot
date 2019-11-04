@@ -20,7 +20,7 @@ requestRemoveInstruments.command('start', async (ctx: any) => {
 requestRemoveInstruments.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([
 		[Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i')],
-		[Markup.callbackButton('Назад', 'back')]
+		[Markup.callbackButton('⏪ Назад', 'exit')]
 	]).extra();
 	await ctx.reply('Выберите инструменты, которые вы хотите списать', keyboard);
 });
@@ -60,7 +60,7 @@ requestRemoveInstruments.action(/^accept>/, async (ctx: any) => {
 requestRemoveInstruments.action('back', async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([
 		[Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i')],
-		[Markup.callbackButton('Назад', 'back')]
+		[Markup.callbackButton('⏪ Назад', 'exit')]
 	]);
 	await ctx.reply('Выберите инструменты, которые вы хотите списать', keyboard);
 });

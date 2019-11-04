@@ -45,15 +45,7 @@ export default class StockmanHandlers {
 		bot.action(/^approveReturn>/, async (ctx) => {
 			await ctx.answerCbQuery();
 			if (await isStockman(ctx.from.username)) {
-				Stockman.confirmReturnInstruments(ctx);
-			}
-		});
-
-		// Подтверждение возврата остатков (фурнитуры / расходников)
-		bot.action(/^approveReturnRemains>/, async (ctx) => {
-			await ctx.answerCbQuery();
-			if (await isStockman(ctx.from.username)) {
-				Stockman.confirmReturnRemains(ctx);
+				Stockman.confirmReturn(ctx);
 			}
 		});
 	}

@@ -16,11 +16,11 @@ export default class CallbackQueryHandlers {
 				try {
 					await dismissAdmin(+ctx.callbackQuery.data.split('>')[1]);
 					await ctx.answerCbQuery();
-					await ctx.reply('Админ успешно отстранён ✔️', AdminMessage.keyboard);
+					await ctx.reply('Админ успешно отстранён ✔️', AdminMessage.keyboard1);
 				} catch (err) {
 					Logger.error(err);
 					await ctx.answerCbQuery();
-					await ctx.reply('Не удалось отстранить админа, приносим извинения', AdminMessage.keyboard);
+					await ctx.reply('Не удалось отстранить админа, приносим извинения', AdminMessage.keyboard1);
 				}
 			}
 		});

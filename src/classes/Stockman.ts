@@ -227,7 +227,7 @@ export default class Stockman {
 	 * @desc Подтверждение возврата инструментов
 	 * работником на склад
 	 */
-	public static async confirmReturnInstruments(ctx: any): Promise<void> {
+	public static async confirmReturn(ctx: any): Promise<void> {
 		const id = ctx.callbackQuery.data.split('>')[1];
 		const gettingId = ctx.callbackQuery.data.split('>')[2];
 
@@ -252,73 +252,36 @@ export default class Stockman {
 		 * buttons to confirm the return
 		 */
 		const keyboard = Markup.inlineKeyboard([
-			Markup.callbackButton('✅ Вернул инструменты', `confirmReturn>${id}>${gettingId}`)
+			Markup.callbackButton('✅ Вернул позиции', `confirmReturn>${id}>${gettingId}`)
 		]);
 		const text =
-			'✅ Инструменты были успешно возвращены:\n' +
+			'✅ Позиции были успешно возвращены:\n' +
 			confirmation.itemsText +
-			'\n❗️Подтвердите получение нажатием кнопки ниже:';
+			'\n❗️Подтвердите возврат нажатием кнопки ниже:';
 		const options = {
 			reply_markup: keyboard
 		};
 		await ctx.telegram.sendMessage(confirmation.chatId, text, options);
 
 		const items: { name: string; cellName: string }[] = [];
-		for (const [id, amount] of getting.instruments) {
-			const cell = await getCell(ItemType.INSTRUMENT, id);
-			const cellName = cell ? cell.row + cell.col : null;
-			const { name } = await Instrument.findById(id);
-			items.push({ cellName, name });
+		if (getting.instruments) {
+			for (const [id, amount] of getting.instruments) {
+				const cell = await getCell(ItemType.INSTRUMENT, id);
+				const cellName = cell ? cell.row + cell.col : null;
+				const { name } = await Instrument.findById(id);
+				items.push({ cellName, name });
+			}
 		}
-
-		const message = 'Разместите поставленные позиции в соответствии со списком:\n' + (await getCellsMessage(items));
-		await ctx.reply(message);
-	}
-
-	/**
-	 * @desc Подтверждение возврата остатков
-	 * (фурнитуры / расходников) работником на склад
-	 */
-	public static async confirmReturnRemains(ctx: any): Promise<void> {
-		const id = ctx.callbackQuery.data.split('>')[1];
-		const confirmation = await Confirmation.findById(id);
-
-		if (!confirmation) {
-			return;
-		}
-
-		const messages = confirmation.messages;
-
-		for (const message of messages) {
-			const text = confirmation.text + '\n❗️Ожидание подтверждения возврата работника';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {
-				parse_mode: 'Markdown'
-			});
-		}
-
-		const keyboard = Markup.inlineKeyboard([
-			Markup.callbackButton('✅ Вернул остатки', `confirmReturnRemains>${id}`)
-		]);
-		const text =
-			'✅ Остатки были успешно возвращены:\n' +
-			confirmation.itemsText +
-			'\n❗️Подтвердите получение нажатием кнопки ниже:';
-		const options = {
-			reply_markup: keyboard
-		};
-		await ctx.telegram.sendMessage(confirmation.chatId, text, options);
-
-		const items: { name: string; cellName: string }[] = [];
-		if (confirmation.furniture) {
-			for (const [id, amount] of confirmation.furniture.entries()) {
+		if (getting.furniture) {
+			for (const [id, amount] of getting.furniture) {
 				const cell = await getCell(ItemType.FURNITURE, id);
 				const cellName = cell ? cell.row + cell.col : null;
 				const { name } = await Furniture.findById(id);
 				items.push({ cellName, name });
 			}
 		}
-		if (confirmation.consumables) {
-			for (const [id, amount] of confirmation.consumables.entries()) {
+		if (getting.consumables) {
+			for (const [id, amount] of getting.consumables) {
 				const cell = await getCell(ItemType.CONSUMABLE, id);
 				const cellName = cell ? cell.row + cell.col : null;
 				const { name } = await Consumable.findById(id);

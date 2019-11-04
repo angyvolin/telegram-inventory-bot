@@ -39,12 +39,12 @@ addAdmins.on('message', async (ctx: any) => {
 
 		await ctx.scene.leave();
 		await addAdmin(chatId, username, name); // Добавляем админа
-		await ctx.reply('Операция прошла успешно! 🎉', AdminMessage.keyboard);
+		await ctx.reply('Операция прошла успешно! 🎉', AdminMessage.keyboard1);
 		Logger.notify(`Новый админ(${chatId}) добавлен! 🎉 Админ: @${ctx.message.forward_from.username}`);
 	} catch (err) {
 		await ctx.reply(
 			'Не удалось добавить новых админов, приносим извинения.\nВозможно, Вы ввели некорректные данные',
-			AdminMessage.keyboard
+			AdminMessage.keyboard1
 		);
 		Logger.error(err.message);
 	}

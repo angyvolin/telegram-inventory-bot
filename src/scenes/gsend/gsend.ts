@@ -29,10 +29,10 @@ gsend.enter(async (ctx: any) => {
 gsend.on('text', async (ctx: any) => {
 	try {
 		await sendGlobal(ctx);
-		await ctx.reply('Рассылка успешно проведена! 🎉', AdminMessage.keyboard);
+		await ctx.reply('Рассылка успешно проведена! 🎉', AdminMessage.keyboard1);
 		Logger.notify(`Рассылка успешно проведена! 🎉 Админ: @${ctx.from.username}; Сообщение: "${ctx.message.text}"`);
 	} catch (err) {
-		await ctx.reply('Не удалось выполнить рассылку, приносим извинения', AdminMessage.keyboard);
+		await ctx.reply('Не удалось выполнить рассылку, приносим извинения', AdminMessage.keyboard1);
 		Logger.error(err.message);
 	}
 	await ctx.scene.leave();

@@ -22,7 +22,7 @@ requestReturnGetting.enter(async (ctx: any) => {
 		[Markup.callbackButton('✅ Подтвердить', `approveRequestReturn>${ctx.session.gettingId}`)],
 		[Markup.callbackButton('⏪ Назад', 'back')]
 	]).extra();
-	await ctx.reply(ctx.session.instrumentMessages[ctx.session.gettingId], keyboard);
+	await ctx.reply(ctx.session.itemsMessages[ctx.session.gettingId], keyboard);
 });
 
 requestReturnGetting.action(/^approveRequestReturn/, async (ctx: any) => {
@@ -35,8 +35,7 @@ requestReturnGetting.action(/^approveRequestReturn/, async (ctx: any) => {
 	 * для того, чтобы нельзя было повторно подтвердить
 	 */
 	await ctx.editMessageText(ctx.update.callback_query.message.text, { parse_mode: 'Markdown' });
-	//await ctx.reply('Ваша заявка успешно отправлена! Отправляйтесь на возврат');
-	await Worker.requestReturnInstruments(ctx, gettingId);
+	await Worker.requestReturn(ctx, gettingId);
 	return KeyboardMessage.send(ctx, PersonType.WORKER, 'Ваша заявка успешно отправлена! Отправляйтесь на возврат');
 });
 

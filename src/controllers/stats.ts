@@ -7,7 +7,7 @@ export default class StatsMessage {
 		let allUsersCount = await getAllUsersCount();
 		await ctx.replyWithMarkdown(
 			`*Статистика 📊*\n\nКол-во пользователей: *${allUsersCount}*`,
-			AdminMessage.keyboard
+			AdminMessage.keyboard1
 		);
 	}
 }

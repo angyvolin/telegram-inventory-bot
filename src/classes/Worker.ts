@@ -26,7 +26,7 @@ export default class Worker {
 	public static async requestGetting(
 		ctx: any,
 		items: { type: ItemType; id: string; amount: number; measure: string }[],
-		days?: number
+		days: number
 	): Promise<void> {
 		if (!items.length) {
 			return;
@@ -113,14 +113,12 @@ export default class Worker {
 		if (consumables.size > 0) {
 			confirmation.consumables = consumables;
 		}
-		if (days) {
-			confirmation.days = days;
-		}
 
 		confirmation.messages = messages;
 		confirmation.text = gettingText;
 		confirmation.itemsText = itemsText;
 		confirmation.chatId = ctx.from.id;
+		confirmation.days = days;
 		await confirmation.save();
 	}
 
@@ -128,24 +126,45 @@ export default class Worker {
 	 * @desc Запрос на возврат инструментов
 	 * работника кладовщику
 	 */
-	public static async requestReturnInstruments(ctx: any, gettingId: string): Promise<void> {
+	public static async requestReturn(ctx: any, gettingId: string): Promise<void> {
 		const getting = await Getting.findById(gettingId);
 		const stockmans = await getStockmans();
+
 		if (!getting || !stockmans.length) {
 			return;
 		}
 
-		const instruments = [];
-		for (const [id, amount] of getting.instruments.entries()) {
-			instruments.push({
-				type: ItemType.INSTRUMENT,
-				id: id.toString(),
-				amount: amount
-			});
+		const items = [];
+		if (getting.instruments) {
+			for (const [id, amount] of getting.instruments.entries()) {
+				items.push({
+					type: ItemType.INSTRUMENT,
+					id: id.toString(),
+					amount: amount
+				});
+			}
+		}
+		if (getting.furniture) {
+			for (const [id, amount] of getting.furniture.entries()) {
+				items.push({
+					type: ItemType.FURNITURE,
+					id: id.toString(),
+					amount: amount
+				});
+			}
+		}
+		if (getting.consumables) {
+			for (const [id, amount] of getting.consumables.entries()) {
+				items.push({
+					type: ItemType.CONSUMABLE,
+					id: id.toString(),
+					amount: amount
+				});
+			}
 		}
 
-		const returnText = await getReturnMessage(ctx.from.username, instruments);
-		const itemsText = await getItemsMessage(instruments);
+		const returnText = await getReturnMessage(ctx.from.username, items);
+		const itemsText = await getItemsMessage(items);
 		const messages = [];
 
 		const confirmation = new Confirmation();
@@ -175,88 +194,6 @@ export default class Worker {
 				id: message.message_id,
 				chatId: id
 			});
-		}
-
-		confirmation.messages = messages;
-		confirmation.text = returnText;
-		confirmation.itemsText = itemsText;
-		confirmation.chatId = ctx.from.id;
-		await confirmation.save();
-	}
-
-	/**
-	 * @desc Запрос на возврат остатков
-	 * (фурнитуры / расходников) работника кладовщику
-	 */
-	public static async requestReturnRemains(
-		ctx: any,
-		items: { type: ItemType; id: string; amount: number; measure: string }[]
-	): Promise<void> {
-		if (!items.length) {
-			return;
-		}
-		const stockmans = await getStockmans();
-		if (!stockmans.length) {
-			return;
-		}
-
-		const returnText = await getReturnMessage(ctx.from.username, items);
-		const itemsText = await getItemsMessage(items);
-		const messages = [];
-
-		const confirmation = new Confirmation();
-		const confirmationId = confirmation._id;
-
-		for (let stockman of stockmans) {
-			const id = await getChatId(stockman.username);
-			if (!id) continue;
-
-			const keyboard = Markup.inlineKeyboard([
-				[Markup.callbackButton('✅ Получил позиции обратно', `approveReturnRemains>${confirmationId}`)],
-				[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]
-			]);
-
-			// Отправляем сообщение кладовщику
-			const message = await ctx.telegram.sendMessage(
-				id,
-				returnText + '\n❗️После возврата подтвердите нажатием кнопки ниже\n',
-				{
-					reply_markup: keyboard,
-					parse_mode: 'Markdown'
-				}
-			);
-			// Добавление сообщения в массив
-			messages.push({
-				id: message.message_id,
-				chatId: id
-			});
-		}
-
-		const furniture: Map<string, number> = new Map();
-		const consumables: Map<string, number> = new Map();
-
-		/*
-		 * Заполняем Map с соответствующими
-		 * позициями (идентификатор - количество)
-		 */
-		items.forEach((item) => {
-			switch (item.type) {
-				case ItemType.FURNITURE: {
-					furniture.set(item.id, item.amount);
-					break;
-				}
-				case ItemType.CONSUMABLE: {
-					consumables.set(item.id, item.amount);
-					break;
-				}
-			}
-		});
-
-		if (furniture.size > 0) {
-			confirmation.furniture = furniture;
-		}
-		if (consumables.size > 0) {
-			confirmation.consumables = consumables;
 		}
 
 		confirmation.messages = messages;
@@ -362,12 +299,6 @@ export default class Worker {
 
 		// Заполняем инструменты
 		if (confirmation.instruments) {
-			/*
-			 * Делаем Getting активным. Это значит,
-			 * что он содержит в себе инструменты, которые
-			 * нужно будет вернуть
-			 */
-			insertDoc.active = true;
 			// Добавляем инструменты в insertDoc
 			insertDoc.instruments = confirmation.instruments;
 			// Перебираем все инструменты в подтверждении
@@ -417,11 +348,16 @@ export default class Worker {
 				}
 			}
 		}
-		if (confirmation.days) {
-			// У подтверждения есть срок
-			// Вычисляем дату возврата инструментов
-			insertDoc.expires = new Date(Date.now() + confirmation.days * 24 * 60 * 60 * 1000);
-		}
+
+		// У подтверждения есть срок
+		// Вычисляем дату возврата инструментов
+		insertDoc.expires = new Date(Date.now() + confirmation.days * 24 * 60 * 60 * 1000);
+		/*
+		 * Делаем Getting активным. Это значит,
+		 * что он содержит в себе инструменты, которые
+		 * нужно будет вернуть
+		 */
+		insertDoc.active = true;
 
 		/** Создаем новый Getting в БД и
 		 *заполняем его данными из insertDoc
@@ -451,7 +387,7 @@ export default class Worker {
 		await ctx.editMessageText(text, { parse_mode: 'Markdown' });
 	}
 
-	public static async confirmReturnInstruments(ctx: any): Promise<void> {
+	public static async confirmReturn(ctx: any): Promise<void> {
 		const id = ctx.callbackQuery.data.split('>')[1];
 		const gettingId = ctx.callbackQuery.data.split('>')[2];
 
@@ -476,68 +412,28 @@ export default class Worker {
 
 		await confirmation.remove();
 
-		for (const [id, amount] of getting.instruments) {
-			await addItem(ItemType.INSTRUMENT, id, amount);
-			const cell = await getCell(ItemType.INSTRUMENT, id);
-			if (cell) {
-				await addToCell(cell._id, ItemType.INSTRUMENT, id, amount);
-			}
-		}
-
-		const text = ctx.update.callback_query.message.text + '\n\n✅ Подтверждено';
-		await ctx.editMessageText(text, { parse_mode: 'Markdown' });
-	}
-
-	public static async confirmReturnRemains(ctx: any): Promise<void> {
-		const id = ctx.callbackQuery.data.split('>')[1];
-		const confirmation = await Confirmation.findById(id);
-
-		console.log(id);
-		console.dir(confirmation);
-
-		if (!confirmation) {
-			return;
-		}
-
-		const messages = confirmation.messages;
-
-		for (const message of messages) {
-			const text = confirmation.text + '\n✅ Работник подтвердил возврат';
-			await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {
-				parse_mode: 'Markdown'
-			});
-		}
-
-		await confirmation.remove();
-
-		if (confirmation.instruments) {
-			for (const [id, amount] of confirmation.instruments) {
+		if (getting.instruments) {
+			for (const [id, amount] of getting.instruments) {
 				await addItem(ItemType.INSTRUMENT, id, amount);
 				const cell = await getCell(ItemType.INSTRUMENT, id);
-				const cellName = cell ? cell.row + cell.col : null;
-				const { name } = await Instrument.findById(id);
 				if (cell) {
 					await addToCell(cell._id, ItemType.INSTRUMENT, id, amount);
 				}
 			}
 		}
-		if (confirmation.furniture) {
-			for (const [id, amount] of confirmation.furniture) {
+		if (getting.furniture) {
+			for (const [id, amount] of getting.furniture) {
 				await addItem(ItemType.FURNITURE, id, amount);
 				const cell = await getCell(ItemType.FURNITURE, id);
-				const cellName = cell ? cell.row + cell.col : null;
-				const { name } = await Furniture.findById(id);
 				if (cell) {
 					await addToCell(cell._id, ItemType.FURNITURE, id, amount);
 				}
 			}
 		}
-		if (confirmation.consumables) {
-			for (const [id, amount] of confirmation.consumables) {
+		if (getting.consumables) {
+			for (const [id, amount] of getting.consumables) {
 				await addItem(ItemType.CONSUMABLE, id, amount);
 				const cell = await getCell(ItemType.CONSUMABLE, id);
-				const cellName = cell ? cell.row + cell.col : null;
-				const { name } = await Consumable.findById(id);
 				if (cell) {
 					await addToCell(cell._id, ItemType.CONSUMABLE, id, amount);
 				}

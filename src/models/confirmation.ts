@@ -11,7 +11,7 @@ export interface IConfirmation extends Document {
 	instruments?: Map<string, number>;
 	furniture?: Map<string, number>;
 	consumables?: Map<string, number>;
-	days?: number; // Количество дней (если требуется)
+	days?: number; // Количество дней
 }
 
 // Схема получения

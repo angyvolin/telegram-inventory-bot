@@ -35,7 +35,7 @@ requestReturnList.enter(async (ctx: any) => {
 	 * Создаем Map с сообщениями для каждого
 	 * получения по выбранной дате
 	 */
-	ctx.session.instrumentMessages = new Map();
+	ctx.session.itemsMessages = new Map();
 	// Массив с кнопками
 	const buttons = [];
 	// Перебираем все получения по выбранной дате
@@ -43,21 +43,41 @@ requestReturnList.enter(async (ctx: any) => {
 		const gettingId = getting._id.toString();
 
 		// Составляем массив определенного типа с инструментами
-		let instruments = [];
-		for (const [id, amount] of Object.entries(getting.instruments)) {
-			instruments.push({
-				type: ItemType.INSTRUMENT,
-				id: id,
-				amount: amount
-			});
+		let items = [];
+		if (getting.instruments) {
+			for (const [id, amount] of Object.entries(getting.instruments)) {
+				items.push({
+					type: ItemType.INSTRUMENT,
+					id: id,
+					amount: amount
+				});
+			}
+		}
+		if (getting.furniture) {
+			for (const [id, amount] of Object.entries(getting.furniture)) {
+				items.push({
+					type: ItemType.FURNITURE,
+					id: id,
+					amount: amount
+				});
+			}
+		}
+		if (getting.consumables) {
+			for (const [id, amount] of Object.entries(getting.consumables)) {
+				items.push({
+					type: ItemType.CONSUMABLE,
+					id: id,
+					amount: amount
+				});
+			}
 		}
 
 		// Получаем сообщение со списком инструментов
-		const instrumentMessage = await getItemsMessage(instruments);
+		const itemsMessage = await getItemsMessage(items);
 		// Пишем в Map
-		ctx.session.instrumentMessages.set(gettingId, instrumentMessage);
+		ctx.session.itemsMessages.set(gettingId, itemsMessage);
 		// Добавляем кнопку
-		buttons.push(Markup.callbackButton(instrumentMessage, `returnList>${gettingId}`));
+		buttons.push(Markup.callbackButton(itemsMessage, `returnList>${gettingId}`));
 	}
 	buttons.push(Markup.callbackButton('⏪ Назад', 'back'));
 	const keyboard = Markup.inlineKeyboard(buttons, { columns: 1 }).extra();

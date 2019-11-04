@@ -13,8 +13,6 @@ import requestMoreItems from '../scenes/worker/3-requestMoreItems';
 import requestReturnDate from '../scenes/worker/1-requestReturnDate';
 import requestReturnList from '../scenes/worker/2-requestReturnList';
 import requestReturnGetting from '../scenes/worker/3-requestReturnGetting';
-import requestReturnRemains from '../scenes/worker/1-requestReturnRemains';
-import requestMoreRemains from '../scenes/worker/2-requestMoreRemains';
 import requestRemoveInstruments from '../scenes/worker/1-requestRemoveInstruments';
 import requestMoreRemove from '../scenes/worker/2-requestMoreRemove';
 import requestRemoveList from '../scenes/worker/3-requestRemoveList';
@@ -91,8 +89,6 @@ export default class Scenes {
 			stage.register(requestReturnDate); // Сцена запроса на возврат, выбор даты получения
 			stage.register(requestReturnList); // Сцена запроса на возврат, выбор конкретного получения
 			stage.register(requestReturnGetting); // Сцена запроса на возврат, подтверждение конкретного получения
-			stage.register(requestReturnRemains); // Сцена запроса на возврат остатков (фурнитуры / расходников)
-			stage.register(requestMoreRemains); // Сцена запроса на выбор больших остатков
 			stage.register(requestRemoveInstruments); // Сцена запроса на списание инструментов
 			stage.register(requestMoreRemove); // Сцена запроса на выбор еще инструментов при списании
 			stage.register(requestRemoveList); // Сцена запроса на выдачу списов активных получений при списании инструментов

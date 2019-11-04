@@ -36,15 +36,7 @@ requestMoreItems.action('finish', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
 	const { items } = ctx.session;
-
-	for (let item of items) {
-		if (item.type === ItemType.INSTRUMENT) {
-			return ctx.scene.enter('worker/requestGettingDate');
-		}
-	}
-	//await ctx.reply('Ваша заявка успешно отправлена! Отправляйтесь на получение');
-	await Worker.requestGetting(ctx, ctx.session.items);
-	return KeyboardMessage.send(ctx, PersonType.WORKER, 'Ваша заявка успешно отправлена! Отправляйтесь на получение');
+	return ctx.scene.enter('worker/requestGettingDate');
 });
 
 requestMoreItems.action('back', async (ctx: any) => {

@@ -19,7 +19,7 @@ requestGettingDate.command('start', async (ctx: any) => {
 // Точка входа в сцену
 requestGettingDate.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
-	await ctx.replyWithMarkdown('На сколько дней Вы хотите арендовать инструмент(ы)?', keyboard);
+	await ctx.replyWithMarkdown('На сколько дней Вы хотите арендовать позиции?', keyboard);
 });
 
 requestGettingDate.on('text', async (ctx) => {
@@ -29,7 +29,6 @@ requestGettingDate.on('text', async (ctx) => {
 	}
 	const days = term[0];
 	await ctx.scene.leave();
-	//await ctx.reply('Ваша заявка успешно отправлена! Отправляйтесь на получение');
 	await Worker.requestGetting(ctx, ctx.session.items, days);
 	return KeyboardMessage.send(ctx, PersonType.WORKER, 'Ваша заявка успешно отправлена! Отправляйтесь на получение');
 });
