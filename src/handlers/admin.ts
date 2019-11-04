@@ -6,7 +6,6 @@ import StatsMessage from '../controllers/stats';
 import { getUsernameByChatId, isAdmin } from '../helpers/functions';
 import Getting from '../models/getting';
 import Person from '../models/person';
-import PersonType from '../enums/PersonType';
 import Instrument from '../classes/Instrument';
 import Furniture from '../classes/Furniture';
 import Consumable from '../classes/Consumable';
@@ -71,12 +70,11 @@ export default class AdminHandlers {
 				}
 				let message = '*Список должников:*\n\n';
 				for (let getting of gettings) {
-					const worker = await Person.findOne({
-						type: PersonType.WORKER,
+					let person = await Person.findOne({
 						username: await getUsernameByChatId(getting.chatId)
 					});
 
-					message += `🔹 ${worker.fullName}:\n`;
+					message += `🔹 ${person.fullName}:\n`;
 
 					if (getting.instruments) {
 						for (let item of getting.instruments) {
