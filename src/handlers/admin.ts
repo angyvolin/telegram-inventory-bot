@@ -1,10 +1,15 @@
 import * as api from 'telegraf';
 import Admin from '../classes/Admin';
 import AdminMessage from '../controllers/admin';
-import AdminsHelpMessage from '../controllers/adminHelp';
 import AdminsListMessage from '../controllers/adminsList';
 import StatsMessage from '../controllers/stats';
-import { isAdmin } from '../helpers/functions';
+import { getUsernameByChatId, isAdmin } from '../helpers/functions';
+import Getting from '../models/getting';
+import Person from '../models/person';
+import PersonType from '../enums/PersonType';
+import Instrument from '../classes/Instrument';
+import Furniture from '../classes/Furniture';
+import Consumable from '../classes/Consumable';
 
 export default class AdminHandlers {
 	public static init(bot: api.Telegraf<api.ContextMessageUpdate>) {
@@ -54,6 +59,49 @@ export default class AdminHandlers {
 		bot.hears('Список админов 📃', async (ctx: api.ContextMessageUpdate) => {
 			if (await isAdmin(ctx.from.id)) {
 				await AdminsListMessage.send(ctx);
+			}
+		});
+
+		bot.hears('Просмотреть должников', async (ctx: any) => {
+			if (await isAdmin(ctx.from.id)) {
+				const gettings = await Getting.find({active: true});
+
+				if (!gettings.length) {
+					return ctx.reply('На данный момент должников нет');
+				}
+				let message = '*Список должников:*\n\n';
+				for (let getting of gettings) {
+					const worker = await Person.findOne({
+						type: PersonType.WORKER,
+						username: await getUsernameByChatId(getting.chatId)
+					});
+
+					message += `🔹 ${worker.fullName}:\n`;
+
+					if (getting.instruments) {
+						for (let item of getting.instruments) {
+							const {name, measure} = await Instrument.getItem(item[0]);
+							message += `${name} – ${item[1]} ${measure}\n`;
+						}
+					}
+
+					if (getting.furniture) {
+						for (let item of getting.furniture.entries()) {
+							const {name, measure} = await Furniture.getItem(item[0]);
+							message += `${name} – ${item[1]} ${measure}\n`;
+						}
+					}
+
+					if (getting.consumables) {
+						for (let item of getting.consumables.entries()) {
+							const {name, measure} = await Consumable.getItem(item[0]);
+							message += `${name} – ${item[1]} ${measure}\n`;
+						}
+					}
+
+					message += '\n';
+				}
+				await ctx.replyWithMarkdown(message);
 			}
 		});
 

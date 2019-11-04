@@ -100,3 +100,7 @@ export async function dismissAdmin(chatId: number): Promise<void> {
 		throw new Error(`Ошибка при отстранении админа: ${err.message}`);
 	}
 }
+
+export async function getUsernameByChatId(chatId: number): Promise<string> {
+	return (await User.findOne({chatId})).username;
+}
