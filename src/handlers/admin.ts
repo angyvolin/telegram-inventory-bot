@@ -58,21 +58,21 @@ export default class AdminHandlers {
 		});
 
 		// Обработчик для перехода на страницу 1
-		bot.hears(/Страница 1/, async (ctx: api.ContextMessageUpdate) => {
+		bot.hears(/Страница 1/, async (ctx: any) => {
 			if (await isAdmin(ctx.from.id)) {
 				await AdminMessage.send(ctx);
 			}
 		});
 
 		// Обработчик для перехода на страницу 1
-		bot.hears(/Страница 2/, async (ctx: api.ContextMessageUpdate) => {
+		bot.hears(/Страница 2/, async (ctx: any) => {
 			if (await isAdmin(ctx.from.id)) {
 				await AdminMessage.send(ctx, 'Выберите действие', 2);
 			}
 		});
 
 		// Обработчик для перехода на страницу 1
-		bot.hears(/Страница 3/, async (ctx: api.ContextMessageUpdate) => {
+		bot.hears(/Страница 3/, async (ctx: any) => {
 			if (await isAdmin(ctx.from.id)) {
 				await AdminMessage.send(ctx, 'Выберите действие', 3);
 			}
