@@ -43,8 +43,36 @@ export default class CallbackQueryHandlers {
 				const messages = confirmation.messages;
 
 				for (const message of messages) {
-					const text = confirmation.text + '\n' + '❌ Отклонено';
+					const text = confirmation.text + '\n❌ Отклонено';
 					await ctx.telegram.editMessageText(message.chatId, message.id, message.id, text, {
+						parse_mode: 'Markdown'
+					});
+				}
+
+				const message = confirmation.itemsText ? confirmation.itemsText : confirmation.text;
+				const text = '❌ Ваша заявка была отклонена:\n\n' + message;
+
+				await confirmation.remove();
+				await ctx.telegram.sendMessage(confirmation.chatId, text, { parse_mode: 'Markdown' });
+			}
+		});
+
+		// Отклонение запроса
+		bot.action(/^declineRequestCaption>/, async (ctx) => {
+			await ctx.answerCbQuery();
+			if ((await isStockman(ctx.from.username)) || (await isAdmin(ctx.from.id))) {
+				const id = ctx.callbackQuery.data.split('>')[1];
+				const confirmation = await Confirmation.findById(id);
+
+				if (!confirmation) {
+					return;
+				}
+
+				const messages = confirmation.messages;
+
+				for (const message of messages) {
+					const text = confirmation.text + '\n❌ Отклонено';
+					await ctx.telegram.editMessageCaption(message.chatId, message.id, message.id, text, {
 						parse_mode: 'Markdown'
 					});
 				}

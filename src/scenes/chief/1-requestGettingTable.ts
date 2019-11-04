@@ -1,6 +1,8 @@
 import KeyboardMessage from '../../controllers/keyboards';
+import AdminMessage from '../../controllers/admin';
 import PersonType from '../../enums/PersonType';
-import { downloadTable, generateTable } from '../../helpers/excel';
+import { isAdmin } from '../../helpers/functions';
+import { getPerson } from '../../helpers/persons';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -12,14 +14,18 @@ const requestGettingTable = new Scene('chief/requestGettingTable');
 
 requestGettingTable.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.CHIEF);
+	const person = await getPerson(ctx.from.username);
+	if (person) {
+		await KeyboardMessage.send(ctx, person.type);
+	} else if (await isAdmin(ctx.from.id)) {
+		await AdminMessage.send(ctx);
+	}
 	ctx.session = {};
 });
 
 // Точка входа в сцену
 requestGettingTable.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
-	const table = await generateTable();
 	await ctx.reply('Отправьте таблицу Excel с позициями для выдачи', keyboard);
 });
 
@@ -32,7 +38,12 @@ requestGettingTable.on('document', async (ctx: any) => {
 requestGettingTable.action('back', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	return KeyboardMessage.send(ctx, PersonType.CHIEF);
+	const person = await getPerson(ctx.from.username);
+	if (person) {
+		await KeyboardMessage.send(ctx, person.type);
+	} else if (await isAdmin(ctx.from.id)) {
+		await AdminMessage.send(ctx);
+	}
 });
 
 export default requestGettingTable;

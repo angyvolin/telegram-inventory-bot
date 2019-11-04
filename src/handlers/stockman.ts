@@ -42,5 +42,12 @@ export default class StockmanHandlers {
 				Stockman.confirmReturn(ctx);
 			}
 		});
+
+		bot.action(/^approveGivingChief>/, async (ctx) => {
+			await ctx.answerCbQuery();
+			if (await isStockman(ctx.from.username)) {
+				Stockman.confirmGivingChief(ctx);
+			}
+		});
 	}
 }

@@ -290,4 +290,36 @@ export default class Stockman {
 		const message = 'Разместите поставленные позиции в соответствии со списком:\n' + (await getCellsMessage(items));
 		await ctx.reply(message);
 	}
+
+	/**
+	 * @desc Подтверждение выдачи позиций работнику
+	 */
+	public static async confirmGivingChief(ctx: any): Promise<void> {
+		const id = ctx.callbackQuery.data.split('>')[1];
+		const confirmation = await Confirmation.findById(id);
+
+		if (!confirmation) {
+			return;
+		}
+
+		await confirmation.remove();
+
+		// Get all messages that was sent to stockman
+		const messages = confirmation.messages;
+
+		// Edit these messages
+		for (const message of messages) {
+			const text = confirmation.text + '\n✅ Подтверждено';
+			await ctx.telegram.editMessageCaption(message.chatId, message.id, message.id, text, {
+				parse_mode: 'Markdown'
+			});
+		}
+
+		/*
+		 * Send message to the worker with
+		 * a button to confirm the getting
+		 */
+		const text = '✅ Позиции из таблицы были выданы работнику';
+		await ctx.telegram.sendMessage(confirmation.chatId, text);
+	}
 }

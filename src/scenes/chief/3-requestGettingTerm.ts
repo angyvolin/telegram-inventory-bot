@@ -1,6 +1,9 @@
 import Chief from '../../classes/Chief';
 import KeyboardMessage from '../../controllers/keyboards';
+import AdminMessage from '../../controllers/admin';
 import PersonType from '../../enums/PersonType';
+import { isAdmin } from '../../helpers/functions';
+import { getPerson } from '../../helpers/persons';
 
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
@@ -12,7 +15,12 @@ const requestGettingTerm = new Scene('chief/requestGettingTerm');
 
 requestGettingTerm.command('start', async (ctx: any) => {
 	await ctx.scene.leave();
-	await KeyboardMessage.send(ctx, PersonType.CHIEF);
+	const person = await getPerson(ctx.from.username);
+	if (person) {
+		await KeyboardMessage.send(ctx, person.type);
+	} else if (await isAdmin(ctx.from.id)) {
+		await AdminMessage.send(ctx);
+	}
 	ctx.session = {};
 });
 
@@ -32,11 +40,12 @@ requestGettingTerm.on('text', async (ctx) => {
 	const days = term[0];
 	await ctx.scene.leave();
 	await Chief.requestGetting(ctx, ctx.session.table, ctx.session.username, days);
-	return KeyboardMessage.send(
-		ctx,
-		PersonType.CHIEF,
-		'Ваша заявка успешно отправлена! Ожидайте подтверждения выдачи кладовщика'
-	);
+	const person = await getPerson(ctx.from.username);
+	if (person) {
+		await KeyboardMessage.send(ctx, person.type, 'Ваша заявка успешно отправлена! Ожидайте подтверждения выдачи кладовщика');
+	} else if (await isAdmin(ctx.from.id)) {
+		await AdminMessage.send(ctx, 'Ваша заявка успешно отправлена! Ожидайте подтверждения выдачи кладовщика');
+	}
 });
 
 requestGettingTerm.action('back', async (ctx: any) => {

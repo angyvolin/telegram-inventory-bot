@@ -66,7 +66,7 @@ export default class Scenes {
 			stage.register(addAdmins); // Сцена добавления админа
 			stage.register(addPhotoGetItem); // Сцена добавления админа
 			stage.register(addPhotoGetPhoto); // Сцена добавления админа
-			stage.register(getAddresses);
+			stage.register(getAddresses); // Получение содержимого склада
 
 			// Сцена добавления товара
 			stage.register(getItemType);

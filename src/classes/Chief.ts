@@ -41,7 +41,7 @@ export default class Chief {
 
 			const keyboard = Markup.inlineKeyboard([
 				[Markup.callbackButton('✅ Выдал позиции', `approveGivingChief>${confirmationId}`)],
-				[Markup.callbackButton('❌ Отклонить', `declineRequest>${confirmationId}`)]
+				[Markup.callbackButton('❌ Отклонить', `declineRequestCaption>${confirmationId}`)]
 			]);
 
 			// Отправляем сообщение кладовщику
