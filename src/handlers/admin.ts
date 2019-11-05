@@ -61,6 +61,52 @@ export default class AdminHandlers {
 			}
 		});
 
+		bot.hears('Просмотреть просроченые получения', async (ctx: any) => {
+			const gettings = await Getting.find({
+				active: true,
+				expires: {
+					$lt: new Date()
+				}
+			});
+
+			let message = '*Список просроченных получений:*\n\n';
+
+			for (let getting of gettings) {
+				if (!gettings.length) {
+					return ctx.reply('На данный момент просрочек нет');
+				}
+
+				const person = await Person.findOne({
+					username: await getUsernameByChatId(getting.chatId)
+				});
+
+				if (getting.instruments) {
+					for (let item of getting.instruments) {
+						const { name, measure } = await Instrument.getItem(item[0]);
+						const expiration = Math.abs(Math.floor((getting.expires.valueOf() - (new Date()).valueOf()) / (60 * 60 * 24 * 1000)));
+						message += `🔹 ${person.fullName}: ${name} – ${item[1]} ${measure} *(на ${expiration} дн.)*\n`;
+					}
+				}
+
+				if (getting.furniture) {
+					for (let item of getting.furniture) {
+						const { name, measure } = await Furniture.getItem(item[0]);
+						const expiration = Math.abs(Math.floor((getting.expires.valueOf() - (new Date()).valueOf()) / (60 * 60 * 24 * 1000)));
+						message += `🔹 ${person.fullName}: ${name} – ${item[1]} ${measure} *(на ${expiration} дн.)*\n`;
+					}
+				}
+
+				if (getting.consumables) {
+					for (let item of getting.consumables) {
+						const { name, measure } = await Consumable.getItem(item[0]);
+						const expiration = Math.abs(Math.floor((getting.expires.valueOf() - (new Date()).valueOf()) / (60 * 60 * 24 * 1000)));
+						message += `🔹 ${person.fullName}: ${name} – ${item[1]} ${measure} *(на ${expiration} дн.)*\n`;
+					}
+				}
+			}
+			await ctx.replyWithMarkdown(message);
+		});
+
 		bot.hears('Просмотреть должников', async (ctx: any) => {
 			if (await isAdmin(ctx.from.id)) {
 				const gettings = await Getting.find({active: true});
@@ -72,7 +118,7 @@ export default class AdminHandlers {
 				let prevPerson = null;
 
 				for (let getting of gettings) {
-					let person = await Person.findOne({
+					const person = await Person.findOne({
 						username: await getUsernameByChatId(getting.chatId)
 					});
 
