@@ -48,6 +48,8 @@ getItem.action(/^accept>/, async (ctx: any) => {
 });
 
 getItem.action('back', async (ctx: any) => {
+	await ctx.answerCbQuery();
+
 	const keyboard = Markup.inlineKeyboard([
 		[
 			Markup.switchToCurrentChatButton('Инструменты', 'look i'),
