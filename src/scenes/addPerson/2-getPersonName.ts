@@ -16,7 +16,7 @@ getPersonName.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 getPersonName.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('Назад', 'back')]).extra();
+	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
 	await ctx.replyWithMarkdown('Введите ФИО сотрудника', keyboard);
 });
 

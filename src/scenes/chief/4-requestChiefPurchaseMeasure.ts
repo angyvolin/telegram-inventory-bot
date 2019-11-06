@@ -51,7 +51,7 @@ requestChiefPurchaseMeasure.action('back', async (ctx: any) => {
 
 requestChiefPurchaseMeasure.on('callback_query', async (ctx: any) => {
 	await ctx.answerCbQuery();
-	ctx.session.addItem.itemMeasure = ctx.callbackQuery.data;
+	ctx.session.currentItem.measure = ctx.callbackQuery.data;
 	await ctx.scene.leave();
 	await ctx.scene.enter('chief/requestChiefPurchaseAmount');
 });

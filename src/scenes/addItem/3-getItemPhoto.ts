@@ -26,7 +26,7 @@ getItemPhoto.command('start', async (ctx: any) => {
 getItemPhoto.enter(async (ctx: any) => {
 	const keyboard = Markup.inlineKeyboard([
 		Markup.callbackButton('⏪ Назад', 'back'),
-		Markup.callbackButton('Пропустить', 'skip')
+		Markup.callbackButton('Пропустить ⏩', 'skip')
 	]).extra();
 
 	await ctx.replyWithMarkdown('Отправьте фотографию', keyboard);

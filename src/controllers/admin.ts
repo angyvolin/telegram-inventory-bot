@@ -36,15 +36,15 @@ export default class AdminMessage {
 	): Promise<void> {
 		switch (page) {
 			case 1: {
-				await ctx.reply(message, this.keyboard1);
+				await ctx.replyWithMarkdown(message, this.keyboard1);
 				break;
 			}
 			case 2: {
-				await ctx.reply(message, this.keyboard2);
+				await ctx.replyWithMarkdown(message, this.keyboard2);
 				break;
 			}
 			case 3: {
-				await ctx.reply(message, this.keyboard3);
+				await ctx.replyWithMarkdown(message, this.keyboard3);
 				break;
 			}
 		}

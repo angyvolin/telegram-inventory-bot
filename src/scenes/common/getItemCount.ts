@@ -52,19 +52,24 @@ getItemCount.on('text', async (ctx: any) => {
 					id,
 					amount
 				};
-				ctx.session.items.push(item);
+				if (ctx.session.dontPush) {
+					ctx.session.currentItem = item;
+					ctx.session.dontPush = false;
+				} else {
+					ctx.session.items.push(item);					
+				}
 			}
 			/*
 			 * Добавить переход на следующую сцену в зависимости от контекста и роли
-			 * */
+			 */
 			await ctx.scene.enter(ctx.session.nextScene);
 		} else {
 			await ctx.reply('Недопустимое значение.\nПопробуйте снова');
-			await ctx.scene.reenter();
+			// await ctx.scene.reenter();
 		}
 	} else {
 		await ctx.reply('Не удалось определить значение.\nПопробуйте снова');
-		await ctx.scene.reenter();
+		// await ctx.scene.reenter();
 	}
 });
 

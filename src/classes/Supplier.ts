@@ -22,7 +22,7 @@ export default class Supplier {
 		items: { type: ItemType; id: string; amount: number; price: string; measure: string }[],
 		absent?: { name: string; amount: string; measure: string; price: string }[]
 	): Promise<void> {
-		if (!items.length) {
+		if (!items.length && (!absent || !absent.length)) {
 			return;
 		}
 		const admins = await getAdmins();
