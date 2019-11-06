@@ -69,7 +69,7 @@ export default class Chief {
 		items: { type: ItemType; id: string; amount: number; measure: string }[],
 		absent?: { name: string; amount: string; measure: string }[]
 	): Promise<void> {
-		if (!items.length) {
+		if (!items.length && (!absent || !absent.length)) {
 			return;
 		}
 		const admins = await getAdmins();

@@ -46,6 +46,10 @@ requestGetting.action(/^accept>/, async (ctx: any) => {
 	let isPresent = false;
 	ctx.session.items.forEach((item, index) => {
 		if (item.type === type && item.id === id) {
+			/*if (item.amount + amount > itemAmount) {
+				isExceed = true;
+				return;
+			}*/
 			ctx.session.items[index].amount += amount;
 			isPresent = true;
 		}

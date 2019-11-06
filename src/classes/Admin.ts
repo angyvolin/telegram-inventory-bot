@@ -1,7 +1,11 @@
 import Confirmation from '../models/confirmation';
 import Getting from '../models/getting';
+import Person from '../models/person';
+import Instrument from '../classes/Instrument';
+import Furniture from '../classes/Furniture';
+import Consumable from '../classes/Consumable';
 import ItemType from '../enums/ItemType';
-import { getChatId } from '../helpers/functions';
+import { getUsernameByChatId, getChatId } from '../helpers/functions';
 import { getSuppliers } from '../helpers/persons';
 import { getItemsMessage, getRequestSupplyMessage } from '../helpers/messages';
 
@@ -121,8 +125,14 @@ export default class Admin {
 		items: { type: ItemType; id: string; amount: number; measure: string }[],
 		absent?: { name: string; amount: string; measure: string }[]
 	): Promise<void> {
+		if (!items.length && (!absent || !absent.length)) {
+			return;
+		}
 		// Получаем всех поставщиков
 		const suppliers = await getSuppliers();
+		if (!suppliers.length) {
+			return;
+		}
 
 		// Текст поставщикам с уведомлением о закупке
 		const itemsText = await getItemsMessage(items, absent);
@@ -330,5 +340,103 @@ export default class Admin {
 		const text =
 			'✅ Закупка была согласована:\n' + confirmation.itemsText + '\nЗапрос о закупке был разослан снабженцам';
 		await ctx.telegram.sendMessage(confirmation.chatId, text);
+	}
+
+	public static async getOutdatedGettings(ctx: any): Promise<void> {
+		const gettings = await Getting.find({
+			active: true,
+			expires: {
+				$lt: new Date()
+			}
+		});
+
+		if (!gettings.length) {
+			return ctx.reply('На данный момент просроченных получений нет');
+		}
+		let message = '*Список просроченных получений:*\n\n';
+
+		for (let getting of gettings) {
+			if (!gettings.length) {
+				return ctx.reply('На данный момент просрочек нет');
+			}
+
+			const person = await Person.findOne({
+				username: await getUsernameByChatId(getting.chatId)
+			});
+
+			if (getting.instruments) {
+				for (let item of getting.instruments) {
+					const { name, measure } = await Instrument.getItem(item[0]);
+					const expiration = Math.abs(
+						Math.floor((getting.expires.valueOf() - new Date().valueOf()) / (60 * 60 * 24 * 1000))
+					);
+					message += `🔹 ${person.fullName}: ${name} – ${item[1]} ${measure} *(на ${expiration} дн.)*\n`;
+				}
+			}
+
+			if (getting.furniture) {
+				for (let item of getting.furniture) {
+					const { name, measure } = await Furniture.getItem(item[0]);
+					const expiration = Math.abs(
+						Math.floor((getting.expires.valueOf() - new Date().valueOf()) / (60 * 60 * 24 * 1000))
+					);
+					message += `🔹 ${person.fullName}: ${name} – ${item[1]} ${measure} *(на ${expiration} дн.)*\n`;
+				}
+			}
+
+			if (getting.consumables) {
+				for (let item of getting.consumables) {
+					const { name, measure } = await Consumable.getItem(item[0]);
+					const expiration = Math.abs(
+						Math.floor((getting.expires.valueOf() - new Date().valueOf()) / (60 * 60 * 24 * 1000))
+					);
+					message += `🔹 ${person.fullName}: ${name} – ${item[1]} ${measure} *(на ${expiration} дн.)*\n`;
+				}
+			}
+		}
+		await ctx.replyWithMarkdown(message);
+	}
+
+	public static async getDebtors(ctx: any): Promise<void> {
+		const gettings = await Getting.find({ active: true })
+									  .sort('chatId');
+
+		if (!gettings.length) {
+			return ctx.reply('На данный момент должников нет');
+		}
+		let message = '*Список должников:*\n\n';
+		let prevPerson = null;
+
+		for (let getting of gettings) {
+			const person = await Person.findOne({
+				username: await getUsernameByChatId(getting.chatId)
+			});
+
+			if (prevPerson !== person.username) message += `🔹 ${person.fullName}:\n`;
+
+			if (getting.instruments) {
+				for (let item of getting.instruments) {
+					const { name, measure } = await Instrument.getItem(item[0]);
+					message += `${name} – ${item[1]} ${measure}\n`;
+				}
+			}
+
+			if (getting.furniture) {
+				for (let item of getting.furniture.entries()) {
+					const { name, measure } = await Furniture.getItem(item[0]);
+					message += `${name} – ${item[1]} ${measure}\n`;
+				}
+			}
+
+			if (getting.consumables) {
+				for (let item of getting.consumables.entries()) {
+					const { name, measure } = await Consumable.getItem(item[0]);
+					message += `${name} – ${item[1]} ${measure}\n`;
+				}
+			}
+
+			prevPerson = person.username;
+		}
+		await ctx.replyWithMarkdown(message);
 	}
 }
