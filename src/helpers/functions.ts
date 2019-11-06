@@ -102,5 +102,5 @@ export async function dismissAdmin(chatId: number): Promise<void> {
 }
 
 export async function getUsernameByChatId(chatId: number): Promise<string> {
-	return (await User.findOne({chatId})).username;
+	return (await User.findOne({ chatId })).username;
 }

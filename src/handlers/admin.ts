@@ -83,7 +83,9 @@ export default class AdminHandlers {
 				if (getting.instruments) {
 					for (let item of getting.instruments) {
 						const { name, measure } = await Instrument.getItem(item[0]);
-						const expiration = Math.abs(Math.floor((getting.expires.valueOf() - (new Date()).valueOf()) / (60 * 60 * 24 * 1000)));
+						const expiration = Math.abs(
+							Math.floor((getting.expires.valueOf() - new Date().valueOf()) / (60 * 60 * 24 * 1000))
+						);
 						message += `🔹 ${person.fullName}: ${name} – ${item[1]} ${measure} *(на ${expiration} дн.)*\n`;
 					}
 				}
@@ -91,7 +93,9 @@ export default class AdminHandlers {
 				if (getting.furniture) {
 					for (let item of getting.furniture) {
 						const { name, measure } = await Furniture.getItem(item[0]);
-						const expiration = Math.abs(Math.floor((getting.expires.valueOf() - (new Date()).valueOf()) / (60 * 60 * 24 * 1000)));
+						const expiration = Math.abs(
+							Math.floor((getting.expires.valueOf() - new Date().valueOf()) / (60 * 60 * 24 * 1000))
+						);
 						message += `🔹 ${person.fullName}: ${name} – ${item[1]} ${measure} *(на ${expiration} дн.)*\n`;
 					}
 				}
@@ -99,7 +103,9 @@ export default class AdminHandlers {
 				if (getting.consumables) {
 					for (let item of getting.consumables) {
 						const { name, measure } = await Consumable.getItem(item[0]);
-						const expiration = Math.abs(Math.floor((getting.expires.valueOf() - (new Date()).valueOf()) / (60 * 60 * 24 * 1000)));
+						const expiration = Math.abs(
+							Math.floor((getting.expires.valueOf() - new Date().valueOf()) / (60 * 60 * 24 * 1000))
+						);
 						message += `🔹 ${person.fullName}: ${name} – ${item[1]} ${measure} *(на ${expiration} дн.)*\n`;
 					}
 				}
@@ -109,7 +115,7 @@ export default class AdminHandlers {
 
 		bot.hears('Просмотреть должников', async (ctx: any) => {
 			if (await isAdmin(ctx.from.id)) {
-				const gettings = await Getting.find({active: true});
+				const gettings = await Getting.find({ active: true });
 
 				if (!gettings.length) {
 					return ctx.reply('На данный момент должников нет');
@@ -122,32 +128,30 @@ export default class AdminHandlers {
 						username: await getUsernameByChatId(getting.chatId)
 					});
 
-					if (prevPerson !== person.username)
-						message += `🔹 ${person.fullName}:\n`;
+					if (prevPerson !== person.username) message += `🔹 ${person.fullName}:\n`;
 
 					if (getting.instruments) {
 						for (let item of getting.instruments) {
-							const {name, measure} = await Instrument.getItem(item[0]);
+							const { name, measure } = await Instrument.getItem(item[0]);
 							message += `${name} – ${item[1]} ${measure}\n`;
 						}
 					}
 
 					if (getting.furniture) {
 						for (let item of getting.furniture.entries()) {
-							const {name, measure} = await Furniture.getItem(item[0]);
+							const { name, measure } = await Furniture.getItem(item[0]);
 							message += `${name} – ${item[1]} ${measure}\n`;
 						}
 					}
 
 					if (getting.consumables) {
 						for (let item of getting.consumables.entries()) {
-							const {name, measure} = await Consumable.getItem(item[0]);
+							const { name, measure } = await Consumable.getItem(item[0]);
 							message += `${name} – ${item[1]} ${measure}\n`;
 						}
 					}
 
-					if (prevPerson !== person.username && prevPerson)
-						message += '\n';
+					if (prevPerson !== person.username && prevPerson) message += '\n';
 
 					prevPerson = person.username;
 				}

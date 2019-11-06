@@ -125,7 +125,7 @@ export default class Admin {
 		const suppliers = await getSuppliers();
 
 		// Текст поставщикам с уведомлением о закупке
-		const itemsText = await getItemsMessage(items, absent)
+		const itemsText = await getItemsMessage(items, absent);
 		const requestSupplyText = getRequestSupplyMessage(itemsText);
 
 		for (let supplier of suppliers) {

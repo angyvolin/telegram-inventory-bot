@@ -22,6 +22,7 @@ getItemCount.enter(async (ctx: any) => {
 });
 
 getItemCount.on('text', async (ctx: any) => {
+	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
 	const nums = ctx.message.text.match(/^[0-9]*[.,]?[0-9]+$/);
 	if (nums && nums.length) {
 		const amount = +nums[0].replace(',', '.');
@@ -42,7 +43,10 @@ getItemCount.on('text', async (ctx: any) => {
 			});
 
 			if (isExceed) {
-				return ctx.reply('Недопустимое значение (превышение кол-ва в наличии либо отрицательное число).\nПопробуйте снова');
+				return ctx.reply(
+					'Недопустимое значение (превышение кол-ва в наличии либо отрицательное число).\nПопробуйте снова',
+					keyboard
+				);
 			}
 
 			if (!isPresent) {
@@ -55,7 +59,7 @@ getItemCount.on('text', async (ctx: any) => {
 					ctx.session.currentItem = item;
 					ctx.session.dontPush = false;
 				} else {
-					ctx.session.items.push(item);					
+					ctx.session.items.push(item);
 				}
 			}
 			/*
@@ -63,16 +67,20 @@ getItemCount.on('text', async (ctx: any) => {
 			 */
 			await ctx.scene.enter(ctx.session.nextScene);
 		} else {
-			await ctx.reply('Недопустимое значение (превышение кол-ва в наличии либо отрицательное число).\nПопробуйте снова');
+			await ctx.reply(
+				'Недопустимое значение (превышение кол-ва в наличии либо отрицательное число).\nПопробуйте снова',
+				keyboard
+			);
 			// await ctx.scene.reenter();
 		}
 	} else {
-		await ctx.reply('Не удалось определить значение.\nПопробуйте снова');
+		await ctx.reply('Не удалось определить значение.\nПопробуйте снова', keyboard);
 		// await ctx.scene.reenter();
 	}
 });
 
 getItemCount.action('back', async (ctx: any) => {
+	await ctx.answerCbQuery();
 	await ctx.scene.enter(ctx.session.baseScene);
 });
 

@@ -24,19 +24,20 @@ getItemMeasure.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 getItemMeasure.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([
-		Markup.callbackButton('шт.', 'шт.'),
-		Markup.callbackButton('г.', 'г.'),
-		Markup.callbackButton('см.', 'см.'),
-		Markup.callbackButton('м^2.', 'м^2'),
-		Markup.callbackButton('м^3.', 'м^3'),
-		Markup.callbackButton('л.', 'л.'),
-		Markup.callbackButton('⏪ Назад', 'back')
-	], { columns: 2 }).extra();
+	const keyboard = Markup.inlineKeyboard(
+		[
+			Markup.callbackButton('шт.', 'шт.'),
+			Markup.callbackButton('г.', 'г.'),
+			Markup.callbackButton('см.', 'см.'),
+			Markup.callbackButton('м^2.', 'м^2'),
+			Markup.callbackButton('м^3.', 'м^3'),
+			Markup.callbackButton('л.', 'л.'),
+			Markup.callbackButton('⏪ Назад', 'back')
+		],
+		{ columns: 2 }
+	).extra();
 
-	await ctx.replyWithMarkdown(
-		'Какая величина измерения?\nВведите ее с клавиатуры или выберите из списка', keyboard
-	);
+	await ctx.replyWithMarkdown('Какая величина измерения?\nВведите ее с клавиатуры или выберите из списка', keyboard);
 });
 
 getItemMeasure.on('text', async (ctx: any) => {
@@ -64,7 +65,6 @@ getItemMeasure.on('callback_query', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	ctx.session.addItem.itemMeasure = ctx.callbackQuery.data;
 	await ctx.scene.enter('addItem/getItemDesc');
-
 });
 
 export default getItemMeasure;

@@ -40,7 +40,11 @@ requestGettingDate.on('text', async (ctx) => {
 	if (await isAdmin(ctx.from.id))
 		return AdminMessage.send(ctx, 'Ваша заявка успешно отправлена! Отправляйтесь на получение');
 	else
-		return KeyboardMessage.send(ctx, PersonType.WORKER, 'Ваша заявка успешно отправлена! Отправляйтесь на получение');
+		return KeyboardMessage.send(
+			ctx,
+			PersonType.WORKER,
+			'Ваша заявка успешно отправлена! Отправляйтесь на получение'
+		);
 });
 
 requestGettingDate.action('back', async (ctx: any) => {

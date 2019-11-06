@@ -26,9 +26,7 @@ requestGettingTerm.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 requestGettingTerm.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([
-		Markup.callbackButton('⏪ Назад', 'back')
-	]).extra();
+	const keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
 	await ctx.replyWithMarkdown('На сколько дней Вы хотите выдать позиции?', keyboard);
 });
 
@@ -42,7 +40,11 @@ requestGettingTerm.on('text', async (ctx) => {
 	await Chief.requestGetting(ctx, ctx.session.table, ctx.session.username, days);
 	const person = await getPerson(ctx.from.username);
 	if (person) {
-		await KeyboardMessage.send(ctx, person.type, 'Ваша заявка успешно отправлена! Ожидайте подтверждения выдачи кладовщика');
+		await KeyboardMessage.send(
+			ctx,
+			person.type,
+			'Ваша заявка успешно отправлена! Ожидайте подтверждения выдачи кладовщика'
+		);
 	} else if (await isAdmin(ctx.from.id)) {
 		await AdminMessage.send(ctx, 'Ваша заявка успешно отправлена! Ожидайте подтверждения выдачи кладовщика');
 	}

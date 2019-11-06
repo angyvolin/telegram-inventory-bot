@@ -35,7 +35,6 @@ requestRemoveReason.enter(async (ctx: any) => {
 requestRemoveReason.action('reasonCrash', async (ctx: any) => {
 	await ctx.answerCbQuery();
 	await ctx.scene.leave();
-	
 
 	if (await isAdmin(ctx.from.id)) {
 		await Admin.requestRemove(ctx, ctx.session.items, ctx.session.gettingId, 'поломка');

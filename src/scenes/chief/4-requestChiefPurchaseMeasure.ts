@@ -22,19 +22,20 @@ requestChiefPurchaseMeasure.command('start', async (ctx: any) => {
 });
 
 requestChiefPurchaseMeasure.enter(async (ctx: any) => {
-	const keyboard = Markup.inlineKeyboard([
-		Markup.callbackButton('шт.', 'шт.'),
-		Markup.callbackButton('г.', 'г.'),
-		Markup.callbackButton('см.', 'см.'),
-		Markup.callbackButton('м^2.', 'м^2'),
-		Markup.callbackButton('м^3.', 'м^3'),
-		Markup.callbackButton('л.', 'л.'),
-		Markup.callbackButton('⏪ Назад', 'back')
-	], { columns: 2 }).extra();
+	const keyboard = Markup.inlineKeyboard(
+		[
+			Markup.callbackButton('шт.', 'шт.'),
+			Markup.callbackButton('г.', 'г.'),
+			Markup.callbackButton('см.', 'см.'),
+			Markup.callbackButton('м^2.', 'м^2'),
+			Markup.callbackButton('м^3.', 'м^3'),
+			Markup.callbackButton('л.', 'л.'),
+			Markup.callbackButton('⏪ Назад', 'back')
+		],
+		{ columns: 2 }
+	).extra();
 
-	await ctx.replyWithMarkdown(
-		'Какая величина измерения?\nВведите ее с клавиатуры или выберите из списка', keyboard
-	);
+	await ctx.replyWithMarkdown('Какая величина измерения?\nВведите ее с клавиатуры или выберите из списка', keyboard);
 });
 
 requestChiefPurchaseMeasure.on('text', async (ctx: any) => {
