@@ -72,6 +72,8 @@ requestGettingWorkerItems.action(/^manualCount>/, async (ctx: any) => {
 });
 
 requestGettingWorkerItems.action('back', async (ctx: any) => {
+	await ctx.answerCbQuery();
+
 	const keyboard = Markup.inlineKeyboard([
 		[Markup.switchToCurrentChatButton('Инструменты', 'i'), Markup.switchToCurrentChatButton('Фурнитура', 'f')],
 		[Markup.switchToCurrentChatButton('Расходники', 'c'), Markup.callbackButton('⏪ Назад', 'exit')]

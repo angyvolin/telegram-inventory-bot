@@ -105,6 +105,7 @@ requestPurchase.action('absent', async (ctx: any) => {
 });
 
 requestPurchase.action('back', async (ctx: any) => {
+	await ctx.answerCbQuery();
 	const keyboard = Markup.inlineKeyboard([
 		[
 			Markup.switchToCurrentChatButton('Инструменты', 'incl_abs i'),
