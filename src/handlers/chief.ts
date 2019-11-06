@@ -14,9 +14,9 @@ export default class ChiefHandlers {
 			}
 		});
 
-		// Обработчик для "Согласовать закупку товара"
-		bot.hears('Согласовать закупку товара', async (ctx: any) => {
-			if (await isChief(ctx.from.username)) {
+		// Обработчик для "Создать запрос на закупку"
+		bot.hears('Создать запрос на закупку', async (ctx: any) => {
+			if (await isChief(ctx.from.username) || (await isAdmin(ctx.from.id))) {
 				ctx.session.items = [];
 				ctx.session.absent = [];
 				await ctx.scene.enter('chief/requestChiefPurchase');

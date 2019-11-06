@@ -18,7 +18,7 @@ addAdmins.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 addAdmins.enter(async (ctx: any) => {
-	let keyboard = Markup.inlineKeyboard([Markup.callbackButton('Назад', 'back')]).extra();
+	let keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
 	await ctx.replyWithMarkdown(
 		'Перешлите мне сообщение от будущего админа ⏩\n*Он должен быть пользователем бота!*',
 		keyboard

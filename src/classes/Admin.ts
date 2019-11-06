@@ -112,7 +112,31 @@ export default class Admin {
 		// Сохраняем получение
 		await getting.save();
 
-		const text = 'Списание было подтверждено:\n' + (await getItemsMessage(items));
+		const text = '✅ Списание было подтверждено:\n' + (await getItemsMessage(items));
+		await ctx.reply(text);
+	}
+
+	public static async requestPurchase(
+		ctx: any,
+		items: { type: ItemType; id: string; amount: number; measure: string }[],
+		absent?: { name: string; amount: string; measure: string }[]
+	): Promise<void> {
+		// Получаем всех поставщиков
+		const suppliers = await getSuppliers();
+
+		// Текст поставщикам с уведомлением о закупке
+		const itemsText = await getItemsMessage(items, absent)
+		const requestSupplyText = getRequestSupplyMessage(itemsText);
+
+		for (let supplier of suppliers) {
+			const id = await getChatId(supplier.username);
+			if (!id) continue;
+
+			await ctx.telegram.sendMessage(id, requestSupplyText);
+		}
+
+		// Отправляем сообщение работнику с уведомлением о списании инструментов
+		const text = '✅ Запрос о закупке был разослан снабженцам:\n' + itemsText;
 		await ctx.reply(text);
 	}
 

@@ -18,7 +18,7 @@ gsend.command('start', async (ctx: any) => {
 
 // Точка входа в сцену
 gsend.enter(async (ctx: any) => {
-	let keyboard = Markup.inlineKeyboard([Markup.callbackButton('Назад', 'back')]).extra();
+	let keyboard = Markup.inlineKeyboard([Markup.callbackButton('⏪ Назад', 'back')]).extra();
 
 	await ctx.replyWithMarkdown(
 		'Введите сообщение для рассылки\n\nПри форматировании используйте *два знака разметки* вместо одного',

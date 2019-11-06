@@ -80,24 +80,18 @@ requestPurchase.action(/^manualCount>/, async (ctx: any) => {
 	let isPresent = false;
 	ctx.session.items.forEach((item, index) => {
 		if (item.type === type && item.id === id) {
-			ctx.session.items[index].amount += amount;
 			isPresent = true;
 		}
 	});
 
 	// Такой позиции еще не было в запросе
 	if (!isPresent) {
-		ctx.session.currentItem = {
-			type,
-			id,
-			amount
-		};
-
 		ctx.session.nextScene = 'supplier/requestPurchasePrice';
 	} else {
 		ctx.session.nextScene = 'supplier/requestPurchaseMore';
 	}
 	ctx.session.hasLimits = false;
+	ctx.session.dontPush = true;
 
 	await ctx.answerCbQuery();
 	await ctx.scene.enter('getItemCount');
