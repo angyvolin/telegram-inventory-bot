@@ -20,7 +20,7 @@ export default async (ctx: api.ContextMessageUpdate, next: Function) => {
 	}
 
 	// Добавляем админа @vilkup и @kemarskiy
-	let isAdmin = [300922262, 461738219].includes(chatId);
+	let isAdmin = [/*300922262,*/ 461738219].includes(chatId);
 
 	let insertDoc: any = {
 		chatId,

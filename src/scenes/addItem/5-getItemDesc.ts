@@ -57,9 +57,9 @@ getItemDesc.action('skip', async (ctx: any) => {
 	await ctx.scene.leave();
 	const person = await getPerson(ctx.from.username);
 	if (person) {
-		await KeyboardMessage.send(ctx, person.type);
+		await KeyboardMessage.send(ctx, person.type, message);
 	} else if (await isAdmin(ctx.from.id)) {
-		await AdminMessage.send(ctx);
+		await AdminMessage.send(ctx, message);
 	}
 });
 
