@@ -42,8 +42,7 @@ getItemCount.on('text', async (ctx: any) => {
 			});
 
 			if (isExceed) {
-				await ctx.reply('Недопустимое значение.\nПопробуйте снова');
-				await ctx.scene.reenter();
+				return ctx.reply('Недопустимое значение (превышение кол-ва в наличии либо отрицательное число).\nПопробуйте снова');
 			}
 
 			if (!isPresent) {
@@ -64,7 +63,7 @@ getItemCount.on('text', async (ctx: any) => {
 			 */
 			await ctx.scene.enter(ctx.session.nextScene);
 		} else {
-			await ctx.reply('Недопустимое значение.\nПопробуйте снова');
+			await ctx.reply('Недопустимое значение (превышение кол-ва в наличии либо отрицательное число).\nПопробуйте снова');
 			// await ctx.scene.reenter();
 		}
 	} else {
