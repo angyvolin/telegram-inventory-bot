@@ -5,9 +5,11 @@
  "main": "index.js",
  "scripts": {
   "prettier": "prettier --config prettier-config.json --write 'src/**/*.ts'",
+  "test": "echo \"Error: tests are not specified\"",
   "clean": "rm -rf dist",
-  "build": "npm run prettier && npm run clean && tsc --watch false",
+  "build": "npm run clean && tsc --watch false",
   "start": "npm run build && node dist/index.js",
+  "prod": "node dist/index.js",
   "dev": "nodemon dist/"
  },
  "repository": {

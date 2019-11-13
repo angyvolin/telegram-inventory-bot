@@ -292,7 +292,7 @@ export default class Admin {
 		// Отправляем сообщение работнику с уведомлением о списании инструментов
 		const keyboard = Markup.inlineKeyboard([Markup.callbackButton('✅ Закупил', `confirmPurchase>${id}`)]);
 		const text =
-			'✅ Закупка была подтверждено:\n' +
+			'✅ Закупка была подтверждена:\n' +
 			confirmation.itemsText +
 			'\n❗️Подтвердите закупку нажатием кнопки ниже:';
 		const options = {
@@ -398,8 +398,7 @@ export default class Admin {
 	}
 
 	public static async getDebtors(ctx: any): Promise<void> {
-		const gettings = await Getting.find({ active: true })
-									  .sort('chatId');
+		const gettings = await Getting.find({ active: true }).sort('chatId');
 
 		if (!gettings.length) {
 			return ctx.reply('На данный момент должников нет');

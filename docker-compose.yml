@@ -1,0 +1,30 @@
+# Docker Compose version
+version: "3"
+# Services
+services:
+  # Telegram inventory bot service
+  server:
+    build: .
+    image: telegram-inventory-bot:1.0
+    container_name: telegram-inventory-bot
+    depends_on:
+    - mongo
+  # MongoDB service
+  mongo:
+    image: mongo:3.6.15
+    container_name: mongo
+    volumes:
+    - mongo_data:/data/db
+    - mongo_config:/data/configdb
+    ports:
+    - "27017:27017"
+# Volumes
+volumes:
+  # Volume for data stored in MongoDB
+  mongo_data:
+    external:
+        name: mongo_data
+  # Volume for MongoDB config
+  mongo_config:
+    external:
+        name: mongo_config
